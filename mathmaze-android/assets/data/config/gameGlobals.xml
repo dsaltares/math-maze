@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<bool 	key="debugCamera" 				value="false" />
+	<float 	key="cameraScrollSpeed" 		value="200.0" />
+	<float 	key="cameraZoomSpeed" 			value="100.0" />
+	
+	<float 	key="playerMoveTime" 			value="0.5" />
+	<float 	key="playerMoveCooldown" 		value="0.2" />
+</settings>

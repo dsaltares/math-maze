@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<float 	key="virtualWidth"			value="1280.0" />
+	<float 	key="virtualHeight"			value="720.0" />
+	<float 	key="metresToPixels"		value="1.0" />
+	<bool 	key="catchBack"				value="true" />
+	<bool 	key="catchMenu"				value="true" />
+	
+	<vector key="gravity"				x="0.0" y="-9.8" z="0.0" />
+	<bool 	key="doSleep" 				value="true" />
+	<int 	key="velocityIterations" 	value="12" />
+	<int 	key="positionIterations" 	value="6" />
+	<float 	key="physicsDeltaTime"		value="0.01" />
+	
+	<int 	key="debugLevel" 			value="3" />
+	<bool 	key="drawBodies" 			value="true" />
+	<bool 	key="drawJoints" 			value="true" />
+	<bool 	key="drawABBs" 				value="true" />
+	<bool 	key="drawInactiveBodies" 	value="true" />
+	<bool 	key="drawVelocities" 		value="true" />
+	<bool 	key="drawContacts"	 		value="true" />
+	<bool 	key="drawStage" 			value="true" />
+	<bool 	key="drawGrid" 				value="false" />
+</settings>

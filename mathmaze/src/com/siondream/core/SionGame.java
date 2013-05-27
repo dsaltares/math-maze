@@ -179,6 +179,11 @@ public class SionGame extends Game implements InputProcessor {
 		return screens.get(name, null);
 	}
 	
+	public <T extends SionScreen> T getScreen(String name, Class<T> type) {
+		SionScreen screen = getScreen(name);
+		return screen != null ? type.cast(screen) : null;
+	}
+	
 	@Override
 	public void setScreen(Screen screen) {
 		logger.error("method not supported");

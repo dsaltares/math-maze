@@ -39,7 +39,7 @@ import com.siondream.math.systems.PlayerControllerSystem;
 
 public class GameScreen extends SionScreen {
 
-	private final static String TAG = "GameScreen";
+	public final static String TAG = "GameScreen";
 	
 	private Logger logger;
 	private TmxMapLoader mapLoader;
@@ -50,6 +50,10 @@ public class GameScreen extends SionScreen {
 		logger.info("initialising");
 		
 		mapLoader = new TmxMapLoader();
+	}
+	
+	public String getName() {
+		return TAG;
 	}
 	
 	@Override
@@ -259,6 +263,7 @@ public class GameScreen extends SionScreen {
 		
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
+				Env.game.getEngine().getSystem(PlayerControllerSystem.class).cancelMovement();
 				dispose();
 				init();
 			}

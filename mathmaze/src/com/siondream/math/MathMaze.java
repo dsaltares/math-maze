@@ -4,6 +4,7 @@ import ashley.core.Engine;
 
 import com.siondream.core.Env;
 import com.siondream.core.SionGame;
+import com.siondream.core.SionScreen;
 import com.siondream.core.entity.systems.AnimationSystem;
 import com.siondream.core.entity.systems.DisposingSystem;
 import com.siondream.core.entity.systems.GroupSystem;
@@ -33,8 +34,9 @@ public class MathMaze extends SionGame {
 		
 		GameEnv.init(this);
 		
-		this.addScreen("GameScreen", new GameScreen());
-		this.setScreen("GameScreen");
+		SionScreen screen = new GameScreen();
+		this.addScreen(screen.getName(), screen);
+		this.setScreen(screen.getName());
 		
 		Engine engine = Env.game.getEngine();
 		

@@ -1,6 +1,7 @@
 package com.siondream.math.systems;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -10,7 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Env;
-import com.siondream.core.entity.components.FontComponent;
 import com.siondream.core.entity.components.MapComponent;
 import com.siondream.core.entity.components.TextureComponent;
 import com.siondream.core.entity.components.TransformComponent;
@@ -34,7 +34,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
-public class PlayerControllerSystem extends EntitySystem {
+public class PlayerControllerSystem extends EntitySystem implements InputProcessor {
 	
 	private static final String TAG = "PlayerControllerSystem";
 	
@@ -79,69 +79,9 @@ public class PlayerControllerSystem extends EntitySystem {
 	
 	@Override
 	public void update(float deltaTime) {
-		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
-		Entity player = tagSystem.getEntity(GameEnv.playerTag);
-		Entity map = tagSystem.getEntity(GameEnv.mapTag);
-		
-		if (player == null || map == null) {
-			return;
-		}
-
-		
 		if (moveTimer > 0.0f) {
 			moveTimer -= deltaTime;
 		}
-		
-		// Movement
-		if (moveTimer <= 0.0f && !moving && Gdx.input.isTouched()) {
-			MapComponent mapComponent = map.getComponent(MapComponent.class);
-			TiledMapTileLayer grid = (TiledMapTileLayer)mapComponent.map.getLayers().get(GameEnv.backgroundLayer);
-			
-			GridPositionComponent position = player.getComponent(GridPositionComponent.class);
-			TransformComponent transform = player.getComponent(TransformComponent.class);
-			
-			mousePos3.set(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
-			camera.unproject(mousePos3);
-			getGridPosition(grid, mousePos3, mousePos);
-			
-			direction.set(0.0f, 0.0f);
-			
-			if ((int)mousePos.x > position.x)
-				direction.x = 1;
-			else if ((int)mousePos.x < position.x)
-				direction.x = -1;
-				
-			if ((int)mousePos.y > position.y)
-				direction.y = 1;
-			else if ((int)mousePos.y < position.y)
-				direction.y = -1;
-			
-			destination.set(position.x, position.y);
-			destination.add(direction);
-			
-			ValueComponent value = player.getComponent(ValueComponent.class);
-			
-			Entity operation = getOperationAt(destination);
-			
-			if (operation != null) {
-				OperationComponent operationComponent = operation.getComponent(OperationComponent.class);
-				value.value = operationComponent.operation.run(value.value);
-				moveTimer = GameEnv.playerMoveCooldown * 5.0f;
-			}
-			else if (isValidGridPosition(grid, value, destination)) {
-				TextureRegion region = player.getComponent(TextureComponent.class).region;
-				float destX = destination.x * region.getRegionWidth() * Env.pixelsToMetres + region.getRegionWidth() * 0.5f * Env.pixelsToMetres;
-				float destY = (grid.getHeight() - destination.y - 1.0f) * region.getRegionHeight() * Env.pixelsToMetres + region.getRegionHeight() * 0.5f * Env.pixelsToMetres;
-				
-				Tween.to(transform, TransformTweener.Position, GameEnv.playerMoveTime)
-					 .target(destX, destY, 0.0f)
-					 .ease(TweenEquations.easeInOutQuad)
-					 .setCallback(callback)
-					 .start(Env.game.getTweenManager());
-				moving = true;
-			}
-		}
-		
 	}
 	
 	private void getGridPosition(TiledMapTileLayer grid, Vector3 worldPosition, Vector2 gridPosition) {
@@ -209,6 +149,112 @@ public class PlayerControllerSystem extends EntitySystem {
 				moveTimer = GameEnv.playerMoveCooldown;
 			}
 		}
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if (moveTimer > 0.0f || moving) {
+			return false;
+		}
+		
+		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
+		Entity player = tagSystem.getEntity(GameEnv.playerTag);
+		Entity map = tagSystem.getEntity(GameEnv.mapTag);
+		
+		if (player == null || map == null) {
+			return false;
+		}
+		
+		MapComponent mapComponent = map.getComponent(MapComponent.class);
+		TiledMapTileLayer grid = (TiledMapTileLayer)mapComponent.map.getLayers().get(GameEnv.backgroundLayer);
+		
+		GridPositionComponent position = player.getComponent(GridPositionComponent.class);
+		TransformComponent transform = player.getComponent(TransformComponent.class);
+		
+		mousePos3.set(screenX, screenY, 0.0f);
+		camera.unproject(mousePos3);
+		getGridPosition(grid, mousePos3, mousePos);
+		
+		direction.set(0.0f, 0.0f);
+		
+		if ((int)mousePos.x > position.x)
+			direction.x = 1;
+		else if ((int)mousePos.x < position.x)
+			direction.x = -1;
+			
+		if ((int)mousePos.y > position.y)
+			direction.y = 1;
+		else if ((int)mousePos.y < position.y)
+			direction.y = -1;
+		
+		destination.set(position.x, position.y);
+		destination.add(direction);
+		
+		ValueComponent value = player.getComponent(ValueComponent.class);
+		
+		Entity operation = getOperationAt(destination);
+		
+		if (operation != null) {
+			OperationComponent operationComponent = operation.getComponent(OperationComponent.class);
+			value.value = operationComponent.operation.run(value.value);
+			moveTimer = GameEnv.playerMoveCooldown * 5.0f;
+		}
+		else if (isValidGridPosition(grid, value, destination)) {
+			TextureRegion region = player.getComponent(TextureComponent.class).region;
+			float destX = destination.x * region.getRegionWidth() * Env.pixelsToMetres + region.getRegionWidth() * 0.5f * Env.pixelsToMetres;
+			float destY = (grid.getHeight() - destination.y - 1.0f) * region.getRegionHeight() * Env.pixelsToMetres + region.getRegionHeight() * 0.5f * Env.pixelsToMetres;
+			
+			Tween.to(transform, TransformTweener.Position, GameEnv.playerMoveTime)
+				 .target(destX, destY, 0.0f)
+				 .ease(TweenEquations.easeInOutQuad)
+				 .setCallback(callback)
+				 .start(Env.game.getTweenManager());
+			moving = true;
+		}
+		
+		return true;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

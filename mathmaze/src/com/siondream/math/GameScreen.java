@@ -17,7 +17,6 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -36,6 +35,7 @@ import com.siondream.math.components.GridPositionComponent;
 import com.siondream.math.components.OperationComponent;
 import com.siondream.math.components.ValueComponent;
 import com.siondream.math.systems.CameraControllerSystem;
+import com.siondream.math.systems.PlayerControllerSystem;
 
 public class GameScreen extends SionScreen {
 
@@ -76,6 +76,9 @@ public class GameScreen extends SionScreen {
 		while (operations.hasNext()) {
 			engine.removeEntity(operations.next());
 		}
+		
+		PlayerControllerSystem controller = Env.game.getEngine().getSystem(PlayerControllerSystem.class);
+		Env.game.getInputMultiplexer().removeProcessor(controller);
 	}
 	
 	@Override
@@ -238,6 +241,9 @@ public class GameScreen extends SionScreen {
 		}
 		
 		engine.getSystem(CameraControllerSystem.class).setTarget(player);
+		
+		PlayerControllerSystem controller = Env.game.getEngine().getSystem(PlayerControllerSystem.class);
+		Env.game.getInputMultiplexer().addProcessor(controller);
 		
 		// Create UI
 		createUI();

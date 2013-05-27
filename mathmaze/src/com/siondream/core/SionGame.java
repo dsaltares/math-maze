@@ -231,6 +231,10 @@ public class SionGame extends Game implements InputProcessor {
 		return languageManager;
 	}
 	
+	public InputMultiplexer getInputMultiplexer() {
+		return multiplexer;
+	}
+	
 	private void performScreenChange() {
 		if (nextScreen != null) {
 			logger.info("switching to screen " + screens.findKey(nextScreen, false));

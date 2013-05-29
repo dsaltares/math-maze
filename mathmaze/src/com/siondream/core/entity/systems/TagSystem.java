@@ -55,7 +55,15 @@ public class TagSystem extends EntitySystem {
 	}
 	
 	public Entity getEntity(String tag) {
-		return tags.get(tag, null);
+		Entity entity = tags.get(tag, null);
+		
+		if (entity != null) {
+			if (entities.containsValue(entity, false)) {
+				return entity;
+			}
+		}
+		
+		return null;
 	}
 	
 	public void setTag(Entity entity, String tag) {

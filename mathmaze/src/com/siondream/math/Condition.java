@@ -57,16 +57,16 @@ public class Condition {
 		else if (name.equals("!=")) {
 			return Type.NotEquals;
 		}
-		else if (name.equals(">")) {
+		else if (name.equals("&gt;")) {
 			return Type.Greater;
 		}
-		else if (name.equals("<")) {
+		else if (name.equals("&lt;")) {
 			return Type.Lesser;
 		}
-		else if (name.equals(">=")) {
+		else if (name.equals("&gt;=")) {
 			return Type.GreaterOrEquals;
 		}
-		else if (name.equals("<=")) {
+		else if (name.equals("&lt;=")) {
 			return Type.LesserOrEquals;
 		}
 		else {

@@ -195,7 +195,7 @@ public class MathRenderingSystem extends RenderingSystem {
 				string.append("< ");
 				break;
 			case LesserOrEquals:
-				string.append("< ");
+				string.append("<= ");
 				break;
 			case NotEquals:
 				string.append("!= ");

@@ -1,7 +1,6 @@
 package com.siondream.math.systems;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -36,7 +35,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
-public class PlayerControllerSystem extends EntitySystem implements InputProcessor {
+public class PlayerControllerSystem extends EntitySystem {
 	
 	private static final String TAG = "PlayerControllerSystem";
 	
@@ -44,7 +43,6 @@ public class PlayerControllerSystem extends EntitySystem implements InputProcess
 	private Logger logger;
 	private OrthographicCamera camera;
 	private Vector3 mousePos3;
-	private Vector2 mousePos;
 	private Vector2 direction;
 	private Vector2 destination;
 	private Vector2 rightDirection;
@@ -63,7 +61,6 @@ public class PlayerControllerSystem extends EntitySystem implements InputProcess
 		moveTimer = 0.0f;
 		camera = Env.game.getCamera();
 		mousePos3 = new Vector3();
-		mousePos = new Vector2();
 		direction = new Vector2();
 		destination = new Vector2();
 		rightDirection = Vector2.X.cpy();
@@ -83,14 +80,17 @@ public class PlayerControllerSystem extends EntitySystem implements InputProcess
 	
 	@Override
 	public void update(float deltaTime) {
+		if (!(GameEnv.game.getScreen() instanceof GameScreen)) {
+			return;
+		}
+		
+		
 		if (moveTimer > 0.0f) {
 			moveTimer -= deltaTime;
 			return;
 		}
 		
-		GameScreen screen = Env.game.getScreen(GameScreen.TAG, GameScreen.class);
-		
-		if (!moving && Gdx.input.isTouched()) {
+		if (!moving && Gdx.input.isTouched()) {			
 			TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
 			Entity player = tagSystem.getEntity(GameEnv.playerTag);
 			Entity map = tagSystem.getEntity(GameEnv.mapTag);
@@ -124,10 +124,18 @@ public class PlayerControllerSystem extends EntitySystem implements InputProcess
 			if (operation != null) {
 				OperationComponent operationComponent = operation.getComponent(OperationComponent.class);
 				value.value = operationComponent.operation.run(value.value);
-				moveTimer = GameEnv.playerMoveCooldown * 2.0f;
+				Env.game.getEngine().getSystem(CameraControllerSystem.class).startShakeEffect(((int)destination.x - position.x) != 0);
+				moving = true;
+				return;
 			}
+			
+			if (isExitAt(destination)) {
+				GameEnv.game.setScreen("LevelSelectionScreen");
+				return;
+			}
+			
 			// Move (potentially through condition gate)
-			else if (isValidGridPosition(grid, value, destination)) {
+			if (isValidGridPosition(grid, value, destination)) {
 				TextureRegion region = player.getComponent(TextureComponent.class).region;
 				float destX = destination.x * region.getRegionWidth() * Env.pixelsToMetres + region.getRegionWidth() * 0.5f * Env.pixelsToMetres;
 				float destY = (grid.getHeight() - destination.y - 1.0f) * region.getRegionHeight() * Env.pixelsToMetres + region.getRegionHeight() * 0.5f * Env.pixelsToMetres;
@@ -152,9 +160,18 @@ public class PlayerControllerSystem extends EntitySystem implements InputProcess
 		moveTimer = 0.0f;
 	}
 	
-	private void getGridPosition(TiledMapTileLayer grid, Vector3 worldPosition, Vector2 gridPosition) {
-		gridPosition.set((int)(worldPosition.x * Env.metresToPixels / grid.getTileWidth()),
-						 (int)(grid.getHeight() - worldPosition.y * Env.metresToPixels / grid.getTileHeight()));
+	public void notifyShakeStop() {
+		moving = false;
+		moveTimer = GameEnv.playerMoveCooldown;
+	}
+	
+	private boolean isExitAt(Vector2 destination) {
+		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
+		Entity exit = tagSystem.getEntity(GameEnv.exitTag);
+		GridPositionComponent position = exit != null? exit.getComponent(GridPositionComponent.class) : null;
+		
+		return position != null ? position.x == (int)destination.x && position.y == (int)destination.y
+								: false;
 	}
 	
 	private boolean isValidGridPosition(TiledMapTileLayer grid, ValueComponent value, Vector2 destination) {
@@ -240,61 +257,4 @@ public class PlayerControllerSystem extends EntitySystem implements InputProcess
 			}
 		}
 	}
-
-	@Override
-	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		
-		
-		
-		
-		
-		
-		return true;
-	}
-
-	
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	
 }

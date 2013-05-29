@@ -1,7 +1,6 @@
 package com.siondream.math;
 
 import com.badlogic.gdx.utils.Logger;
-import com.siondream.core.Env;
 import com.siondream.core.Settings;
 
 public class GameEnv {
@@ -18,6 +17,8 @@ public class GameEnv {
 	public static boolean debugCamera;
 	public static float cameraScrollSpeed;
 	public static float cameraZoomSpeed;
+	public static float cameraShakeTime;
+	public static int cameraShakeRepetitions;
 	
 	public static float playerMoveCooldown;
 	public static float playerMoveTime;
@@ -29,13 +30,15 @@ public class GameEnv {
 	public static void init(MathMaze game) {
 		logger.info("initialising");
 		
-		Env.game = game;
+		GameEnv.game = game;
 		
 		settings = new Settings("data/config/gameGlobals.xml");
 		
 		debugCamera = settings.getBoolean("debugCamera", false);
 		cameraScrollSpeed = settings.getFloat("cameraScrollSpeed", 2.0f);
 		cameraZoomSpeed = settings.getFloat("cameraZoomSpeed", 1.0f);
+		cameraShakeTime = settings.getFloat("cameraShakeTime", 0.1f);
+		cameraShakeRepetitions = settings.getInt("cameraShakeRepetitions", 1);
 		
 		playerMoveCooldown = settings.getFloat("playerMoveCooldown", 0.2f);
 		playerMoveTime = settings.getFloat("playerMoveTime", 0.f);

@@ -30,6 +30,7 @@ import com.siondream.core.entity.components.TextureComponent;
 import com.siondream.core.entity.components.TransformComponent;
 import com.siondream.core.entity.systems.GroupSystem;
 import com.siondream.core.entity.systems.TagSystem;
+import com.siondream.math.LevelManager.Level;
 import com.siondream.math.components.ConditionComponent;
 import com.siondream.math.components.GridPositionComponent;
 import com.siondream.math.components.OperationComponent;
@@ -43,6 +44,7 @@ public class GameScreen extends SionScreen {
 	
 	private Logger logger;
 	private TmxMapLoader mapLoader;
+	private Level level;
 	
 	public GameScreen() {
 		logger = new Logger(TAG, Env.debugLevel);
@@ -56,11 +58,22 @@ public class GameScreen extends SionScreen {
 		return TAG;
 	}
 	
+	public void setLevel(Level level) {
+		this.level = level;
+	}
+	
+	public void reset() {
+		hide();
+		show();
+	}
+	
 	@Override
 	public void dispose() {
 		super.dispose();
 		
 		logger.info("shutting down");
+		
+		Env.game.getEngine().getSystem(PlayerControllerSystem.class).cancelMovement();
 		
 		PooledEngine engine = Env.game.getEngine();
 		TagSystem tagSystem = engine.getSystem(TagSystem.class);
@@ -80,9 +93,8 @@ public class GameScreen extends SionScreen {
 		while (operations.hasNext()) {
 			engine.removeEntity(operations.next());
 		}
-		
-		PlayerControllerSystem controller = Env.game.getEngine().getSystem(PlayerControllerSystem.class);
-		Env.game.getInputMultiplexer().removeProcessor(controller);
+
+		GameEnv.game.getStage().clear();
 	}
 	
 	@Override
@@ -110,7 +122,7 @@ public class GameScreen extends SionScreen {
 		// Map entity
 		Entity map = engine.createEntity();
 		MapComponent mapComponent = engine.createComponent(MapComponent.class);
-		mapComponent.map = mapLoader.load("data/levels/level001.tmx");
+		mapComponent.map = mapLoader.load(level.file);
 		map.add(mapComponent);
 		engine.addEntity(map);
 		tagSystem.setTag(map, GameEnv.mapTag);
@@ -247,7 +259,6 @@ public class GameScreen extends SionScreen {
 		engine.getSystem(CameraControllerSystem.class).setTarget(player);
 		
 		PlayerControllerSystem controller = Env.game.getEngine().getSystem(PlayerControllerSystem.class);
-		Env.game.getInputMultiplexer().addProcessor(controller);
 		
 		// Create UI
 		createUI();
@@ -263,9 +274,7 @@ public class GameScreen extends SionScreen {
 		
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				Env.game.getEngine().getSystem(PlayerControllerSystem.class).cancelMovement();
-				dispose();
-				init();
+				reset();
 			}
 		});
 		

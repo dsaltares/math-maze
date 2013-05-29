@@ -2,9 +2,10 @@ package com.siondream.math;
 
 import ashley.core.Engine;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.siondream.core.Env;
 import com.siondream.core.SionGame;
-import com.siondream.core.SionScreen;
 import com.siondream.core.entity.systems.AnimationSystem;
 import com.siondream.core.entity.systems.DisposingSystem;
 import com.siondream.core.entity.systems.GroupSystem;
@@ -27,6 +28,9 @@ public class MathMaze extends SionGame {
 	private CameraControllerSystem cameraControllerSystem;
 	private PlayerControllerSystem playerControllerSystem;
 	private CheckpointSystem checkpointSystem;
+	private Preferences preferences;
+	private LevelManager levelManager;
+	private int currentLevel;
 	
 	@Override
 	public void create() {		
@@ -34,10 +38,11 @@ public class MathMaze extends SionGame {
 		
 		GameEnv.init(this);
 		
-		SionScreen screen = new GameScreen();
-		this.addScreen(screen.getName(), screen);
-		this.setScreen(screen.getName());
+		preferences = Gdx.app.getPreferences("MathMazePrefs");
 		
+		levelManager = new LevelManager("data/levels/levels.xml", preferences);
+		this.currentLevel = 0;
+
 		Engine engine = Env.game.getEngine();
 		
 		animationSystem = new AnimationSystem();
@@ -69,8 +74,22 @@ public class MathMaze extends SionGame {
 		engine.addSystem(cameraControllerSystem);
 		engine.addSystem(playerControllerSystem);
 		engine.addSystem(checkpointSystem);
+		
+		GameScreen gameScreen = new GameScreen();
+		LevelSelectionScreen levelSelectionScreen = new LevelSelectionScreen();
+		this.addScreen(gameScreen.getName(), gameScreen);
+		this.addScreen(levelSelectionScreen.getName(), levelSelectionScreen);
+		this.setScreen(levelSelectionScreen.getName());
 	}
 
+	public Preferences getPreferences() {
+		return preferences;
+	}
+	
+	public LevelManager getLevelManager() {
+		return levelManager;
+	}
+	
 	@Override
 	public void dispose() {
 		super.dispose();

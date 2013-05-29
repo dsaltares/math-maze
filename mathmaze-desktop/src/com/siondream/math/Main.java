@@ -9,8 +9,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "mathmaze";
 		cfg.useGL20 = true;
-		cfg.width = 1280;
-		cfg.height = 720;
+		cfg.width = 540;
+		cfg.height = 960;
 		
 		new LwjglApplication(new MathMaze(), cfg);
 	}

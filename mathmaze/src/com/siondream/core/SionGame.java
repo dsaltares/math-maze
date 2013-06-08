@@ -31,7 +31,7 @@ public class SionGame extends Game implements InputProcessor {
 	private final String TAG = "SionGame";
 	
 	private Logger logger;
-	private ObjectMap<String, SionScreen> screens;
+	private ObjectMap<Class<? extends SionScreen>, SionScreen> screens;
 	private SionScreen nextScreen;
 	private SionScreen currentScreen;
 	private InputMultiplexer multiplexer;
@@ -60,7 +60,7 @@ public class SionGame extends Game implements InputProcessor {
 		assets.loadGroup("base");
 		assets.finishLoading();
 		
-		screens = new ObjectMap<String, SionScreen>();
+		screens = new ObjectMap<Class<? extends SionScreen>, SionScreen>();
 		nextScreen = null;
 		currentScreen = null;
 		viewport = new Rectangle(0.0f, 0.0f, 0.0f, 0.0f);
@@ -171,17 +171,12 @@ public class SionGame extends Game implements InputProcessor {
 	public void resume() {
 	}
 	
-	protected void addScreen(String name, SionScreen screen) {
-		screens.put(name, screen);
+	protected void addScreen(SionScreen screen) {
+		screens.put(screen.getClass(), screen);
 	}
 	
-	public SionScreen getScreen(String name) {
-		return screens.get(name, null);
-	}
-	
-	public <T extends SionScreen> T getScreen(String name, Class<T> type) {
-		SionScreen screen = getScreen(name);
-		return screen != null ? type.cast(screen) : null;
+	public <T extends SionScreen> T getScreen(Class<T> type) {
+		return getScreen(type);
 	}
 	
 	@Override
@@ -189,14 +184,14 @@ public class SionGame extends Game implements InputProcessor {
 		logger.error("method not supported");
 	}
 	
-	public void setScreen(String name) {
-		SionScreen screen = screens.get(name);
+	public void setScreen(Class<? extends SionScreen> type) {
+		SionScreen screen = screens.get(type);
 		
 		if (screen != null) {
 			nextScreen = screen;
 		}
 		else {
-			logger.error("invalid screen " + name);
+			logger.error("invalid screen " + type.getName());
 		}
 	}
 	

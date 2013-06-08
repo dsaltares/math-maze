@@ -18,6 +18,7 @@ import com.siondream.core.tweeners.TransformTweener;
 import com.siondream.math.Condition;
 import com.siondream.math.GameEnv;
 import com.siondream.math.GameScreen;
+import com.siondream.math.LevelSelectionScreen;
 import com.siondream.math.components.ConditionComponent;
 import com.siondream.math.components.GridPositionComponent;
 import com.siondream.math.components.OperationComponent;
@@ -130,7 +131,7 @@ public class PlayerControllerSystem extends EntitySystem {
 			}
 			
 			if (isExitAt(destination)) {
-				GameEnv.game.setScreen("LevelSelectionScreen");
+				GameEnv.game.setScreen(LevelSelectionScreen.class);
 				return;
 			}
 			

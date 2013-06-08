@@ -75,11 +75,9 @@ public class MathMaze extends SionGame {
 		engine.addSystem(playerControllerSystem);
 		engine.addSystem(checkpointSystem);
 		
-		GameScreen gameScreen = new GameScreen();
-		LevelSelectionScreen levelSelectionScreen = new LevelSelectionScreen();
-		this.addScreen(gameScreen.getName(), gameScreen);
-		this.addScreen(levelSelectionScreen.getName(), levelSelectionScreen);
-		this.setScreen(levelSelectionScreen.getName());
+		this.addScreen(new GameScreen());
+		this.addScreen(new LevelSelectionScreen());
+		this.setScreen(LevelSelectionScreen.class);
 	}
 
 	public Preferences getPreferences() {

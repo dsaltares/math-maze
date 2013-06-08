@@ -6,8 +6,6 @@ import com.badlogic.gdx.utils.Disposable;
 
 public abstract class SionScreen implements InputProcessor, Screen, Disposable {
 	
-	public abstract String getName();
-	
 	@Override
 	public void render(float delta) {
 		// TODO Auto-generated method stub

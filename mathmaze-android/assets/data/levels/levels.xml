@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <levels>
- <level name="data/levels/level001.tmx" />
+ <level name="Level 1" file="data/levels/level001.tmx" />
+ <level name="Level 2" file="data/levels/level001.tmx" />
+ <level name="Level 3" file="data/levels/level001.tmx" />
+ <level name="Level 4" file="data/levels/level001.tmx" />
+ <level name="Level 5" file="data/levels/level001.tmx" />
+ <level name="Level 6" file="data/levels/level001.tmx" />
+ <level name="Level 7" file="data/levels/level001.tmx" />
+ <level name="Level 8" file="data/levels/level001.tmx" />
+ <level name="Level 9" file="data/levels/level001.tmx" />
+ <level name="Level 10" file="data/levels/level001.tmx" />
+ <level name="Level 11" file="data/levels/level001.tmx" />
+ <level name="Level 12" file="data/levels/level001.tmx" />
+ <level name="Level 13" file="data/levels/level001.tmx" />
+ <level name="Level 14" file="data/levels/level001.tmx" />
+ <level name="Level 15" file="data/levels/level001.tmx" />
+ <level name="Level 16" file="data/levels/level001.tmx" />
+ <level name="Level 17" file="data/levels/level001.tmx" />
+ <level name="Level 18" file="data/levels/level001.tmx" />
 </map>

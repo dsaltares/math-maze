@@ -176,7 +176,7 @@ public class SionGame extends Game implements InputProcessor {
 	}
 	
 	public <T extends SionScreen> T getScreen(Class<T> type) {
-		return getScreen(type);
+		return type.cast(screens.get(type));
 	}
 	
 	@Override

@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Logger;
 public class Env {
 	// Game façade
 	public static SionGame game;
+	public static PlatformResolver platform;
 	
 	// Application config
 	public static float virtualWidth;

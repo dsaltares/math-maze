@@ -29,12 +29,13 @@ public class LevelManager {
 			Element root = reader.parse(fileHandle);
 
 			for (Element levelElement : root.getChildrenByName("level")) {
+				String fileName = levelElement.get("file");
 				String name = levelElement.get("name");
 				String assetGroup = levelElement.get("assetGroup", "");
 				int stars = preferences.getInteger(name + ".stars", 0);
 				boolean unlocked = preferences.getBoolean(name + ".unlocked", false);
 				
-				Level level = new Level(name, assetGroup, stars, unlocked); 
+				Level level = new Level(fileName, assetGroup, name, stars, unlocked); 
 				levels.add(level);
 				logger.info("found " + level);
 			}
@@ -51,19 +52,21 @@ public class LevelManager {
 	public class Level {
 		public String file;
 		public String assetGroup;
+		public String name;
 		public int stars;
 		public boolean unlocked;
 		
-		public Level(String file, String assetGroup, int stars, boolean unlocked) {
+		public Level(String file, String assetGroup, String name, int stars, boolean unlocked) {
 			this.file = file;
 			this.assetGroup = assetGroup;
+			this.name = name;
 			this.stars = stars;
 			this.unlocked = unlocked;
 		}
 		
 		@Override
 		public String toString() {
-			return "level " + file + " - " + stars + " stars - unlocked " + unlocked;  
+			return "level " + name + " - " + stars + " stars - unlocked " + unlocked;  
 		}
 	}
 }

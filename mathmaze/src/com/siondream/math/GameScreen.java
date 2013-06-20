@@ -36,6 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Assets;
+import com.siondream.core.Chrono;
 import com.siondream.core.Env;
 import com.siondream.core.SionScreen;
 import com.siondream.core.entity.components.FontComponent;
@@ -65,6 +66,7 @@ public class GameScreen extends SionScreen {
 	private Logger logger;
 	private TmxMapLoader mapLoader;
 	private Level level;
+	private Chrono chrono;
 	
 	private Image imgBackground;
 	private Image imgLand;
@@ -76,12 +78,15 @@ public class GameScreen extends SionScreen {
 	private BitmapFont fontMap;
 	private ShaderProgram fontShader;
 	
+	private boolean paused;
+	
 	public GameScreen() {
 		logger = new Logger(TAG, Env.debugLevel);
 		
 		logger.info("initialising");
 		
 		mapLoader = new TmxMapLoader();
+		chrono = new Chrono();
 	}
 	
 	public String getName() {
@@ -93,8 +98,7 @@ public class GameScreen extends SionScreen {
 	}
 	
 	public void reset() {
-		hide();
-		show();
+		animateOut(GameScreen.class);
 	}
 	
 	@Override
@@ -141,6 +145,13 @@ public class GameScreen extends SionScreen {
 	public void hide() {
 		super.hide();
 		dispose();
+	}
+	
+	@Override
+	public void render(float delta) {
+		super.render(delta);
+		
+		lblTime.setText("Time " + chrono.getTime());
 	}
 	
 	private void initGame() {
@@ -375,6 +386,9 @@ public class GameScreen extends SionScreen {
 		lblTime.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + GameEnv.cameraHeight + 10.0f);
 		imgMapBackground.setY(GameEnv.cameraScreenPos.y - 5.0f);
 		imgMapBackground.setColor(1.0f, 1.0f, 1.0f, 0.0f);
+		
+		chrono.reset();
+		chrono.pause();
 	}
 	
 	private void animateIn() {
@@ -414,6 +428,8 @@ public class GameScreen extends SionScreen {
 	}
 	
 	public void animateOut(final Class<? extends SionScreen> screenType) {
+		Env.game.getEngine().getSystem(MathRenderingSystem.class).setRenderMap(false);
+		
 		Timeline timeline = Timeline.createSequence();
 		
 		TweenCallback callback = new TweenCallback() {
@@ -433,6 +449,9 @@ public class GameScreen extends SionScreen {
 					.push(Tween.to(lblTime, ActorTweener.Position, 0.2f)
 							   .target(Env.virtualWidth, lblTime.getY())
 						   	   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.4f)
+					      	   .target(1.0f, 1.0f, 1.0f, 0.0f)
+							   .ease(TweenEquations.easeInOutQuad))
 					.push(Tween.to(imgTitle, ActorTweener.Position, 0.25f)
 							   .target((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight + imgTitle.getHeight())
 							   .ease(TweenEquations.easeInOutQuad))
@@ -457,12 +476,25 @@ public class GameScreen extends SionScreen {
 	}
 	
 	private void onPauseClicked() {
-		
+		if (paused) {
+			chrono.start();
+			paused = false;
+			btnPause.setText("Pause");
+			Env.game.getEngine().getSystem(PlayerControllerSystem.class).enable(true);
+		}
+		else {
+			chrono.pause();
+			paused = true;
+			btnPause.setText("Resume");
+			Env.game.getEngine().getSystem(PlayerControllerSystem.class).enable(false);
+		}
 	}
 	
 	private void onGameStart() {
 		Engine engine = Env.game.getEngine();
 		engine.getSystem(MathRenderingSystem.class).setRenderMap(true);
 		engine.getSystem(PlayerControllerSystem.class).enable(true);
+		chrono.reset();
+		paused = false;
 	}
 }

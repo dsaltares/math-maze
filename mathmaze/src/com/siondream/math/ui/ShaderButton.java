@@ -54,5 +54,9 @@ public class ShaderButton extends Button {
 	
 	public void setScale(float scale) {
 		this.scale = scale;
-	}	
+	}
+	
+	public void setText(String text) {
+		this.label.setText(text);
+	}
 }

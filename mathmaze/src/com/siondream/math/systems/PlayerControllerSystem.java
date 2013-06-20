@@ -44,6 +44,7 @@ public class PlayerControllerSystem extends EntitySystem {
 	private Logger logger;
 	private OrthographicCamera camera;
 	private Vector3 mousePos3;
+	private Vector3 mouseScenePos;
 	private Vector2 direction;
 	private Vector2 destination;
 	private Vector2 rightDirection;
@@ -63,6 +64,7 @@ public class PlayerControllerSystem extends EntitySystem {
 		moveTimer = 0.0f;
 		camera = Env.game.getCamera();
 		mousePos3 = new Vector3();
+		mouseScenePos = new Vector3();
 		direction = new Vector2();
 		destination = new Vector2();
 		rightDirection = Vector2.X.cpy();
@@ -96,7 +98,15 @@ public class PlayerControllerSystem extends EntitySystem {
 			return;
 		}
 		
-		if (!moving && Gdx.input.isTouched()) {			
+		if (!moving && Gdx.input.isTouched()) {
+			mouseScenePos.set(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
+			Env.game.getStage().getCamera().unproject(mouseScenePos);
+			
+			if (mouseScenePos.y < GameEnv.cameraScreenPos.y ||
+				mouseScenePos.y > GameEnv.cameraScreenPos.y + GameEnv.cameraHeight) {
+				return;
+			}
+			
 			TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
 			Entity player = tagSystem.getEntity(GameEnv.playerTag);
 			Entity map = tagSystem.getEntity(GameEnv.mapTag);
@@ -111,6 +121,7 @@ public class PlayerControllerSystem extends EntitySystem {
 			GridPositionComponent position = player.getComponent(GridPositionComponent.class);
 			TransformComponent transform = player.getComponent(TransformComponent.class);
 			
+			mousePos3.set(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
 			mousePos3.set(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
 			camera.unproject(mousePos3);
 			

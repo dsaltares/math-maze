@@ -1,7 +1,9 @@
 package com.siondream.math;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Logger;
+import com.siondream.core.Env;
 import com.siondream.core.Settings;
 
 public class GameEnv {
@@ -20,6 +22,9 @@ public class GameEnv {
 	public static float cameraZoomSpeed;
 	public static float cameraShakeTime;
 	public static int cameraShakeRepetitions;
+	public static float cameraWidth;
+	public static float cameraHeight;
+	public static Vector3 cameraScreenPos;
 	
 	public static float playerMoveCooldown;
 	public static float playerMoveTime;
@@ -47,6 +52,9 @@ public class GameEnv {
 		cameraZoomSpeed = settings.getFloat("cameraZoomSpeed", 1.0f);
 		cameraShakeTime = settings.getFloat("cameraShakeTime", 0.1f);
 		cameraShakeRepetitions = settings.getInt("cameraShakeRepetitions", 1);
+		cameraWidth = settings.getFloat("cameraWidth", Env.virtualWidth);
+		cameraHeight = settings.getFloat("cameraHeight", Env.virtualHeight);
+		cameraScreenPos = settings.getVector("cameraScreenPos", Vector3.Zero.cpy());
 		
 		playerMoveCooldown = settings.getFloat("playerMoveCooldown", 0.2f);
 		playerMoveTime = settings.getFloat("playerMoveTime", 0.f);

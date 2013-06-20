@@ -13,6 +13,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
@@ -201,6 +202,10 @@ public class SionGame extends Game implements InputProcessor {
 	
 	public OrthographicCamera getCamera() {
 		return camera;
+	}
+	
+	public Rectangle getViewport() {
+		return viewport;
 	}
 	
 	public OrthographicCamera getUICamera() {

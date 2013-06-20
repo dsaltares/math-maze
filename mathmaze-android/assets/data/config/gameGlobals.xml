@@ -3,6 +3,9 @@
 	<bool 	key="debugCamera" 				value="false" />
 	<float 	key="cameraScrollSpeed" 		value="200.0" />
 	<float 	key="cameraZoomSpeed" 			value="100.0" />
+	<float 	key="cameraWidth"				value="710.0" />
+	<float 	key="cameraHeight"				value="710.0" />
+	<vector key="cameraScreenPos"			x="5.0" y="250.0" z="0.0" />
 	
 	<float 	key="playerMoveTime" 			value="0.3" />
 	<float 	key="playerMoveCooldown" 		value="0.15" />

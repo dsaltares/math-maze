@@ -124,14 +124,19 @@ public class PlayerControllerSystem extends EntitySystem {
 			// Use operation block
 			if (operation != null) {
 				OperationComponent operationComponent = operation.getComponent(OperationComponent.class);
-				value.value = operationComponent.operation.run(value.value);
-				Env.game.getEngine().getSystem(CameraControllerSystem.class).startShakeEffect(((int)destination.x - position.x) != 0);
-				moving = true;
+				int newValue = operationComponent.operation.run(value.value);
+				
+				if (Math.abs(newValue) < GameEnv.playerMaxValue) {
+					value.value = newValue;
+					Env.game.getEngine().getSystem(CameraControllerSystem.class).startShakeEffect(((int)destination.x - position.x) != 0);
+					moving = true;
+				}
+				
 				return;
 			}
 			
 			if (isExitAt(destination)) {
-				GameEnv.game.setScreen(LevelSelectionScreen.class);
+				GameEnv.game.getScreen(GameScreen.class).animateOut(LevelSelectionScreen.class);
 				return;
 			}
 			
@@ -178,12 +183,16 @@ public class PlayerControllerSystem extends EntitySystem {
 	private boolean isValidGridPosition(TiledMapTileLayer grid, ValueComponent value, Vector2 destination) {
 		Cell cell = grid.getCell((int)destination.x, grid.getHeight() - (int)destination.y - 1);
 		
+		boolean isCellValid = false;
+		
 		if (cell == null)
-			return false;
+			isCellValid = true;
 
-		TiledMapTile tile = cell.getTile();
-		if (!Boolean.parseBoolean(tile.getProperties().get("walkable", "false", String.class))) {
-			return false;
+		if (!isCellValid) { 
+			TiledMapTile tile = cell.getTile();
+			if (!Boolean.parseBoolean(tile.getProperties().get("walkable", "false", String.class))) {
+				return false;
+			}
 		}
 		
 		Values<Entity> values = conditionEntities.values();
@@ -203,7 +212,7 @@ public class PlayerControllerSystem extends EntitySystem {
 			}
 		}
 		
-		return true;
+		return isCellValid;
 	}
 	
 	private Entity getOperationAt(Vector2 position) {

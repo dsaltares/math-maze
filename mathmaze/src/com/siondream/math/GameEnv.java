@@ -22,11 +22,11 @@ public class GameEnv {
 	
 	public static float playerMoveCooldown;
 	public static float playerMoveTime;
+	public static int playerMaxValue;
 	
 	private static String TAG = "GameGlobals";
 	private static Settings settings;
 	private static Logger logger = new Logger(TAG, Logger.INFO);
-	
 	public static void init(MathMaze game) {
 		logger.info("initialising");
 		
@@ -42,5 +42,6 @@ public class GameEnv {
 		
 		playerMoveCooldown = settings.getFloat("playerMoveCooldown", 0.2f);
 		playerMoveTime = settings.getFloat("playerMoveTime", 0.f);
+		playerMaxValue = settings.getInt("playerMaxValue", 1000);
 	}
 }

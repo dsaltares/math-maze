@@ -369,6 +369,8 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
+			Env.game.getTweenManager().killTarget(btnBack);
+			Env.game.getTweenManager().killTarget(lblPick);
 			GameScreen gameScreen = GameEnv.game.getScreen(GameScreen.class);
 			gameScreen.setLevel(level);
 			animateOut(GameScreen.class);

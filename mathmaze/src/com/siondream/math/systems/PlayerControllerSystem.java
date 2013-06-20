@@ -51,6 +51,7 @@ public class PlayerControllerSystem extends EntitySystem {
 	private PlayerMoveCallback callback;
 	private IntMap<Entity> conditionEntities;
 	private IntMap<Entity> operationEntities;
+	private boolean enabled;
 	
 	public PlayerControllerSystem() {
 		super();
@@ -67,6 +68,7 @@ public class PlayerControllerSystem extends EntitySystem {
 		rightDirection = Vector2.X.cpy();
 		moving = false;
 		callback = new PlayerMoveCallback();
+		enabled = true;
 	}
 	
 	@Override
@@ -85,6 +87,9 @@ public class PlayerControllerSystem extends EntitySystem {
 			return;
 		}
 		
+		if (!enabled) {
+			return;
+		}
 		
 		if (moveTimer > 0.0f) {
 			moveTimer -= deltaTime;
@@ -157,6 +162,10 @@ public class PlayerControllerSystem extends EntitySystem {
 		}
 	}
 	
+	public void enable(boolean enable) {
+		enabled = enable;
+	}
+	
 	public void cancelMovement() {
 		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
 		Entity player = tagSystem.getEntity(GameEnv.playerTag);
@@ -183,16 +192,12 @@ public class PlayerControllerSystem extends EntitySystem {
 	private boolean isValidGridPosition(TiledMapTileLayer grid, ValueComponent value, Vector2 destination) {
 		Cell cell = grid.getCell((int)destination.x, grid.getHeight() - (int)destination.y - 1);
 		
-		boolean isCellValid = false;
-		
 		if (cell == null)
-			isCellValid = true;
-
-		if (!isCellValid) { 
-			TiledMapTile tile = cell.getTile();
-			if (!Boolean.parseBoolean(tile.getProperties().get("walkable", "false", String.class))) {
-				return false;
-			}
+			return false;
+ 
+		TiledMapTile tile = cell.getTile();
+		if (!Boolean.parseBoolean(tile.getProperties().get("walkable", "false", String.class))) {
+			return false;
 		}
 		
 		Values<Entity> values = conditionEntities.values();
@@ -212,7 +217,7 @@ public class PlayerControllerSystem extends EntitySystem {
 			}
 		}
 		
-		return isCellValid;
+		return true;
 	}
 	
 	private Entity getOperationAt(Vector2 position) {

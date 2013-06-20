@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -77,6 +78,9 @@ public class GameScreen extends SionScreen {
 	private Texture fontTexture;
 	private BitmapFont fontMap;
 	private ShaderProgram fontShader;
+	private Table pauseTable;
+	private ShaderButton btnReset;
+	private ShaderButton btnBack;
 	
 	private boolean paused;
 	
@@ -95,10 +99,6 @@ public class GameScreen extends SionScreen {
 	
 	public void setLevel(Level level) {
 		this.level = level;
-	}
-	
-	public void reset() {
-		animateOut(GameScreen.class);
 	}
 	
 	@Override
@@ -324,16 +324,6 @@ public class GameScreen extends SionScreen {
 		Stage stage = Env.game.getStage();
 		Assets assets = Env.game.getAssets();
 		
-		TextButton button = new TextButton("Reset", skin);
-		button.setX(Env.virtualWidth - button.getWidth() - 20.0f);
-		button.setY(Env.virtualHeight - button.getHeight() - 20.0f);
-		
-		button.addListener(new ClickListener() {
-			public void clicked(InputEvent event, float x, float y) {
-				reset();
-			}
-		});
-		
 		imgBackground = new Image(assets.get("data/ui/background.png", Texture.class));
 		imgLand = new Image(assets.get("data/ui/land.png", Texture.class));
 		imgTitle = new Image(assets.get("data/ui/title.png", Texture.class));
@@ -370,13 +360,45 @@ public class GameScreen extends SionScreen {
 		lblTime = new ShaderLabel("Time: 00:00", labelStyle, fontShader);
 		lblTime.setFontScale(2.0f);
 		
+		
+		btnReset = new ShaderButton("Reset", buttonStyle);
+		btnReset.setScale(4.25f);
+		btnReset.validate();
+		
+		btnReset.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				animateOut(GameScreen.class);
+			}
+		});
+		
+		btnBack = new ShaderButton("Menu", buttonStyle);
+		btnBack.setScale(4.25f);
+		btnBack.validate();
+		
+		btnBack.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				animateOut(LevelSelectionScreen.class);
+			}
+		});
+
+		pauseTable = new Table();
+		pauseTable.setSize(GameEnv.cameraWidth, GameEnv.cameraHeight);
+		pauseTable.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y);
+		pauseTable.row();
+		pauseTable.add(btnReset).width(650.0f).height(150.0f).center().padBottom(30.0f);
+		pauseTable.row();
+		pauseTable.add(btnBack).width(650.0f).height(150.0f).center();
+		pauseTable.validate();
+		
 		stage.addActor(imgBackground);
 		stage.addActor(imgLand);
 		stage.addActor(imgTitle);
 		stage.addActor(imgMapBackground);
 		stage.addActor(btnPause);
 		stage.addActor(lblTime);
-		stage.addActor(button);
+		stage.addActor(pauseTable);
 		
 		imgTitle.setPosition((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight + imgTitle.getHeight());
 		imgTitle.setOrigin(imgTitle.getWidth() * 0.5f, imgTitle.getHeight() * 0.5f);
@@ -442,19 +464,29 @@ public class GameScreen extends SionScreen {
 			}
 		};
 		
-		timeline.beginSequence()
-					.push(Tween.to(btnPause, ActorTweener.Position, 0.20f)
-							   .target((Env.virtualWidth - btnPause.getWidth()) * 0.5f, -btnPause.getHeight())
-							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(lblTime, ActorTweener.Position, 0.2f)
-							   .target(Env.virtualWidth, lblTime.getY())
-						   	   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.4f)
-					      	   .target(1.0f, 1.0f, 1.0f, 0.0f)
-							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(imgTitle, ActorTweener.Position, 0.25f)
-							   .target((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight + imgTitle.getHeight())
-							   .ease(TweenEquations.easeInOutQuad))
+		timeline.beginSequence();
+		
+		timeline.push(Tween.to(btnPause, ActorTweener.Position, 0.20f)
+				   		   .target((Env.virtualWidth - btnPause.getWidth()) * 0.5f, -btnPause.getHeight())
+				   		   .ease(TweenEquations.easeInOutQuad))
+				.push(Tween.to(lblTime, ActorTweener.Position, 0.2f)
+						   .target(Env.virtualWidth, lblTime.getY())
+						   .ease(TweenEquations.easeInOutQuad));
+		
+		if (paused) {
+			timeline.push(Tween.to(pauseTable, ActorTweener.Position, 0.2f)
+					.target(Env.virtualWidth, pauseTable.getY())
+					.ease(TweenEquations.easeInOutQuad));
+		}
+		else {
+			timeline.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.4f)
+							   .target(1.0f, 1.0f, 1.0f, 0.0f)
+							   .ease(TweenEquations.easeInOutQuad));
+		}
+		
+		timeline.push(Tween.to(imgTitle, ActorTweener.Position, 0.25f)
+						   .target((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight + imgTitle.getHeight())
+						   .ease(TweenEquations.easeInOutQuad))
 				.end()
 				.setCallback(callback)
 				.start(Env.game.getTweenManager());
@@ -477,16 +509,10 @@ public class GameScreen extends SionScreen {
 	
 	private void onPauseClicked() {
 		if (paused) {
-			chrono.start();
-			paused = false;
-			btnPause.setText("Pause");
-			Env.game.getEngine().getSystem(PlayerControllerSystem.class).enable(true);
+			pauseOut();
 		}
 		else {
-			chrono.pause();
-			paused = true;
-			btnPause.setText("Resume");
-			Env.game.getEngine().getSystem(PlayerControllerSystem.class).enable(false);
+			pauseIn();
 		}
 	}
 	
@@ -496,5 +522,62 @@ public class GameScreen extends SionScreen {
 		engine.getSystem(PlayerControllerSystem.class).enable(true);
 		chrono.reset();
 		paused = false;
+	}
+	
+	private void pauseIn() {
+		chrono.pause();
+		paused = true;
+		btnPause.setText("Resume");
+		Engine engine = Env.game.getEngine();
+		engine.getSystem(PlayerControllerSystem.class).enable(false);
+		engine.getSystem(MathRenderingSystem.class).setRenderMap(false);
+		
+		Timeline timeline = Timeline.createSequence();
+		
+		timeline.beginSequence()
+					.push(Tween.to(lblTime, ActorTweener.Position, 0.2f)
+							   .target(Env.virtualWidth, lblTime.getY())
+						       .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.4f)
+					      	   .target(1.0f, 1.0f, 1.0f, 0.0f)
+							   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(pauseTable, ActorTweener.Position, 0.4f)
+							   .target(GameEnv.cameraScreenPos.x, pauseTable.getY())
+							   .ease(TweenEquations.easeInOutQuad))
+				.end()
+				.start(Env.game.getTweenManager());
+	}
+	
+	private void pauseOut() {
+		TweenCallback callback = new TweenCallback() {
+
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				if (type == TweenCallback.COMPLETE) {
+					chrono.start();
+					paused = false;
+					btnPause.setText("Pause");
+					Engine engine = Env.game.getEngine();
+					engine.getSystem(PlayerControllerSystem.class).enable(true);
+					engine.getSystem(MathRenderingSystem.class).setRenderMap(true);
+				}
+			}
+		};
+		
+		Timeline timeline = Timeline.createSequence();
+		
+		timeline.beginSequence()
+					.push(Tween.to(pauseTable, ActorTweener.Position, 0.2f)
+							   .target(Env.virtualWidth, pauseTable.getY())
+							   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.2f)
+					      	   .target(1.0f, 1.0f, 1.0f, 1.0f)
+							   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(lblTime, ActorTweener.Position, 0.2f)
+							   .target(20.0f, lblTime.getY())
+							   .ease(TweenEquations.easeInOutQuad))
+				.end()
+				.setCallback(callback)
+				.start(Env.game.getTweenManager());
 	}
 }

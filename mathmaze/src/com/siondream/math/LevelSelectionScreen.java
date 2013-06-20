@@ -55,6 +55,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	private WidgetGroup levelsGroup;
 	private GestureDetector gestureDetector;
 	private int currentPanel;
+	private FallingLabelManager labelManager;
 	
 	public LevelSelectionScreen() {
 		super();
@@ -82,6 +83,13 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		font.dispose();
 		fontTexture.dispose();
 		Env.game.getInputMultiplexer().removeProcessor(gestureDetector);
+		labelManager.dispose();
+	}
+	
+	@Override
+	public void render(float delta) {
+		super.render(delta);
+		labelManager.update(delta);
 	}
 
 	public void init() {
@@ -135,11 +143,14 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		btnBack.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				animateOut();
+				animateOut(MenuScreen.class);
 			}
 		});
 		
+		WidgetGroup labelsGroup = new WidgetGroup();
+		
 		stage.addActor(imgBackground);
+		stage.addActor(labelsGroup);
 		stage.addActor(imgLand);
 		stage.addActor(btnBack);
 		stage.addActor(imgTitle);
@@ -176,6 +187,11 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		levelsBar.setY(240.0f);
 		stage.addActor(levelsBar);
 		
+		LabelStyle fallingLabelStyle = new LabelStyle();
+		fallingLabelStyle.font = font;
+		labelManager = new FallingLabelManager(fallingLabelStyle, fontShader);
+		labelManager.setGroup(labelsGroup);
+		
 		// Initial positions
 		levelsGroup.setPosition(Env.virtualWidth, 0.0f);
 		lblPick.setPosition(Env.virtualWidth, 960);
@@ -186,22 +202,6 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		imgTitle.setRotation(10.0f);
 	}
 	
-	private class LevelClickListener extends ClickListener {
-		private Level level;
-		
-		public LevelClickListener(Level level) {
-			super();
-			this.level = level;
-		}
-		
-		@Override
-		public void clicked(InputEvent event, float x, float y) {
-			GameScreen gameScreen = GameEnv.game.getScreen(GameScreen.class);
-			gameScreen.setLevel(level);
-			GameEnv.game.setScreen(GameScreen.class);
-		}
-	}
-
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {
 		// TODO Auto-generated method stub
@@ -303,7 +303,9 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 			.start(Env.game.getTweenManager());
 	}
 	
-	private void animateOut() {
+	private void animateOut(final Class<? extends SionScreen> screenType) {
+		labelManager.startFadeOut();
+		
 		Timeline timeline = Timeline.createSequence();
 		
 		TweenCallback callback = new TweenCallback() {
@@ -311,7 +313,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				if (type == TweenCallback.COMPLETE) {
-					Env.game.setScreen(MenuScreen.class);
+					Env.game.setScreen(screenType);
 				}
 			}
 		};
@@ -355,5 +357,21 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 				.end()
 				.repeat(Tween.INFINITY, 0.3f)
 				.start(Env.game.getTweenManager());
+	}
+	
+	private class LevelClickListener extends ClickListener {
+		private Level level;
+		
+		public LevelClickListener(Level level) {
+			super();
+			this.level = level;
+		}
+		
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			GameScreen gameScreen = GameEnv.game.getScreen(GameScreen.class);
+			gameScreen.setLevel(level);
+			animateOut(GameScreen.class);
+		}
 	}
 }

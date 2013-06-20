@@ -1,5 +1,6 @@
 package com.siondream.math;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Settings;
 
@@ -27,6 +28,13 @@ public class GameEnv {
 	private static String TAG = "GameGlobals";
 	private static Settings settings;
 	private static Logger logger = new Logger(TAG, Logger.INFO);
+
+	public static int mathLabelsMaxCount;
+	public static float mathLabelsSpawnTime;
+	public static float mathLabelsMaxTweenTime;
+	public static float mathLabelsMinTweenTime;
+	public static Color mathLabelsColor;
+
 	public static void init(MathMaze game) {
 		logger.info("initialising");
 		
@@ -43,5 +51,11 @@ public class GameEnv {
 		playerMoveCooldown = settings.getFloat("playerMoveCooldown", 0.2f);
 		playerMoveTime = settings.getFloat("playerMoveTime", 0.f);
 		playerMaxValue = settings.getInt("playerMaxValue", 1000);
+		
+		mathLabelsMaxCount = settings.getInt("mathLabelMaxCount", 20);
+		mathLabelsSpawnTime = settings.getFloat("mathLabelSpawnTime", 0.5f);
+		mathLabelsMaxTweenTime = settings.getFloat("mathLabelMaxTweenTime", 10.0f);
+		mathLabelsMinTweenTime = settings.getFloat("mathLabelMinTweenTime", 7.0f);
+		mathLabelsColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 	}
 }

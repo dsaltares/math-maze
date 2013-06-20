@@ -19,17 +19,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Assets;
 import com.siondream.core.Env;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
 import com.siondream.math.ui.ShaderButton;
 import com.siondream.math.ui.ShaderButton.ShaderButtonStyle;
-import com.siondream.math.ui.ShaderLabel;
 
 public class MenuScreen extends SionScreen {
 	
@@ -45,6 +42,7 @@ public class MenuScreen extends SionScreen {
 	private Texture fontTexture;
 	private BitmapFont font;
 	private ShaderProgram fontShader;
+	private FallingLabelManager labelManager;
 	
 	public MenuScreen() {
 		super();
@@ -70,6 +68,13 @@ public class MenuScreen extends SionScreen {
 		Env.game.getStage().clear();
 		font.dispose();
 		fontTexture.dispose();
+		labelManager.dispose();
+	}
+	
+	@Override
+	public void render(float delta) {
+		super.render(delta);
+		labelManager.update(delta);
 	}
 	
 	private void createUI() {
@@ -131,11 +136,19 @@ public class MenuScreen extends SionScreen {
 		buttonsTable.layout();
 
 		
+		WidgetGroup labelsGroup = new WidgetGroup();
+		
 		stage.addActor(imgBackground);
+		stage.addActor(labelsGroup);
 		stage.addActor(imgTitle);
 		stage.addActor(buttonsTable);
 		stage.addActor(imgLand);
 		stage.addActor(socialTable);
+		
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = font;
+		labelManager = new FallingLabelManager(labelStyle, fontShader);
+		labelManager.setGroup(labelsGroup);
 		
 		imgFacebook.addListener(new ClickListener() {
 			@Override
@@ -199,6 +212,8 @@ public class MenuScreen extends SionScreen {
 	}
 	
 	private void animateOut(final Class<? extends SionScreen> screenType) {
+		labelManager.startFadeOut();
+		
 		Timeline timeline = Timeline.createSequence();
 		
 		TweenCallback callback = new TweenCallback() {

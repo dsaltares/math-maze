@@ -152,7 +152,7 @@ public class PlayerControllerSystem extends EntitySystem {
 			}
 			
 			if (isExitAt(destination)) {
-				GameEnv.game.getScreen(GameScreen.class).animateOut(LevelSelectionScreen.class);
+				GameEnv.game.getScreen(GameScreen.class).victory();
 				return;
 			}
 			

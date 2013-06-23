@@ -132,7 +132,7 @@ public class MenuScreen extends SionScreen {
 		buttonsTable.row();
 		buttonsTable.add(btnPlay).width(650.0f).height(150.0f).center().padBottom(50.0f);
 		buttonsTable.row();
-		buttonsTable.add(btnAbout).width(400.0f).height(125.0f);
+		buttonsTable.add(btnAbout).width(400.0f).height(125.0f).expandX();
 		buttonsTable.layout();
 
 		

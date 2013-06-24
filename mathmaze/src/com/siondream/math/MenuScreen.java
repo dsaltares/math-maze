@@ -35,7 +35,7 @@ public class MenuScreen extends SionScreen {
 	private Image imgBackground;
 	private Image imgLand;
 	private Image imgTitle;
-	private Table buttonsTable;
+	private WidgetGroup buttonsGroup;
 	private Table socialTable;
 	private ShaderButton btnPlay;
 	private ShaderButton btnAbout;
@@ -117,7 +117,9 @@ public class MenuScreen extends SionScreen {
 		btnAbout = new ShaderButton("About", buttonStyle);
 		
 		btnPlay.setScale(4.25f);
+		btnPlay.setSize(650.0f, 150.0f);
 		btnAbout.setScale(3.25f);
+		btnAbout.setSize(400.0f, 125.0f);
 		
 		socialTable = new Table();
 		socialTable.row();
@@ -127,21 +129,20 @@ public class MenuScreen extends SionScreen {
 		socialTable.setWidth(imgFacebook.getWidth() + 20.0f + imgTwitter.getWidth());
 		socialTable.setHeight(imgFacebook.getHeight());
 		
-		buttonsTable = new Table();
-		buttonsTable.setFillParent(true);
-		buttonsTable.row();
-		buttonsTable.add(btnPlay).width(650.0f).height(150.0f).center().padBottom(50.0f);
-		buttonsTable.row();
-		buttonsTable.add(btnAbout).width(400.0f).height(125.0f).expandX();
-		buttonsTable.layout();
-
+		buttonsGroup = new WidgetGroup();
+		buttonsGroup.setSize(Env.virtualWidth, Env.virtualHeight);
+		buttonsGroup.addActor(btnPlay);
+		buttonsGroup.addActor(btnAbout);
+		
+		btnPlay.setPosition((buttonsGroup.getWidth() - btnPlay.getWidth()) * 0.5f, 600.0f);
+		btnAbout.setPosition((buttonsGroup.getWidth() - btnAbout.getWidth()) * 0.5f, btnPlay.getY() - btnPlay.getHeight() - 30.0f);
 		
 		WidgetGroup labelsGroup = new WidgetGroup();
 		
 		stage.addActor(imgBackground);
 		stage.addActor(labelsGroup);
 		stage.addActor(imgTitle);
-		stage.addActor(buttonsTable);
+		stage.addActor(buttonsGroup);
 		stage.addActor(imgLand);
 		stage.addActor(socialTable);
 		
@@ -175,7 +176,7 @@ public class MenuScreen extends SionScreen {
 		imgTitle.setOrigin(imgTitle.getWidth() * 0.5f, imgTitle.getHeight() * 0.5f);
 		imgTitle.setRotation(10.0f);
 		imgLand.setPosition(0.0f, - imgLand.getHeight());
-		buttonsTable.setPosition(0.0f, -Env.virtualHeight);
+		buttonsGroup.setPosition(0.0f, -Env.virtualHeight);
 		socialTable.setPosition(-socialTable.getWidth(), 20.0f);
 	}
 	
@@ -200,7 +201,7 @@ public class MenuScreen extends SionScreen {
 					.push(Tween.to(imgTitle, ActorTweener.Position, 0.4f)
 							   .target((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight - imgTitle.getHeight() - 60.0f)
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(buttonsTable, ActorTweener.Position, 0.40f)
+					.push(Tween.to(buttonsGroup, ActorTweener.Position, 0.40f)
 							   .target(0.0f, 0.0f)
 							   .ease(TweenEquations.easeInOutQuad))
 					.push(Tween.to(socialTable, ActorTweener.Position, 0.25f)
@@ -231,7 +232,7 @@ public class MenuScreen extends SionScreen {
 							   .target(-socialTable.getWidth(), 20.0f)
 							   .ease(TweenEquations.easeInOutQuad))
 					.beginParallel()
-						.push(Tween.to(buttonsTable, ActorTweener.Position, 0.40f)
+						.push(Tween.to(buttonsGroup, ActorTweener.Position, 0.40f)
 								   .target(0.0f, -Env.virtualHeight)
 								   .ease(TweenEquations.easeInOutQuad))
 						.push(Tween.to(imgTitle, ActorTweener.Position, 0.25f)

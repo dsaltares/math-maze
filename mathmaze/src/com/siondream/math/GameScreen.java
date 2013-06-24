@@ -730,7 +730,11 @@ public class GameScreen extends SionScreen {
 		
 		timeline.beginSequence();
 		
-		timeline.push(Tween.to(lblCompleted, ActorTweener.Position, 0.4f)
+		
+		timeline.push(Tween.to(btnPause, ActorTweener.Position, 0.20f)
+						   .target((Env.virtualWidth - btnPause.getWidth()) * 0.5f, -btnPause.getHeight())
+						   .ease(TweenEquations.easeInOutQuad))
+				.push(Tween.to(lblCompleted, ActorTweener.Position, 0.4f)
 						   .target((Env.virtualWidth - lblCompleted.getWidth() * lblCompleted.getFontScaleX()) * 0.5f, lblCompleted.getY())
 						   .ease(TweenEquations.easeInQuad));
 		

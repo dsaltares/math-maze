@@ -29,6 +29,7 @@ public class LevelButton extends Button {
 	private TextureRegion regionStarOn;
 	private TextureRegion regionStarOff;
 	private Image[] stars;
+	private Image lock;
 	
 	public LevelButton(Level level, LevelButtonStyle style) {
 		super(style);
@@ -39,17 +40,25 @@ public class LevelButton extends Button {
 		setHeight(88.0f);
 		
 		Assets assets = Env.game.getAssets();
-		regionStarOn = new TextureRegion(assets.get("data/ui/staron.png", Texture.class));
-		regionStarOff = new TextureRegion(assets.get("data/ui/staroff.png", Texture.class));
-		
-		float initialX = getWidth() - 20.0f - (regionStarOn.getRegionWidth() + 20.0f) * stars.length;
-		
-		for (int i = 0; i < stars.length; ++i) {
-			this.stars[i] = new Image(new TextureRegionDrawable(((level.stars - 1) >= i) ? regionStarOn : regionStarOff));
-//			this.stars[i] = new Image(new TextureRegionDrawable(regionStarOn));
-			this.stars[i].setX(initialX + i * (regionStarOn.getRegionWidth() + 20.0f));
-			this.stars[i].setY((getHeight() - regionStarOn.getRegionHeight()) * 0.5f);
-			this.addActor(this.stars[i]);
+		if (level.unlocked) {
+			regionStarOn = new TextureRegion(assets.get("data/ui/staron.png", Texture.class));
+			regionStarOff = new TextureRegion(assets.get("data/ui/staroff.png", Texture.class));
+			
+			float initialX = getWidth() - 20.0f - (regionStarOn.getRegionWidth() + 20.0f) * stars.length;
+			
+			for (int i = 0; i < stars.length; ++i) {
+				this.stars[i] = new Image(new TextureRegionDrawable(((level.stars - 1) >= i) ? regionStarOn : regionStarOff));
+				this.stars[i].setX(initialX + i * (regionStarOn.getRegionWidth() + 20.0f));
+				this.stars[i].setY((getHeight() - regionStarOn.getRegionHeight()) * 0.5f);
+				this.addActor(this.stars[i]);
+			}
+		}
+		else {
+			this.setDisabled(true);
+			
+			lock = new Image(assets.get("data/ui/lock.png", Texture.class));
+			lock.setPosition(438.0f, (getHeight() - lock.getHeight()) * 0.5f);
+			this.addActor(lock);
 		}
 	}
 	

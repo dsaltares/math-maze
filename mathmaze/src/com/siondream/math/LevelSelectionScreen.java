@@ -124,12 +124,16 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		upText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		Texture downText = assets.get("data/ui/downButton.png", Texture.class);
 		downText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		Texture disabledText = assets.get("data/ui/disabledButton.png", Texture.class);
+		disabledText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		TextureRegionDrawable upButton = new TextureRegionDrawable(new TextureRegion(upText));
 		TextureRegionDrawable downButton = new TextureRegionDrawable(new TextureRegion(downText));
+		TextureRegionDrawable disabledButton = new TextureRegionDrawable(new TextureRegion(disabledText));
 		
 		ShaderButtonStyle buttonStyle = new ShaderButtonStyle();
 		buttonStyle.down = downButton;
 		buttonStyle.up = upButton;
+		buttonStyle.disabled = disabledButton;
 		buttonStyle.font = font;
 		buttonStyle.shader = fontShader;
 		buttonStyle.backGroundColor = Color.WHITE;
@@ -369,6 +373,10 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
+			if (!level.unlocked) {
+				return;
+			}
+			
 			Env.game.getTweenManager().killTarget(btnBack);
 			Env.game.getTweenManager().killTarget(lblPick);
 			GameScreen gameScreen = GameEnv.game.getScreen(GameScreen.class);

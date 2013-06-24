@@ -12,12 +12,14 @@
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/twitter.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/upButton.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/downButton.png" />
+		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/disabledButton.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/land.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/staron.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/staronbig.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/staroff.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/staroffbig.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/title.png" />
+		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/lock.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/mapBackground.png" />
 		<asset type="com.badlogic.gdx.graphics.g2d.BitmapFont" path="data/game.fnt" />
 		<asset type="com.badlogic.gdx.maps.tiled.TiledMap" path="data/levels/level001.tmx" />

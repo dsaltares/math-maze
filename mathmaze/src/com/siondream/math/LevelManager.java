@@ -29,13 +29,15 @@ public class LevelManager {
 			FileHandle fileHandle = Gdx.files.internal(file);
 			XmlReader reader = new XmlReader();
 			Element root = reader.parse(fileHandle);
+			boolean first = true;
 
 			for (Element levelElement : root.getChildrenByName("level")) {
 				String fileName = levelElement.get("file");
 				String name = levelElement.get("name");
 				String assetGroup = levelElement.get("assetGroup", "");
 				int stars = preferences.getInteger(name + ".stars", 0);
-				boolean unlocked = preferences.getBoolean(name + ".unlocked", false);
+				boolean unlocked = first ? true : preferences.getBoolean(name + ".unlocked", false);
+				first = false;
 				
 				Level level = new Level(fileName, assetGroup, name, stars, unlocked); 
 				levels.add(level);
@@ -61,12 +63,13 @@ public class LevelManager {
 		
 		logger.info(level.name + " has now " + stars + " stars");
 		level.stars = stars;
-		preferences.putInteger(level.name, stars);
+		preferences.putInteger(level.name + ".stars", stars);
 		
 		if ((index + 1) < levels.size) {
 			Level nextLevel = levels.get(index + 1);
+			nextLevel.unlocked = true;
 			logger.info("unlocking " + nextLevel.name);
-			preferences.putBoolean(nextLevel.name, true);
+			preferences.putBoolean(nextLevel.name + ".unlocked", true);
 		}
 		
 		preferences.flush();

@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -83,6 +84,7 @@ public class GameScreen extends SionScreen {
 	private Image imgLand;
 	private Image imgTitle;
 	private Image imgMapBackground;
+	private WidgetGroup labelsGroup;
 	private ShaderButton btnPause;
 	private ShaderLabel lblTime;
 	private ShaderLabel lblLevel;
@@ -170,6 +172,7 @@ public class GameScreen extends SionScreen {
 	public void render(float delta) {
 		super.render(delta);
 		
+		GameEnv.game.getLabelManager().update(delta);
 		lblTime.setText("Time " + chrono.getTime());
 	}
 	
@@ -476,7 +479,11 @@ public class GameScreen extends SionScreen {
 			star.setVisible(false);
 		}
 		
+		labelsGroup = new WidgetGroup();
+		GameEnv.game.getLabelManager().setGroup(labelsGroup);
+		
 		stage.addActor(imgBackground);
+		stage.addActor(labelsGroup);
 		stage.addActor(imgLand);
 		stage.addActor(imgTitle);
 		stage.addActor(imgMapBackground);

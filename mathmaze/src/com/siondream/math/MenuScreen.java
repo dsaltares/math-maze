@@ -42,7 +42,6 @@ public class MenuScreen extends SionScreen {
 	private Texture fontTexture;
 	private BitmapFont font;
 	private ShaderProgram fontShader;
-	private FallingLabelManager labelManager;
 	
 	public MenuScreen() {
 		super();
@@ -68,13 +67,12 @@ public class MenuScreen extends SionScreen {
 		Env.game.getStage().clear();
 		font.dispose();
 		fontTexture.dispose();
-		labelManager.dispose();
 	}
 	
 	@Override
 	public void render(float delta) {
 		super.render(delta);
-		labelManager.update(delta);
+		GameEnv.game.getLabelManager().update(delta);
 	}
 	
 	private void createUI() {
@@ -146,10 +144,8 @@ public class MenuScreen extends SionScreen {
 		stage.addActor(imgLand);
 		stage.addActor(socialTable);
 		
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = font;
-		labelManager = new FallingLabelManager(labelStyle, fontShader);
-		labelManager.setGroup(labelsGroup);
+		
+		GameEnv.game.getLabelManager().setGroup(labelsGroup);
 		
 		imgFacebook.addListener(new ClickListener() {
 			@Override
@@ -213,8 +209,6 @@ public class MenuScreen extends SionScreen {
 	}
 	
 	private void animateOut(final Class<? extends SionScreen> screenType) {
-		labelManager.startFadeOut();
-		
 		Timeline timeline = Timeline.createSequence();
 		
 		TweenCallback callback = new TweenCallback() {

@@ -55,7 +55,6 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	private WidgetGroup levelsGroup;
 	private GestureDetector gestureDetector;
 	private int currentPanel;
-	private FallingLabelManager labelManager;
 	
 	public LevelSelectionScreen() {
 		super();
@@ -83,13 +82,12 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		font.dispose();
 		fontTexture.dispose();
 		Env.game.getInputMultiplexer().removeProcessor(gestureDetector);
-		labelManager.dispose();
 	}
 	
 	@Override
 	public void render(float delta) {
 		super.render(delta);
-		labelManager.update(delta);
+		GameEnv.game.getLabelManager().update(delta);
 	}
 
 	public void init() {
@@ -191,10 +189,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		levelsBar.setY(240.0f);
 		stage.addActor(levelsBar);
 		
-		LabelStyle fallingLabelStyle = new LabelStyle();
-		fallingLabelStyle.font = font;
-		labelManager = new FallingLabelManager(fallingLabelStyle, fontShader);
-		labelManager.setGroup(labelsGroup);
+		GameEnv.game.getLabelManager().setGroup(labelsGroup);
 		
 		// Initial positions
 		levelsGroup.setPosition(Env.virtualWidth, 0.0f);
@@ -308,8 +303,6 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	}
 	
 	private void animateOut(final Class<? extends SionScreen> screenType) {
-		labelManager.startFadeOut();
-		
 		Timeline timeline = Timeline.createSequence();
 		
 		TweenCallback callback = new TweenCallback() {

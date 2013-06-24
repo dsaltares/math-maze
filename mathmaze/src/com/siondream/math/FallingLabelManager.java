@@ -8,6 +8,7 @@ import aurelienribon.tweenengine.TweenManager;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -34,6 +35,10 @@ public class FallingLabelManager {
 	
 	public void setGroup(WidgetGroup group) {
 		this.group = group;
+		
+		for (ShaderLabel label : labels) {
+			group.addActor(label);
+		}
 	}
 	
 	public void update(float deltaTime) {

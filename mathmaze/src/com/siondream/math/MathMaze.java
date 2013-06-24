@@ -4,6 +4,12 @@ import ashley.core.Engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.siondream.core.Env;
 import com.siondream.core.SionGame;
 import com.siondream.core.entity.systems.AnimationSystem;
@@ -30,6 +36,7 @@ public class MathMaze extends SionGame {
 	private CheckpointSystem checkpointSystem;
 	private Preferences preferences;
 	private LevelManager levelManager;
+	private FallingLabelManager labelManager;
 	private int currentLevel;
 	
 	@Override
@@ -79,6 +86,20 @@ public class MathMaze extends SionGame {
 		this.addScreen(new LevelSelectionScreen());
 		this.addScreen(new MenuScreen());
 		this.setScreen(MenuScreen.class);
+		
+		Texture fontTexture = new Texture(Gdx.files.internal("data/ui/chicken.png"), true);
+		fontTexture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
+		BitmapFont font = new BitmapFont(Gdx.files.internal("data/ui/chicken.fnt"), new TextureRegion(fontTexture), false);
+		
+		ShaderProgram fontShader = new ShaderProgram(Gdx.files.internal("data/ui/font.vert"), 
+													 Gdx.files.internal("data/ui/font.frag"));
+		if (!fontShader.isCompiled()) {
+		    Gdx.app.error("fontShader", "compilation failed:\n" + fontShader.getLog());
+		}
+		
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = font;
+		labelManager = new FallingLabelManager(labelStyle, fontShader);
 	}
 
 	public Preferences getPreferences() {
@@ -89,10 +110,15 @@ public class MathMaze extends SionGame {
 		return levelManager;
 	}
 	
+	public FallingLabelManager getLabelManager() {
+		return labelManager;
+	}
+	
 	@Override
 	public void dispose() {
 		super.dispose();
 		
+		labelManager.dispose();
 		renderingSystem.dispose();
 	}
 }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Env;
 import com.siondream.core.entity.components.FontComponent;
 import com.siondream.core.entity.components.ShaderComponent;
@@ -27,6 +28,9 @@ import com.siondream.math.components.OperationComponent;
 import com.siondream.math.components.ValueComponent;
 
 public class MathRenderingSystem extends RenderingSystem {
+	private final static String TAG = "MathRenderingSystem";
+	
+	private Logger logger;
 	private IntMap<Entity> operationEntities;
 	private IntMap<Entity> conditionEntities;
 	private StringBuilder string;
@@ -37,6 +41,7 @@ public class MathRenderingSystem extends RenderingSystem {
 	public MathRenderingSystem() {
 		super();
 		
+		logger = new Logger(TAG, Env.debugLevel);
 		string = new StringBuilder();
 		textBounds = new TextBounds();
 	}
@@ -68,10 +73,11 @@ public class MathRenderingSystem extends RenderingSystem {
 			Rectangle viewport = Env.game.getViewport();
 			float ratioWidth = viewport.width / Env.virtualWidth;
 			float ratioHeight = viewport.height / Env.virtualHeight;
-			float x = GameEnv.cameraScreenPos.x * ratioWidth;
-			float y = GameEnv.cameraScreenPos.y * ratioHeight;
+			float x = viewport.x + GameEnv.cameraScreenPos.x * ratioWidth;
+			float y = viewport.y + GameEnv.cameraScreenPos.y * ratioHeight;
 			float width = GameEnv.cameraWidth * ratioWidth;
 			float height = GameEnv.cameraHeight * ratioHeight;
+			
 			Gdx.gl.glScissor(MathUtils.ceil(x),
 							 MathUtils.ceil(y),
 							 MathUtils.floor(width),

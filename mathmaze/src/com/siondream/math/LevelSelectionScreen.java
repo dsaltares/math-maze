@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -40,6 +41,8 @@ import com.siondream.math.ui.ShaderLabel;
 public class LevelSelectionScreen extends SionScreen implements GestureListener {
 
 	public final static String TAG = "LevelSelectionScreen";
+	
+	private final static int LEVELS_PER_PANEL = 6;
 	
 	private Logger logger;
 	
@@ -173,15 +176,14 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		levelButtonStyle.fontColor = Color.BLACK;
 		
 		Array<Level> levels = GameEnv.game.getLevelManager().getLevels();
-		int levelsPerPanel = 6;
 		currentPanel = 0;
 		
 		for (int i = 0; i < levels.size; ++i) {
 			Level level = levels.get(i);
 			LevelButton button = new LevelButton(level, levelButtonStyle);
 			button.addListener(new LevelClickListener(level));
-			button.setX((Env.virtualWidth * (i / levelsPerPanel)) + (Env.virtualWidth - button.getWidth()) * 0.5f);
-			button.setY(850 - (i % levelsPerPanel) * (button.getHeight() + 20.0f));
+			button.setX((Env.virtualWidth * (i / LEVELS_PER_PANEL)) + (Env.virtualWidth - button.getWidth()) * 0.5f);
+			button.setY(850 - (i % LEVELS_PER_PANEL) * (button.getHeight() + 20.0f));
 			levelsGroup.addActor(button);
 		}
 		
@@ -250,10 +252,8 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	}
 	
 	private void scrollLevelPanels(int panel) {
-		if (panel >= 0 && panel < GameEnv.game.getLevelManager().getLevels().size / 6) {
+		if (panel >= 0 && panel < GameEnv.game.getLevelManager().getLevels().size / LEVELS_PER_PANEL) {
 			currentPanel = panel;
-			
-			logger.info("movint to panel " + panel);
 			
 			Tween.to(levelsGroup, ActorTweener.Position, 0.6f)
 				 .target(-(Env.virtualWidth * panel), levelsGroup.getY())
@@ -273,6 +273,17 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 			public void onEvent(int type, BaseTween<?> source) {
 				if (type == TweenCallback.COMPLETE) {
 					animateTitle();
+					
+					Array<Level> levels = GameEnv.game.getLevelManager().getLevels();
+					int numLevels = levels.size;
+					int index = 0;
+					for (; index < numLevels; ++index) {
+						if (!levels.get(index).unlocked) {
+							break;
+						}
+					}
+					
+					scrollLevelPanels(Math.min(index / LEVELS_PER_PANEL, (numLevels / LEVELS_PER_PANEL) - 1));
 				}
 			}
 		};

@@ -37,7 +37,6 @@ public class MathMaze extends SionGame {
 	private Preferences preferences;
 	private LevelManager levelManager;
 	private FallingLabelManager labelManager;
-	private int currentLevel;
 	
 	@Override
 	public void create() {		
@@ -48,7 +47,6 @@ public class MathMaze extends SionGame {
 		preferences = Gdx.app.getPreferences("MathMazePrefs");
 		
 		levelManager = new LevelManager("data/levels/levels.xml", preferences);
-		this.currentLevel = 0;
 
 		Engine engine = Env.game.getEngine();
 		

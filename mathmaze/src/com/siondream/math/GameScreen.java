@@ -11,6 +11,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -510,6 +511,22 @@ public class GameScreen extends SionScreen {
 		
 		chrono.reset();
 		chrono.pause();
+	}
+	
+	@Override
+	public boolean keyDown(int keycode) {
+		if (keycode == Keys.BACK) {
+			if (state == State.GAME) {
+				pauseIn();
+			}
+			else {
+				animateOut(LevelSelectionScreen.class);	
+			}
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	private void animateIn() {

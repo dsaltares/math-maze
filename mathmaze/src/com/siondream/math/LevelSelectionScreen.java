@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -201,6 +202,16 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		imgTitle.setPosition((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight + imgTitle.getHeight());
 		imgTitle.setOrigin(imgTitle.getWidth() * 0.5f, imgTitle.getHeight() * 0.5f);
 		imgTitle.setRotation(10.0f);
+	}
+	
+	@Override
+	public boolean keyDown(int keycode) {
+		if (keycode == Keys.BACK) {
+			animateOut(MenuScreen.class);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override

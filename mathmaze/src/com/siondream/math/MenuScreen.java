@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -173,6 +174,16 @@ public class MenuScreen extends SionScreen {
 		imgLand.setPosition(0.0f, - imgLand.getHeight());
 		buttonsGroup.setPosition(0.0f, -Env.virtualHeight);
 		socialTable.setPosition(-socialTable.getWidth(), 20.0f);
+	}
+	
+	@Override
+	public boolean keyDown(int keycode) {
+		if (keycode == Keys.BACK) {
+			Gdx.app.exit();
+			return true;
+		}
+		
+		return false;
 	}
 	
 	private void animateIn() {

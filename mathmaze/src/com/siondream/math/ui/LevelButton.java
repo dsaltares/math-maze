@@ -45,8 +45,8 @@ public class LevelButton extends Button {
 		float initialX = getWidth() - 20.0f - (regionStarOn.getRegionWidth() + 20.0f) * stars.length;
 		
 		for (int i = 0; i < stars.length; ++i) {
-			//this.stars[i] = new Image(new TextureRegionDrawable(((level.stars - 1) >= i) ? regionStarOn : regionStarOff));
-			this.stars[i] = new Image(new TextureRegionDrawable(regionStarOn));
+			this.stars[i] = new Image(new TextureRegionDrawable(((level.stars - 1) >= i) ? regionStarOn : regionStarOff));
+//			this.stars[i] = new Image(new TextureRegionDrawable(regionStarOn));
 			this.stars[i].setX(initialX + i * (regionStarOn.getRegionWidth() + 20.0f));
 			this.stars[i].setY((getHeight() - regionStarOn.getRegionHeight()) * 0.5f);
 			this.addActor(this.stars[i]);

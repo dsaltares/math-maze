@@ -28,9 +28,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -100,6 +98,8 @@ public class GameScreen extends SionScreen {
 	private ShaderButton btnNext;
 	private Table victoryTable;
 	private Image[] stars;
+	private TextureRegionDrawable regionStarOn;
+	private TextureRegionDrawable regionStarOff;
 	
 	private State state;
 	
@@ -339,7 +339,6 @@ public class GameScreen extends SionScreen {
 	}
 	
 	private void createUI() {
-		Skin skin = Env.game.getSkin();
 		Stage stage = Env.game.getStage();
 		Assets assets = Env.game.getAssets();
 		
@@ -459,10 +458,13 @@ public class GameScreen extends SionScreen {
 		victoryTable.add(btnNext).width(315.0f).height(150.0f);
 		victoryTable.validate();
 		
+		regionStarOn = new TextureRegionDrawable(new TextureRegion(assets.get("data/ui/staronbig.png", Texture.class)));
+		regionStarOff = new TextureRegionDrawable(new TextureRegion(assets.get("data/ui/staroffbig.png", Texture.class)));
+		
 		stars = new Image[3];
 		
 		for (int i = 0; i < stars.length; ++i) {
-			stars[i] = new Image(assets.get("data/ui/staronbig.png", Texture.class));
+			stars[i] = new Image(regionStarOn);
 			Image star = stars[i];
 			
 			star.setOrigin(star.getWidth() * 0.5f, star.getHeight() * 0.5f);
@@ -718,6 +720,12 @@ public class GameScreen extends SionScreen {
 		engine.getSystem(PlayerControllerSystem.class).enable(false);
 		engine.getSystem(MathRenderingSystem.class).setRenderMap(false);
 		
+		int numStars = getStars();
+		
+		if (level.stars < numStars) {
+			GameEnv.game.getLevelManager().saveStars(level, numStars);
+		}
+		
 		Timeline timeline = Timeline.createSequence();
 		
 		timeline.beginSequence();
@@ -731,6 +739,8 @@ public class GameScreen extends SionScreen {
 			Image star = stars[i];
 			
 			star.setVisible(true);
+			
+			star.setDrawable((i < numStars) ? regionStarOn : regionStarOff);
 			
 			timeline.push(Tween.to(star, ActorTweener.Scale, 0.3f)
 							   .target(1.0f, 1.0f)
@@ -746,5 +756,26 @@ public class GameScreen extends SionScreen {
 		
 		timeline.end()
 				.start(Env.game.getTweenManager());
+	}
+	
+	private int getStars() {
+		Engine engine = Env.game.getEngine();
+		TagSystem tagSystem = engine.getSystem(TagSystem.class); 
+		Entity mapEntity = tagSystem.getEntity(GameEnv.mapTag);
+		MapComponent map = mapEntity.getComponent(MapComponent.class);
+		String timeString = map.map.getProperties().get("time", "0", String.class);
+		
+		int starsTime = Integer.parseInt(timeString);
+		int seconds = (int)chrono.getSeconds();
+		
+		if (seconds < starsTime) {
+			return 3;
+		}
+		else if (seconds < starsTime * 1.5f) {
+			return 2;
+		}
+		else {
+			return 1;
+		}
 	}
 }

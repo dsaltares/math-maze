@@ -15,9 +15,11 @@ public class LevelManager {
 	
 	private Logger logger;
 	private Array<Level> levels;
+	private Preferences preferences;
 	
 	public LevelManager(String file, Preferences preferences) {
 		this.logger = new Logger(TAG, Env.debugLevel);
+		this.preferences = preferences;
 		
 		logger.info("initialising");
 		
@@ -47,6 +49,27 @@ public class LevelManager {
 	
 	public Array<Level> getLevels() {
 		return levels;
+	}
+	
+	public void saveStars(Level level, int stars) {
+		int index = levels.indexOf(level, true);
+		
+		if (index == -1) {
+			logger.error(level.name + " is not registered");
+			return;
+		}
+		
+		logger.info(level.name + " has now " + stars + " stars");
+		level.stars = stars;
+		preferences.putInteger(level.name, stars);
+		
+		if ((index + 1) < levels.size) {
+			Level nextLevel = levels.get(index + 1);
+			logger.info("unlocking " + nextLevel.name);
+			preferences.putBoolean(nextLevel.name, true);
+		}
+		
+		preferences.flush();
 	}
 	
 	public class Level {

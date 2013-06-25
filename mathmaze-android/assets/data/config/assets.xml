@@ -21,6 +21,8 @@
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/title.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/lock.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/mapBackground.png" />
+		<asset type="com.badlogic.gdx.graphics.Texture" path="data/siondream.png" />
+		<asset type="com.badlogic.gdx.graphics.Texture" path="data/libgdx.png" />
 		<asset type="com.badlogic.gdx.graphics.g2d.BitmapFont" path="data/game.fnt" />
 		<asset type="com.badlogic.gdx.maps.tiled.TiledMap" path="data/levels/level001.tmx" />
 	</group>

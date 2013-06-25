@@ -83,7 +83,8 @@ public class MathMaze extends SionGame {
 		this.addScreen(new GameScreen());
 		this.addScreen(new LevelSelectionScreen());
 		this.addScreen(new MenuScreen());
-		this.setScreen(MenuScreen.class);
+		this.addScreen(new SplashScreen());
+		this.setScreen(SplashScreen.class);
 		
 		Texture fontTexture = new Texture(Gdx.files.internal("data/ui/chicken.png"), true);
 		fontTexture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);

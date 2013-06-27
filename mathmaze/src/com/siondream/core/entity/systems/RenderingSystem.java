@@ -2,7 +2,10 @@ package com.siondream.core.entity.systems;
 
 import java.util.Comparator;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -40,6 +43,8 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer mapRenderer;
 	
+	private BitmapFont debugFont;
+	
 	public RenderingSystem() {
 		super();
 		
@@ -54,6 +59,10 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 													Env.drawInactiveBodies,
 													Env.drawVelocities,
 													Env.drawContacts);
+		
+		if (Env.debug) {
+			debugFont = Env.game.getAssets().get("data/ui/default.fnt", BitmapFont.class);
+		}
 	}
 	
 	@Override
@@ -201,6 +210,14 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 			box2DRenderer.setDrawJoints(Env.drawJoints);
 			box2DRenderer.setDrawVelocities(Env.drawVelocities);
 			box2DRenderer.render(Env.game.getWorld(), camera.combined);
+			
+			String fpsText = String.format("%d FPS", Gdx.graphics.getFramesPerSecond());
+			TextBounds bounds = debugFont.getBounds(fpsText);
+			batch.setProjectionMatrix(Env.game.getUICamera().combined);
+			batch.begin();
+			debugFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			debugFont.draw(batch, fpsText, Env.virtualWidth - bounds.width - 20.0f, 20.0f);
+			batch.end();
 		}
 	}
 	

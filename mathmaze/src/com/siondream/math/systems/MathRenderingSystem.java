@@ -31,8 +31,7 @@ public class MathRenderingSystem extends RenderingSystem {
 	private final static String TAG = "MathRenderingSystem";
 	
 	private Logger logger;
-	private IntMap<Entity> operationEntities;
-	private IntMap<Entity> conditionEntities;
+	private IntMap<Entity> fontEntities;
 	private StringBuilder string;
 	private TextBounds textBounds;
 	
@@ -49,15 +48,9 @@ public class MathRenderingSystem extends RenderingSystem {
 	@Override
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
-		operationEntities = engine.getEntitiesFor(Family.getFamilyFor(FontComponent.class,
-																	  TextureComponent.class,
-																	  TransformComponent.class,
-																	  OperationComponent.class));
-		
-		conditionEntities = engine.getEntitiesFor(Family.getFamilyFor(FontComponent.class,
-																	  TextureComponent.class,
-																	  TransformComponent.class,
-																	  ConditionComponent.class));
+		fontEntities = engine.getEntitiesFor(Family.getFamilyFor(FontComponent.class,
+																 TextureComponent.class,
+																 TransformComponent.class));
 		
 		renderMap = true;
 	}
@@ -89,9 +82,7 @@ public class MathRenderingSystem extends RenderingSystem {
 			batch.enableBlending();
 			batch.begin();
 			renderWorldEntities();
-			renderOperations();
-			renderConditions();
-			renderPlayerValue();
+			renderFontEntities();
 			batch.end();
 			Gdx.gl.glDisable(GL11.GL_SCISSOR_TEST);
 		}
@@ -103,18 +94,46 @@ public class MathRenderingSystem extends RenderingSystem {
 		this.renderMap = renderMap;
 	}
 	
-	private void renderOperations() {
-		Values<Entity> operations = operationEntities.values();
+	private void renderFontEntities() {
+		Values<Entity> entities = fontEntities.values();
 		
-		while(operations.hasNext()) {
-			Entity entity = operations.next();
-			OperationComponent operation = entity.getComponent(OperationComponent.class);
+		while (entities.hasNext) {
+			Entity entity = entities.next();
 			FontComponent font = entity.getComponent(FontComponent.class);
 			TextureComponent texture = entity.getComponent(TextureComponent.class);
 			TransformComponent transform = entity.getComponent(TransformComponent.class);
 			ShaderComponent shader = entity.getComponent(ShaderComponent.class);
 			
-			operationToString(operation.operation, string);
+			float scale = font.font.getScaleX();
+			font.font.setScale(2.0f);
+			
+			boolean validEntity = false;
+			
+			if (entity.hasComponent(OperationComponent.class)) {
+				OperationComponent operation = entity.getComponent(OperationComponent.class);
+				operationToString(operation.operation, string);
+				validEntity = true;
+			}
+			else if (entity.hasComponent(ConditionComponent.class)) {
+				ConditionComponent condition = entity.getComponent(ConditionComponent.class);
+				conditionsToString(condition.conditions, string);
+				validEntity = true;
+			}
+			else if (entity.hasComponent(ValueComponent.class)) {
+				ValueComponent value = entity.getComponent(ValueComponent.class);
+				
+				if (string.length() > 0)
+					string.delete(0, string.length());
+				
+				string.append(value.value);
+				font.font.getBounds(string, textBounds);
+				
+				validEntity = true;
+			}
+			
+			if (!validEntity) {
+				continue;
+			}
 			
 			font.font.getBounds(string, textBounds);
 			
@@ -128,74 +147,12 @@ public class MathRenderingSystem extends RenderingSystem {
 			font.font.drawWrapped(batch,
 								  string,
 								  startX + (width - textBounds.width) * 0.5f,
-								  startY + height * 0.5f + (height - textBounds.height) * 0.5f,
+								  startY + height * 0.55f * font.font.getScaleY() + (height - textBounds.height) * 0.5f,
 								  texture.region.getRegionWidth() * Env.pixelsToMetres);
 			
 			if (shader != null) batch.setShader(null);
+			font.font.setScale(scale);
 		}
-	}
-	
-	private void renderConditions() {
-		Values<Entity> conditions = conditionEntities.values();
-		
-		while(conditions.hasNext()) {
-			Entity entity = conditions.next();
-			ConditionComponent condition = entity.getComponent(ConditionComponent.class);
-			FontComponent font = entity.getComponent(FontComponent.class);
-			TextureComponent texture = entity.getComponent(TextureComponent.class);
-			TransformComponent transform = entity.getComponent(TransformComponent.class);
-			ShaderComponent shader = entity.getComponent(ShaderComponent.class);
-			
-			conditionsToString(condition.conditions, string);
-			
-			font.font.getBounds(string, textBounds);
-			
-			float width = texture.region.getRegionWidth() * Env.pixelsToMetres;
-			float height = texture.region.getRegionHeight() * Env.pixelsToMetres;
-			float startX = transform.position.x - width * 0.5f;
-			float startY = transform.position.y - height * 0.5f;
-			
-			if (shader != null) batch.setShader(shader.shader);
-			font.font.drawWrapped(batch,
-								  string,
-								  startX + (width - textBounds.width) * 0.5f,
-								  startY + height * 0.5f + (height - textBounds.height) * 0.5f,
-								  texture.region.getRegionWidth() * Env.pixelsToMetres);
-			if (shader != null) batch.setShader(null);
-		}
-	}
-	
-	private void renderPlayerValue() {
-		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
-		Entity entity = tagSystem.getEntity(GameEnv.playerTag);
-		
-		if (entity == null)
-			return;
-		
-		FontComponent font = entity.getComponent(FontComponent.class);
-		TextureComponent texture = entity.getComponent(TextureComponent.class);
-		TransformComponent transform = entity.getComponent(TransformComponent.class);
-		ValueComponent value = entity.getComponent(ValueComponent.class);
-		ShaderComponent shader = entity.getComponent(ShaderComponent.class);
-		
-		if (string.length() > 0)
-			string.delete(0, string.length());
-		
-		string.append(value.value);
-		font.font.getBounds(string, textBounds);
-		
-		float width = texture.region.getRegionWidth() * Env.pixelsToMetres;
-		float height = texture.region.getRegionHeight() * Env.pixelsToMetres;
-		float startX = transform.position.x - width * 0.5f;
-		float startY = transform.position.y - height * 0.5f;
-		
-		if (shader != null) batch.setShader(shader.shader);
-		font.font.drawWrapped(batch,
-							  string,
-							  startX + (width - textBounds.width) * 0.5f,
-							  startY + height * 0.5f + (height - textBounds.height) * 0.5f,
-							  texture.region.getRegionWidth() * Env.pixelsToMetres);
-		if (shader != null) batch.setShader(null);
 	}
 	
 	private void operationToString(Operation operation, StringBuilder string) {
@@ -204,19 +161,19 @@ public class MathRenderingSystem extends RenderingSystem {
 		
 		switch (operation.getType()) {
 		case Addition:
-			string.append("+ ");
+			string.append("+");
 			break;
 		case Division:
-			string.append("/ ");
+			string.append("/");
 			break;
 		case Mod:
-			string.append("% ");
+			string.append("%");
 			break;
 		case Product:
-			string.append("x ");
+			string.append("x");
 			break;
 		case Substraction:
-			string.append("- ");
+			string.append("-");
 			break;
 		default:
 			break;
@@ -231,22 +188,22 @@ public class MathRenderingSystem extends RenderingSystem {
 		for (Condition condition : conditions) {
 			switch (condition.getType()) {
 			case Equals:
-				string.append("= ");
+				string.append("=");
 				break;
 			case Greater:
-				string.append("> ");
+				string.append(">");
 				break;
 			case GreaterOrEquals:
-				string.append(">= ");
+				string.append(">=");
 				break;
 			case Lesser:
-				string.append("< ");
+				string.append("<");
 				break;
 			case LesserOrEquals:
-				string.append("<= ");
+				string.append("<=");
 				break;
 			case NotEquals:
-				string.append("!= ");
+				string.append("!=");
 				break;
 			default:
 				break;

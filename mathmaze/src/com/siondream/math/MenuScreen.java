@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,6 +18,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -40,6 +43,7 @@ public class MenuScreen extends SionScreen {
 	private ShaderButton btnPlay;
 	private ShaderButton btnAbout;
 	private Texture fontTexture;
+	private ImageButton btnSound;
 	private BitmapFont font;
 	private ShaderProgram fontShader;
 	
@@ -135,6 +139,19 @@ public class MenuScreen extends SionScreen {
 		btnPlay.setPosition((buttonsGroup.getWidth() - btnPlay.getWidth()) * 0.5f, 600.0f);
 		btnAbout.setPosition((buttonsGroup.getWidth() - btnAbout.getWidth()) * 0.5f, btnPlay.getY() - btnPlay.getHeight() - 30.0f);
 		
+		TextureRegionDrawable onDrawable = new TextureRegionDrawable(new TextureRegion(assets.get("data/ui/musicon.png", Texture.class)));
+		TextureRegionDrawable offDrawable = new TextureRegionDrawable(new TextureRegion(assets.get("data/ui/musicoff.png", Texture.class)));
+		
+		ImageButtonStyle imageButtonStyle = new ImageButtonStyle();
+		imageButtonStyle.up = onDrawable;
+		imageButtonStyle.disabled = offDrawable;
+		
+		btnSound = new ImageButton(imageButtonStyle);
+		btnSound.setPosition(Env.virtualWidth, 20.0f);
+		
+		Preferences preferences = GameEnv.game.getPreferences();
+		btnSound.setDisabled(!preferences.getBoolean("soundEnabled", true));
+		
 		WidgetGroup labelsGroup = new WidgetGroup();
 		
 		stage.addActor(imgBackground);
@@ -143,6 +160,7 @@ public class MenuScreen extends SionScreen {
 		stage.addActor(buttonsGroup);
 		stage.addActor(imgLand);
 		stage.addActor(socialTable);
+		stage.addActor(btnSound);
 		
 		
 		GameEnv.game.getLabelManager().setGroup(labelsGroup);
@@ -165,6 +183,17 @@ public class MenuScreen extends SionScreen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				animateOut(LevelSelectionScreen.class);
+			}
+		});
+		
+		btnSound.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				boolean wasDisabled = btnSound.isDisabled();
+				btnSound.setDisabled(!wasDisabled);
+				Preferences preferences = GameEnv.game.getPreferences();
+				preferences.putBoolean("soundEnabled", !btnSound.isDisabled());
+				preferences.flush();
 			}
 		});
 		
@@ -210,9 +239,14 @@ public class MenuScreen extends SionScreen {
 					.push(Tween.to(buttonsGroup, ActorTweener.Position, 0.40f)
 							   .target(0.0f, 0.0f)
 							   .ease(TweenEquations.easeInOutQuad))
+					.beginParallel()
 					.push(Tween.to(socialTable, ActorTweener.Position, 0.25f)
 							   .target(20.0f, 20.0f)
 							   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(btnSound, ActorTweener.Position, 0.25f)
+							   .target(Env.virtualWidth - btnSound.getWidth() - 20.0f, btnSound.getY())
+							   .ease(TweenEquations.easeInOutQuad))
+					.end()
 				.end()
 				.setCallback(callback)
 				.start(Env.game.getTweenManager());
@@ -232,9 +266,14 @@ public class MenuScreen extends SionScreen {
 		};
 		
 		timeline.beginSequence()
-					.push(Tween.to(socialTable, ActorTweener.Position, 0.25f)
-							   .target(-socialTable.getWidth(), 20.0f)
-							   .ease(TweenEquations.easeInOutQuad))
+					.beginParallel()
+						.push(Tween.to(socialTable, ActorTweener.Position, 0.25f)
+								   .target(-socialTable.getWidth(), 20.0f)
+								   .ease(TweenEquations.easeInOutQuad))
+						.push(Tween.to(btnSound, ActorTweener.Position, 0.25f)
+								   .target(Env.virtualWidth, btnSound.getY())
+								   .ease(TweenEquations.easeInOutQuad))
+					.end()
 					.beginParallel()
 						.push(Tween.to(buttonsGroup, ActorTweener.Position, 0.40f)
 								   .target(0.0f, -Env.virtualHeight)

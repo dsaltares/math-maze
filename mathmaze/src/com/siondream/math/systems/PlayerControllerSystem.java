@@ -134,7 +134,6 @@ public class PlayerControllerSystem extends EntitySystem {
 							  destination);
 			
 			ValueComponent value = player.getComponent(ValueComponent.class);
-			
 			Entity operation = getOperationAt(destination);
 			
 			// Use operation block
@@ -146,6 +145,10 @@ public class PlayerControllerSystem extends EntitySystem {
 					value.value = newValue;
 					Env.game.getEngine().getSystem(CameraControllerSystem.class).startShakeEffect(((int)destination.x - position.x) != 0);
 					moving = true;
+					
+					if (!operationComponent.persist) {
+						Env.game.getEngine().removeEntity(operation);
+					}
 				}
 				
 				return;

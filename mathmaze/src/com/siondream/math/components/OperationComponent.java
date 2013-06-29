@@ -8,9 +8,10 @@ import ashley.utils.Pool.Poolable;
 public class OperationComponent extends Component implements Poolable {
 
 	public Operation operation;
+	public boolean persist;
 	
 	@Override
 	public void reset() {
-		
+		persist = false;
 	}
 }

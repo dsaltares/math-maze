@@ -325,6 +325,7 @@ public class GameScreen extends SionScreen {
 				font = engine.createComponent(FontComponent.class);
 				shader = engine.createComponent(ShaderComponent.class);
 				operationComponent.operation = operation;
+				operationComponent.persist = Boolean.parseBoolean(properties.get("persist", "false", String.class));
 				operationEntity.add(texture);
 				operationEntity.add(position);
 				operationEntity.add(operationComponent);

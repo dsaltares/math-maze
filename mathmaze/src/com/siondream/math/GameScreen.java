@@ -12,6 +12,7 @@ import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -36,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.siondream.core.AbsoluteFileHandleResolver;
 import com.siondream.core.Assets;
 import com.siondream.core.Chrono;
 import com.siondream.core.Env;
@@ -110,8 +112,6 @@ public class GameScreen extends SionScreen {
 		logger = new Logger(TAG, Env.debugLevel);
 		
 		logger.info("initialising");
-		
-		mapLoader = new TmxMapLoader();
 		chrono = new Chrono();
 	}
 	
@@ -193,6 +193,13 @@ public class GameScreen extends SionScreen {
 		
 		
 		// Map entity
+		if (level.debug) {
+			mapLoader = new TmxMapLoader(new AbsoluteFileHandleResolver());
+		}
+		else {
+			mapLoader = new TmxMapLoader();
+		}
+		
 		Entity map = engine.createEntity();
 		MapComponent mapComponent = engine.createComponent(MapComponent.class);
 		mapComponent.map = mapLoader.load(level.file);
@@ -746,7 +753,7 @@ public class GameScreen extends SionScreen {
 		
 		int numStars = getStars();
 		
-		if (level.stars < numStars) {
+		if (level.stars < numStars && !level.debug) {
 			GameEnv.game.getLevelManager().saveStars(level, numStars);
 		}
 		

@@ -1,5 +1,6 @@
 package com.siondream.math;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.siondream.core.Env;
@@ -15,6 +16,8 @@ public class Main {
 		
 		Env.platform = new DesktopResolver();
 		
-		new LwjglApplication(new MathMaze(), cfg);
+		MathMaze game = new MathMaze(args.length > 0 ? args[0] : "");
+		
+		new LwjglApplication(game, cfg);
 	}
 }

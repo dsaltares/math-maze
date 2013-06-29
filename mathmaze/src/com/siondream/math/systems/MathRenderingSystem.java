@@ -105,7 +105,7 @@ public class MathRenderingSystem extends RenderingSystem {
 			ShaderComponent shader = entity.getComponent(ShaderComponent.class);
 			
 			float scale = font.font.getScaleX();
-			font.font.setScale(2.0f);
+			font.font.setScale(1.75f);
 			
 			boolean validEntity = false;
 			
@@ -144,11 +144,10 @@ public class MathRenderingSystem extends RenderingSystem {
 			
 			if (shader != null) batch.setShader(shader.shader);
 			
-			font.font.drawWrapped(batch,
-								  string,
-								  startX + (width - textBounds.width) * 0.5f,
-								  startY + height * 0.55f * font.font.getScaleY() + (height - textBounds.height) * 0.5f,
-								  texture.region.getRegionWidth() * Env.pixelsToMetres);
+			font.font.draw(batch,
+						   string,
+						   startX + (width - textBounds.width) * 0.5f,
+						   startY + height * 0.55f * font.font.getScaleY() + (height - textBounds.height) * 0.5f);
 			
 			if (shader != null) batch.setShader(null);
 			font.font.setScale(scale);

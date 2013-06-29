@@ -210,6 +210,8 @@ public class GameScreen extends SionScreen {
 		// Relevant layers
 		MapLayer objectLayer = mapComponent.map.getLayers().get(GameEnv.objectLayer);
 		TiledMapTileLayer tileLayer = (TiledMapTileLayer)mapComponent.map.getLayers().get(GameEnv.backgroundLayer);
+		RectangleMapObject rectangleObject = (RectangleMapObject)objectLayer.getObjects().get(GameEnv.playerTag);
+		MapProperties properties = rectangleObject.getProperties();
 		
 		// Player entity
 		Entity player = engine.createEntity();
@@ -228,7 +230,7 @@ public class GameScreen extends SionScreen {
 		player.add(shader);
 		engine.addEntity(player);
 		tagSystem.setTag(player, GameEnv.playerTag);
-		RectangleMapObject rectangleObject = (RectangleMapObject)objectLayer.getObjects().get(GameEnv.playerTag);
+		
 		Rectangle rectangle = rectangleObject.getRectangle();
 		position.x = (int)(rectangle.x / rectangle.width);
 		position.y = tileLayer.getHeight() - (int)(rectangle.y / rectangle.height) - 1;
@@ -236,6 +238,7 @@ public class GameScreen extends SionScreen {
 		transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
 		font.font = fontMap;
 		shader.shader = fontShader;
+		value.value = Integer.parseInt(properties.get("value", "0", String.class));
 		
 		// Exit entity
 		Entity exit = engine.createEntity();
@@ -261,7 +264,7 @@ public class GameScreen extends SionScreen {
 		
 		for (int i = 0; i < numObjects; ++i) {
 			MapObject mapObject = mapObjects.get(i);
-			MapProperties properties = mapObject.getProperties();
+			properties = mapObject.getProperties();
 			String type = properties.get("type", "Unknown", String.class);
 			String name = mapObject.getName();
 			String[] parts = name.split(":");

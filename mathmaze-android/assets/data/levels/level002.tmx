@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="10" height="7" tilewidth="64" tileheight="64">
+ <properties>
+  <property name="time" value="10"/>
+ </properties>
+ <tileset firstgid="1" name="tileset" tilewidth="64" tileheight="64" spacing="2" margin="2">
+  <image source="../tiles/tiles.png" width="128" height="256"/>
+  <tile id="1">
+   <properties>
+    <property name="walkable" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="background" width="10" height="7">
+  <data encoding="base64">
+   AQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAIAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAgAAAAIAAAACAAAAAQAAAAIAAAACAAAAAgAAAAIAAAABAAAAAQAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAQAAAAEAAAACAAAAAgAAAAIAAAABAAAAAgAAAAIAAAACAAAAAgAAAAEAAAABAAAAAQAAAAEAAAACAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA==
+  </data>
+ </layer>
+ <objectgroup name="objects" width="10" height="7">
+  <object name="player" x="128" y="192" width="64" height="64"/>
+  <object name="exit" x="448" y="192" width="64" height="64"/>
+  <object name="=:3" type="condition" x="256" y="192" width="64" height="64"/>
+  <object name="+:5" type="operation" x="192" y="64" width="64" height="64"/>
+  <object name="-:2" type="operation" x="192" y="320" width="64" height="64"/>
+ </objectgroup>
+</map>

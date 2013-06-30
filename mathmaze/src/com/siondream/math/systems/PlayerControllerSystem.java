@@ -98,7 +98,12 @@ public class PlayerControllerSystem extends EntitySystem {
 			return;
 		}
 		
-		if (!moving && Gdx.input.isTouched()) {
+		boolean touched = Gdx.input.isTouched(); 
+		
+		if (!touched) {
+			moving = false;
+		}
+		else if (!moving && touched) {
 			mouseScenePos.set(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
 			Env.game.getStage().getCamera().unproject(mouseScenePos);
 			
@@ -170,6 +175,9 @@ public class PlayerControllerSystem extends EntitySystem {
 					 .ease(TweenEquations.easeInOutQuad)
 					 .setCallback(callback)
 					 .start(Env.game.getTweenManager());
+				
+				position.x = (int)destination.x;
+				position.y = (int)destination.y;
 				
 				moving = true;
 			}
@@ -276,11 +284,6 @@ public class PlayerControllerSystem extends EntitySystem {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			if (type == TweenCallback.COMPLETE) {
-				TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
-				Entity player = tagSystem.getEntity(GameEnv.playerTag);
-				GridPositionComponent position = player.getComponent(GridPositionComponent.class);
-				position.x = (int)destination.x;
-				position.y = (int)destination.y;
 				moving = false;
 				moveTimer = GameEnv.playerMoveCooldown;
 			}

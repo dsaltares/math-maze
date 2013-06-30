@@ -19,7 +19,6 @@ import com.siondream.core.entity.components.ShaderComponent;
 import com.siondream.core.entity.components.TextureComponent;
 import com.siondream.core.entity.components.TransformComponent;
 import com.siondream.core.entity.systems.RenderingSystem;
-import com.siondream.core.entity.systems.TagSystem;
 import com.siondream.math.Condition;
 import com.siondream.math.GameEnv;
 import com.siondream.math.Operation;

@@ -8,6 +8,7 @@
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/checkpoint-open.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/exit.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/operation.png" />
+		<asset type="com.badlogic.gdx.graphics.Texture" path="data/operation-persist.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/background.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/facebook.png" />
 		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/twitter.png" />

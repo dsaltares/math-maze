@@ -321,7 +321,6 @@ public class GameScreen extends SionScreen {
 				
 				Entity operationEntity = engine.createEntity();
 				texture = engine.createComponent(TextureComponent.class);
-				texture.region = new TextureRegion(Env.game.getAssets().get("data/operation.png", Texture.class));
 				position = engine.createComponent(GridPositionComponent.class);
 				transform = engine.createComponent(TransformComponent.class);
 				OperationComponent operationComponent = engine.createComponent(OperationComponent.class);
@@ -329,6 +328,14 @@ public class GameScreen extends SionScreen {
 				shader = engine.createComponent(ShaderComponent.class);
 				operationComponent.operation = operation;
 				operationComponent.persist = Boolean.parseBoolean(properties.get("persist", "false", String.class));
+				
+				if (operationComponent.persist) {
+					texture.region = new TextureRegion(Env.game.getAssets().get("data/operation-persist.png", Texture.class));
+				}
+				else {
+					texture.region = new TextureRegion(Env.game.getAssets().get("data/operation.png", Texture.class));
+				}
+				
 				operationEntity.add(texture);
 				operationEntity.add(position);
 				operationEntity.add(operationComponent);

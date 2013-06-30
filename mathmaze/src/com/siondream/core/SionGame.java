@@ -2,7 +2,7 @@ package com.siondream.core;
 
 import java.util.Locale;
 
-import ashley.core.PooledEngine;
+import ashley.core.Engine;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
@@ -13,7 +13,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
@@ -41,7 +40,7 @@ public class SionGame extends Game implements InputProcessor {
 	private Assets assets;
 	private OrthographicCamera camera;
 	private OrthographicCamera uiCamera;
-	private PooledEngine engine;
+	private Engine engine;
 	private Stage stage;
 	private Skin skin;
 	private TweenManager tweenManager;
@@ -79,7 +78,7 @@ public class SionGame extends Game implements InputProcessor {
 		
 		world = new World(Env.gravity, Env.doSleep);
 		accumulator = 0.0f;
-		engine = new PooledEngine();
+		engine = new Engine();
 		skin = assets.get("data/ui/uiskin.json", Skin.class);
 		stage = new Stage(Env.virtualWidth, Env.virtualHeight, true);
 		
@@ -228,7 +227,7 @@ public class SionGame extends Game implements InputProcessor {
 		return tweenManager;
 	}
 	
-	public PooledEngine getEngine() {
+	public Engine getEngine() {
 		return engine;
 	}
 	

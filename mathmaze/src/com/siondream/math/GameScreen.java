@@ -133,26 +133,10 @@ public class GameScreen extends SionScreen {
 		
 		logger.info("shutting down");
 		
-		Env.game.getEngine().getSystem(PlayerControllerSystem.class).cancelMovement();
+		Engine engine = Env.game.getEngine();
 		
-		PooledEngine engine = Env.game.getEngine();
-		TagSystem tagSystem = engine.getSystem(TagSystem.class);
-		GroupSystem groupSystem = engine.getSystem(GroupSystem.class);
-		
-		// Remove entities
-		engine.removeEntity(tagSystem.getEntity(GameEnv.mapTag));
-		engine.removeEntity(tagSystem.getEntity(GameEnv.playerTag));
-		engine.removeEntity(tagSystem.getEntity(GameEnv.exitTag));
-		
-		Values<Entity> conditions = groupSystem.getGroup(GameEnv.conditionsGroup).values();
-		while (conditions.hasNext()) {
-			engine.removeEntity(conditions.next());
-		}
-		
-		Values<Entity> operations = groupSystem.getGroup(GameEnv.operationsGroup).values();
-		while (operations.hasNext()) {
-			engine.removeEntity(operations.next());
-		}
+		engine.getSystem(PlayerControllerSystem.class).cancelMovement();
+		engine.removeAllEntities();
 	}
 	
 	@Override
@@ -178,7 +162,7 @@ public class GameScreen extends SionScreen {
 	}
 	
 	private void initGame() {
-		PooledEngine engine = Env.game.getEngine();
+		Engine engine = Env.game.getEngine();
 		TagSystem tagSystem = engine.getSystem(TagSystem.class);
 		GroupSystem groupSystem = engine.getSystem(GroupSystem.class);
 		
@@ -200,8 +184,8 @@ public class GameScreen extends SionScreen {
 			mapLoader = new TmxMapLoader();
 		}
 		
-		Entity map = engine.createEntity();
-		MapComponent mapComponent = engine.createComponent(MapComponent.class);
+		Entity map = new Entity();
+		MapComponent mapComponent = new MapComponent();
 		mapComponent.map = mapLoader.load(level.file);
 		map.add(mapComponent);
 		engine.addEntity(map);
@@ -214,14 +198,14 @@ public class GameScreen extends SionScreen {
 		MapProperties properties = rectangleObject.getProperties();
 		
 		// Player entity
-		Entity player = engine.createEntity();
-		TextureComponent texture = engine.createComponent(TextureComponent.class);
+		Entity player = new Entity();
+		TextureComponent texture = new TextureComponent();
 		texture.region = new TextureRegion(Env.game.getAssets().get("data/player.png", Texture.class));
-		GridPositionComponent position = engine.createComponent(GridPositionComponent.class);
-		TransformComponent transform = engine.createComponent(TransformComponent.class);
-		ValueComponent value = engine.createComponent(ValueComponent.class);
-		FontComponent font = engine.createComponent(FontComponent.class);
-		ShaderComponent shader = engine.createComponent(ShaderComponent.class);
+		GridPositionComponent position = new GridPositionComponent();
+		TransformComponent transform = new TransformComponent();
+		ValueComponent value = new ValueComponent();
+		FontComponent font = new FontComponent();
+		ShaderComponent shader = new ShaderComponent();
 		player.add(position);
 		player.add(texture);
 		player.add(transform);
@@ -241,11 +225,11 @@ public class GameScreen extends SionScreen {
 		value.value = Integer.parseInt(properties.get("value", "0", String.class));
 		
 		// Exit entity
-		Entity exit = engine.createEntity();
-		texture = engine.createComponent(TextureComponent.class);
+		Entity exit = new Entity();
+		texture = new TextureComponent();
 		texture.region = new TextureRegion(Env.game.getAssets().get("data/exit.png", Texture.class));
-		position = engine.createComponent(GridPositionComponent.class);
-		transform = engine.createComponent(TransformComponent.class);
+		position = new GridPositionComponent();
+		transform = new TransformComponent();
 		exit.add(transform);
 		exit.add(texture);
 		exit.add(position);
@@ -284,14 +268,14 @@ public class GameScreen extends SionScreen {
 					conditions.add(new Condition(parts[j], Integer.parseInt(parts[j + 1])));
 				}
 				
-				Entity condition = engine.createEntity();
-				texture = engine.createComponent(TextureComponent.class);
+				Entity condition = new Entity();
+				texture = new TextureComponent();
 				texture.region = new TextureRegion(Env.game.getAssets().get("data/checkpoint.png", Texture.class));
-				position = engine.createComponent(GridPositionComponent.class);
-				transform = engine.createComponent(TransformComponent.class);
-				font = engine.createComponent(FontComponent.class);
-				shader = engine.createComponent(ShaderComponent.class);
-				ConditionComponent conditionComponent = engine.createComponent(ConditionComponent.class);
+				position = new GridPositionComponent();
+				transform = new TransformComponent();
+				font = new FontComponent();
+				shader = new ShaderComponent();
+				ConditionComponent conditionComponent = new ConditionComponent();
 				conditionComponent.conditions = conditions;
 				condition.add(texture);
 				condition.add(position);
@@ -319,15 +303,16 @@ public class GameScreen extends SionScreen {
 				
 				Operation operation = new Operation(parts[0], Integer.parseInt(parts[1]));
 				
-				Entity operationEntity = engine.createEntity();
-				texture = engine.createComponent(TextureComponent.class);
-				position = engine.createComponent(GridPositionComponent.class);
-				transform = engine.createComponent(TransformComponent.class);
-				OperationComponent operationComponent = engine.createComponent(OperationComponent.class);
-				font = engine.createComponent(FontComponent.class);
-				shader = engine.createComponent(ShaderComponent.class);
+				Entity operationEntity = new Entity();
+				texture = new TextureComponent();
+				position = new GridPositionComponent();
+				transform = new TransformComponent();
+				OperationComponent operationComponent = new OperationComponent();
+				font = new FontComponent();
+				shader = new ShaderComponent();
 				operationComponent.operation = operation;
 				operationComponent.persist = Boolean.parseBoolean(properties.get("persist", "false", String.class));
+				
 				
 				if (operationComponent.persist) {
 					texture.region = new TextureRegion(Env.game.getAssets().get("data/operation-persist.png", Texture.class));

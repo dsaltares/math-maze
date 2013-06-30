@@ -8,11 +8,12 @@ import com.siondream.core.Env;
 
 import ashley.core.Engine;
 import ashley.core.Entity;
+import ashley.core.EntityListener;
 import ashley.core.EntitySystem;
 import ashley.core.Family;
 import ashley.utils.IntMap;
 
-public class TagSystem extends EntitySystem {
+public class TagSystem extends EntitySystem implements EntityListener {
 	private static final String TAG = "TagSystem";
 	
 	private Logger logger;
@@ -29,6 +30,8 @@ public class TagSystem extends EntitySystem {
 		
 		tags = new ObjectMap<String, Entity>();
 		family = Family.getFamilyFor();
+		
+		Env.game.getEngine().addEntityListener(this);
 	}
 	
 	@Override
@@ -68,5 +71,23 @@ public class TagSystem extends EntitySystem {
 	
 	public void setTag(Entity entity, String tag) {
 		tags.put(tag, entity);
+	}
+
+	@Override
+	public void entityAdded(Entity entity) {
+				
+	}
+
+	@Override
+	public void entityRemoved(Entity entity) {
+		Iterator<Entity> it = tags.values().iterator();
+		
+		while (it.hasNext()) {
+			Entity e = it.next();
+			if (e == entity) {
+				it.remove();
+				break;
+			}
+		}
 	}
 }

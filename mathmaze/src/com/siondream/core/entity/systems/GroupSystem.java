@@ -8,11 +8,12 @@ import com.siondream.core.Env;
 
 import ashley.core.Engine;
 import ashley.core.Entity;
+import ashley.core.EntityListener;
 import ashley.core.EntitySystem;
 import ashley.core.Family;
 import ashley.utils.IntMap;
 
-public class GroupSystem extends EntitySystem {
+public class GroupSystem extends EntitySystem implements EntityListener {
 	private static final String TAG = "GroupSystem";
 	
 	private Logger logger;
@@ -31,6 +32,8 @@ public class GroupSystem extends EntitySystem {
 		groups = new ObjectMap<String, IntMap<Entity>>();
 		family = Family.getFamilyFor();
 		emptyGroup = new IntMap<Entity>();
+		
+		Env.game.getEngine().addEntityListener(this);
 	}
 	
 	@Override
@@ -91,11 +94,6 @@ public class GroupSystem extends EntitySystem {
 	}
 	
 	public void unregister(Entity entity, String name) {
-		if (!entities.containsValue(entity, false)) {
-			logger.error("entity " + entity + " is not registered in engine");
-			return;
-		}
-		
 		IntMap<Entity> group = getGroup(name);
 		
 		if (group != emptyGroup) {
@@ -109,11 +107,6 @@ public class GroupSystem extends EntitySystem {
 	}
 	
 	public void unregister(Entity entity) {
-		if (!entities.containsValue(entity, false)) {
-			logger.error("entity " + entity + " is not registered in engine");
-			return;
-		}
-		
 		logger.info("unregistering entity " + entity + " from all groups");
 		
 		Iterator<String> groupIt = groups.keys().iterator();
@@ -140,5 +133,16 @@ public class GroupSystem extends EntitySystem {
 	
 	public void clear() {
 		groups.clear();
+	}
+
+	@Override
+	public void entityAdded(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void entityRemoved(Entity entity) {
+		unregister(entity);
 	}
 }

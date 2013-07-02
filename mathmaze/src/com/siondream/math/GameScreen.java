@@ -291,6 +291,7 @@ public class GameScreen extends SionScreen {
 				position.y = tileLayer.getHeight() - (int)(rectangle.y / rectangle.height) - 1;
 				transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
 				transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
+				transform.position.z = 100.0f;
 				font.font = fontMap;
 				shader.shader = fontShader;
 			}

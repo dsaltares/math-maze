@@ -249,7 +249,7 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 			TransformComponent t1 = e1.getComponent(TransformComponent.class);
 			TransformComponent t2 = e2.getComponent(TransformComponent.class);
 			
-			return (int)(t1.position.z - t2.position.z);
+			return (int)(t2.position.z - t1.position.z);
 		}
 	}
 }

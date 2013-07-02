@@ -19,10 +19,12 @@ import com.siondream.core.entity.components.ShaderComponent;
 import com.siondream.core.entity.components.TextureComponent;
 import com.siondream.core.entity.components.TransformComponent;
 import com.siondream.core.entity.systems.RenderingSystem;
+import com.siondream.core.entity.systems.TagSystem;
 import com.siondream.math.Condition;
 import com.siondream.math.GameEnv;
 import com.siondream.math.Operation;
 import com.siondream.math.components.ConditionComponent;
+import com.siondream.math.components.GridPositionComponent;
 import com.siondream.math.components.OperationComponent;
 import com.siondream.math.components.ValueComponent;
 
@@ -94,10 +96,27 @@ public class MathRenderingSystem extends RenderingSystem {
 	}
 	
 	private void renderFontEntities() {
+		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
+		Entity player = tagSystem.getEntity(GameEnv.playerTag);
+		GridPositionComponent playerGridPos = player != null ? player.getComponent(GridPositionComponent.class) : null;
+		
 		Values<Entity> entities = fontEntities.values();
 		
 		while (entities.hasNext) {
 			Entity entity = entities.next();
+			
+			GridPositionComponent gridPos = entity.getComponent(GridPositionComponent.class);
+			
+			boolean isPlayer = entity.hasComponent(ValueComponent.class);
+			
+			if (gridPos != null &&
+				playerGridPos != null &&
+				!isPlayer && 
+				gridPos.x == playerGridPos.x &&
+				gridPos.y == playerGridPos.y) {
+				continue;
+			}
+			
 			FontComponent font = entity.getComponent(FontComponent.class);
 			TextureComponent texture = entity.getComponent(TextureComponent.class);
 			TransformComponent transform = entity.getComponent(TransformComponent.class);
@@ -118,7 +137,7 @@ public class MathRenderingSystem extends RenderingSystem {
 				conditionsToString(condition.conditions, string);
 				validEntity = true;
 			}
-			else if (entity.hasComponent(ValueComponent.class)) {
+			else if (isPlayer) {
 				ValueComponent value = entity.getComponent(ValueComponent.class);
 				
 				if (string.length() > 0)

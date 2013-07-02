@@ -8,6 +8,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Env;
 import com.siondream.core.entity.components.MapComponent;
@@ -23,6 +25,7 @@ import com.siondream.math.components.ConditionComponent;
 import com.siondream.math.components.GridPositionComponent;
 import com.siondream.math.components.OperationComponent;
 import com.siondream.math.components.ValueComponent;
+import com.siondream.math.ui.ShaderButton;
 
 import ashley.core.Engine;
 import ashley.core.Entity;
@@ -44,7 +47,7 @@ public class PlayerControllerSystem extends EntitySystem {
 	private Logger logger;
 	private OrthographicCamera camera;
 	private Vector3 mousePos3;
-	private Vector3 mouseScenePos;
+	private Vector2 mouseScenePos;
 	private Vector2 direction;
 	private Vector2 destination;
 	private Vector2 rightDirection;
@@ -64,7 +67,7 @@ public class PlayerControllerSystem extends EntitySystem {
 		moveTimer = 0.0f;
 		camera = Env.game.getCamera();
 		mousePos3 = new Vector3();
-		mouseScenePos = new Vector3();
+		mouseScenePos = new Vector2();
 		direction = new Vector2();
 		destination = new Vector2();
 		rightDirection = Vector2.X.cpy();
@@ -104,11 +107,15 @@ public class PlayerControllerSystem extends EntitySystem {
 			moving = false;
 		}
 		else if (!moving && touched) {
-			mouseScenePos.set(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
-			Env.game.getStage().getCamera().unproject(mouseScenePos);
+			mouseScenePos.set(Gdx.input.getX(), Gdx.input.getY());
 			
-			if (mouseScenePos.y < GameEnv.cameraScreenPos.y ||
-				mouseScenePos.y > GameEnv.cameraScreenPos.y + GameEnv.cameraHeight) {
+			Stage stage = Env.game.getStage();
+			stage.screenToStageCoordinates(mouseScenePos);
+			
+			Actor actor = stage.hit(mouseScenePos.x, mouseScenePos.y, true);
+			Class<?> actorClass = actor != null ? actor.getClass() : null;
+			
+			if (actorClass != null && actorClass == ShaderButton.class) {
 				return;
 			}
 			

@@ -1,0 +1,25 @@
+uiNearest.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+disabledButton
+  rotate: false
+  xy: 14, 2
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+downButton
+  rotate: false
+  xy: 2, 14
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+upButton
+  rotate: false
+  xy: 2, 2
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1

@@ -1,23 +1,24 @@
 package com.siondream.math.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.siondream.core.Assets;
 import com.siondream.core.Env;
+import com.siondream.math.GameEnv;
 import com.siondream.math.LevelManager.Level;
 
 public class LevelButton extends Button {
 
 	public static class LevelButtonStyle extends ButtonStyle {
-		public ShaderProgram shader;
+		public String shader;
 		public BitmapFont font;
 		public Color backGroundColor;
 		public Color fontColor;
@@ -30,6 +31,7 @@ public class LevelButton extends Button {
 	private TextureRegion regionStarOff;
 	private Image[] stars;
 	private Image lock;
+	private ShaderProgram shader;
 	
 	public LevelButton(Level level, LevelButtonStyle style) {
 		super(style);
@@ -39,10 +41,12 @@ public class LevelButton extends Button {
 		setWidth(643.0f);
 		setHeight(88.0f);
 		
-		Assets assets = Env.game.getAssets();
+		Skin skin = GameEnv.game.getSkin();
+		TextureAtlas atlas = skin.getAtlas();
+		
 		if (level.unlocked) {
-			regionStarOn = new TextureRegion(assets.get("data/ui/staron.png", Texture.class));
-			regionStarOff = new TextureRegion(assets.get("data/ui/staroff.png", Texture.class));
+			regionStarOn = new TextureRegion(atlas.findRegion("staron"));
+			regionStarOff = new TextureRegion(atlas.findRegion("staroff"));
 			
 			float initialX = getWidth() - 20.0f - (regionStarOn.getRegionWidth() + 20.0f) * stars.length;
 			
@@ -56,16 +60,18 @@ public class LevelButton extends Button {
 		else {
 			this.setDisabled(true);
 			
-			lock = new Image(assets.get("data/ui/lock.png", Texture.class));
+			lock = new Image(skin, "lock");
 			lock.setPosition(438.0f, (getHeight() - lock.getHeight()) * 0.5f);
 			this.addActor(lock);
 		}
+		
+		this.shader = Env.game.getShaderManager().get(style.shader);
 	}
 	
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-		batch.setShader(style.shader);
+		batch.setShader(shader);
 		float oldScaleX = style.font.getScaleX();
 		float oldScaleY = style.font.getScaleY();
 		Color oldColor = style.fontColor;

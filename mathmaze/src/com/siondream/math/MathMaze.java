@@ -6,15 +6,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.siondream.core.Assets;
 import com.siondream.core.Env;
+import com.siondream.core.ShaderManager;
 import com.siondream.core.SionGame;
 import com.siondream.core.entity.systems.AnimationSystem;
 import com.siondream.core.entity.systems.DisposingSystem;
 import com.siondream.core.entity.systems.GroupSystem;
+import com.siondream.core.entity.systems.ParticleEffectSystem;
 import com.siondream.core.entity.systems.PhysicsSystem;
 import com.siondream.core.entity.systems.TagSystem;
 import com.siondream.math.LevelManager.Level;
@@ -35,10 +37,13 @@ public class MathMaze extends SionGame {
 	private CameraControllerSystem cameraControllerSystem;
 	private PlayerControllerSystem playerControllerSystem;
 	private CheckpointSystem checkpointSystem;
+	private ParticleEffectSystem particleSystem;
 	private Preferences preferences;
 	private LevelManager levelManager;
 	private FallingLabelManager labelManager;
 	private String mapFile;
+	private Skin skin;
+	private Skin skinNearest;
 	
 	public MathMaze() {
 		this("");
@@ -55,6 +60,10 @@ public class MathMaze extends SionGame {
 		
 		GameEnv.init(this);
 		
+		Assets assets = Env.game.getAssets();
+		skin = assets.get("data/ui.json", Skin.class);
+		skinNearest = assets.get("data/uiNearest.json", Skin.class);
+		
 		preferences = Gdx.app.getPreferences("MathMazePrefs");
 		
 		levelManager = new LevelManager("data/levels/levels.xml", preferences);
@@ -70,16 +79,18 @@ public class MathMaze extends SionGame {
 		cameraControllerSystem = new CameraControllerSystem();
 		playerControllerSystem = new PlayerControllerSystem();
 		checkpointSystem = new CheckpointSystem();
+		particleSystem = new ParticleEffectSystem();
 				
 		playerControllerSystem.priority = 1;
 		cameraControllerSystem.priority = 2;
 		checkpointSystem.priority = 3;
-		animationSystem.priority = 4;
-		physicsSystem.priority = 5;
-		disposingSystem.priority = 6;
-		renderingSystem.priority = 7;
-		tagSystem.priority = 8;
-		groupSystem.priority = 9;
+		particleSystem.priority = 4;
+		animationSystem.priority = 5;
+		physicsSystem.priority = 6;
+		disposingSystem.priority = 7;
+		renderingSystem.priority = 8;
+		tagSystem.priority = 9;
+		groupSystem.priority = 10;
 		
 		engine.addSystem(animationSystem);
 		engine.addSystem(renderingSystem);
@@ -90,6 +101,7 @@ public class MathMaze extends SionGame {
 		engine.addSystem(cameraControllerSystem);
 		engine.addSystem(playerControllerSystem);
 		engine.addSystem(checkpointSystem);
+		engine.addSystem(particleSystem);
 		
 		this.addScreen(new GameScreen());
 		this.addScreen(new LevelSelectionScreen());
@@ -105,19 +117,18 @@ public class MathMaze extends SionGame {
 			this.setScreen(SplashScreen.class);	
 		}
 		
-		Texture fontTexture = new Texture(Gdx.files.internal("data/ui/chicken.png"), true);
-		fontTexture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		BitmapFont font = new BitmapFont(Gdx.files.internal("data/ui/chicken.fnt"), new TextureRegion(fontTexture), false);
+		TextureRegion fontRegion = skinNearest.getFont("gameFont").getRegion(); 
+		Texture fontTexture = fontRegion.getTexture();
+		fontTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		ShaderProgram fontShader = new ShaderProgram(Gdx.files.internal("data/ui/font.vert"), 
-													 Gdx.files.internal("data/ui/font.frag"));
-		if (!fontShader.isCompiled()) {
-		    Gdx.app.error("fontShader", "compilation failed:\n" + fontShader.getLog());
-		}
+		fontRegion = skin.getFont("gameFont").getRegion(); 
+		fontTexture = fontRegion.getTexture();
+		fontTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = font;
-		labelManager = new FallingLabelManager(labelStyle, fontShader);
+		ShaderManager shaderManager = Env.game.getShaderManager();	
+		
+		labelManager = new FallingLabelManager(skin.get("falling", LabelStyle.class),
+											   shaderManager.get("font"));
 	}
 
 	public Preferences getPreferences() {
@@ -132,11 +143,20 @@ public class MathMaze extends SionGame {
 		return labelManager;
 	}
 	
+	public Skin getSkin() {
+		return skin;
+	}
+	
+	public Skin getSkinNearest() {
+		return skinNearest;
+	}
+	
 	@Override
 	public void dispose() {
 		super.dispose();
 		
 		labelManager.dispose();
 		renderingSystem.dispose();
+		skin.dispose();
 	}
 }

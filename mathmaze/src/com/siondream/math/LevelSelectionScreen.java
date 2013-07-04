@@ -6,28 +6,20 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.siondream.core.Assets;
 import com.siondream.core.Env;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
@@ -52,9 +44,6 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	private Image imgTitle;
 	private ShaderLabel lblPick;
 	private ShaderButton btnBack;
-	private Texture fontTexture;
-	private BitmapFont font;
-	private ShaderProgram fontShader;
 	private LevelPanelsBar levelsBar;
 	private WidgetGroup levelsGroup;
 	private GestureDetector gestureDetector;
@@ -83,8 +72,6 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	@Override
 	public void dispose() {
 		GameEnv.game.getStage().clear();
-		font.dispose();
-		fontTexture.dispose();
 		Env.game.getInputMultiplexer().removeProcessor(gestureDetector);
 	}
 	
@@ -102,44 +89,18 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	
 	private void createUI() {
 		Stage stage = Env.game.getStage();
-		Assets assets = Env.game.getAssets();
+		Skin skin = GameEnv.game.getSkin();
+		Skin skinNearest = GameEnv.game.getSkinNearest();
 		
-		fontTexture = new Texture(Gdx.files.internal("data/ui/chicken.png"), true);
-		fontTexture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		font = new BitmapFont(Gdx.files.internal("data/ui/chicken.fnt"), new TextureRegion(fontTexture), false);
+		imgBackground = new Image(skin, "background");
+		imgLand = new Image(skin, "land");
+		imgTitle = new Image(skin, "title");
 		
-		fontShader = new ShaderProgram(Gdx.files.internal("data/ui/font.vert"), 
-													 Gdx.files.internal("data/ui/font.frag"));
-		if (!fontShader.isCompiled()) {
-		    Gdx.app.error("fontShader", "compilation failed:\n" + fontShader.getLog());
-		}
-		
-		imgBackground = new Image(assets.get("data/ui/background.png", Texture.class));
-		imgLand = new Image(assets.get("data/ui/land.png", Texture.class));
-		imgTitle = new Image(assets.get("data/ui/title.png", Texture.class));
-		
-		LabelStyle labelStyle = new LabelStyle(font, Color.BLACK);
-		lblPick = new ShaderLabel("Pick a level", labelStyle, fontShader);
+		LabelStyle labelStyle = skin.get("game", LabelStyle.class);
+		lblPick = new ShaderLabel("Pick a level", labelStyle, Env.game.getShaderManager().get("font"));
 		lblPick.setFontScale(2.0f);
 		
-		Texture upText = assets.get("data/ui/upButton.png", Texture.class);
-		upText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		Texture downText = assets.get("data/ui/downButton.png", Texture.class);
-		downText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		Texture disabledText = assets.get("data/ui/disabledButton.png", Texture.class);
-		disabledText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		TextureRegionDrawable upButton = new TextureRegionDrawable(new TextureRegion(upText));
-		TextureRegionDrawable downButton = new TextureRegionDrawable(new TextureRegion(downText));
-		TextureRegionDrawable disabledButton = new TextureRegionDrawable(new TextureRegion(disabledText));
-		
-		ShaderButtonStyle buttonStyle = new ShaderButtonStyle();
-		buttonStyle.down = downButton;
-		buttonStyle.up = upButton;
-		buttonStyle.disabled = disabledButton;
-		buttonStyle.font = font;
-		buttonStyle.shader = fontShader;
-		buttonStyle.backGroundColor = Color.WHITE;
-		buttonStyle.fontColor = Color.BLACK;
+		ShaderButtonStyle buttonStyle = skinNearest.get("menu", ShaderButtonStyle.class);
 		
 		btnBack = new ShaderButton("Back", buttonStyle);
 		btnBack.setScale(3.25f);
@@ -166,15 +127,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		levelsGroup = new WidgetGroup();
 		stage.addActor(levelsGroup);
 		
-		LevelButtonStyle levelButtonStyle = new LevelButtonStyle();
-		levelButtonStyle.scale = 3.0f;
-		levelButtonStyle.fontColor = Color.BLACK;
-		levelButtonStyle.down = downButton;
-		levelButtonStyle.up = upButton;
-		levelButtonStyle.font = font;
-		levelButtonStyle.shader = fontShader;
-		levelButtonStyle.backGroundColor = Color.WHITE;
-		levelButtonStyle.fontColor = Color.BLACK;
+		LevelButtonStyle levelButtonStyle = skinNearest.get("menu", LevelButtonStyle.class);
 		
 		Array<Level> levels = GameEnv.game.getLevelManager().getLevels();
 		currentPanel = 0;

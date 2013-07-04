@@ -18,7 +18,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.siondream.core.entity.components.TransformComponent;
@@ -42,11 +41,12 @@ public class SionGame extends Game implements InputProcessor {
 	private OrthographicCamera uiCamera;
 	private Engine engine;
 	private Stage stage;
-	private Skin skin;
 	private TweenManager tweenManager;
 	private LanguageManager languageManager;
 	private World world;
 	private float accumulator;
+	private ParticleEffectPools particlePools;
+	private ShaderManager shaderManager;
 	
 	@Override
 	public void create() {
@@ -79,7 +79,6 @@ public class SionGame extends Game implements InputProcessor {
 		world = new World(Env.gravity, Env.doSleep);
 		accumulator = 0.0f;
 		engine = new Engine();
-		skin = assets.get("data/ui/uiskin.json", Skin.class);
 		stage = new Stage(Env.virtualWidth, Env.virtualHeight, true);
 		
 		multiplexer = new InputMultiplexer();
@@ -89,6 +88,8 @@ public class SionGame extends Game implements InputProcessor {
 		multiplexer.addProcessor(this);
 		
 		languageManager = new LanguageManager("data/lang", Locale.getDefault().getLanguage());
+		particlePools = new ParticleEffectPools();
+		shaderManager = new ShaderManager();
 	}
 
 	@Override
@@ -98,7 +99,6 @@ public class SionGame extends Game implements InputProcessor {
 		assets.dispose();
 		world.dispose();
 		stage.dispose();
-		skin.dispose();
 		
 		if (currentScreen != null) {
 			currentScreen.dispose();
@@ -215,10 +215,6 @@ public class SionGame extends Game implements InputProcessor {
 		return world;
 	}
 	
-	public Skin getSkin() {
-		return skin;
-	}
-	
 	public Stage getStage() {
 		return stage;
 	}
@@ -237,6 +233,14 @@ public class SionGame extends Game implements InputProcessor {
 	
 	public InputMultiplexer getInputMultiplexer() {
 		return multiplexer;
+	}
+	
+	public ParticleEffectPools getParticlePools() {
+		return particlePools;
+	}
+	
+	public ShaderManager getShaderManager() {
+		return shaderManager;
 	}
 	
 	private void performScreenChange() {

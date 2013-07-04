@@ -39,6 +39,8 @@ public class GameEnv {
 	public static float mathLabelsMaxTweenTime;
 	public static float mathLabelsMinTweenTime;
 	public static Color mathLabelsColor;
+	
+	public static Color starsOperationColor;
 
 	public static void init(MathMaze game) {
 		logger.info("initialising");
@@ -65,5 +67,7 @@ public class GameEnv {
 		mathLabelsMaxTweenTime = settings.getFloat("mathLabelMaxTweenTime", 10.0f);
 		mathLabelsMinTweenTime = settings.getFloat("mathLabelMinTweenTime", 7.0f);
 		mathLabelsColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+		
+		starsOperationColor = new Color(0.6f, 0.8f, 0.0f, 1.0f);
 	}
 }

@@ -6,10 +6,9 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.siondream.core.Assets;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.siondream.core.Env;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
@@ -39,10 +38,10 @@ public class SplashScreen extends SionScreen {
 	}
 	
 	private void createUI() {
-		Assets assets = Env.game.getAssets();
-		
-		imgSiondream = new Image(assets.get("data/siondream.png", Texture.class));
-		imgLibgdx = new Image(assets.get("data/libgdx.png", Texture.class));
+		Skin skin = GameEnv.game.getSkin();
+
+		imgSiondream = new Image(skin, "siondream");
+		imgLibgdx = new Image(skin, "libgdx");
 		
 		imgSiondream.setPosition((Env.virtualWidth - imgSiondream.getWidth()) * 0.5f,
 								 (Env.virtualHeight - imgSiondream.getHeight()) * 0.5f);

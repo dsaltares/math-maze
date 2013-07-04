@@ -9,22 +9,14 @@ import aurelienribon.tweenengine.TweenEquations;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.siondream.core.Assets;
 import com.siondream.core.Env;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
@@ -42,10 +34,7 @@ public class MenuScreen extends SionScreen {
 	private Table socialTable;
 	private ShaderButton btnPlay;
 	private ShaderButton btnAbout;
-	private Texture fontTexture;
 	private ImageButton btnSound;
-	private BitmapFont font;
-	private ShaderProgram fontShader;
 	
 	public MenuScreen() {
 		super();
@@ -69,8 +58,6 @@ public class MenuScreen extends SionScreen {
 	@Override
 	public void dispose() {
 		Env.game.getStage().clear();
-		font.dispose();
-		fontTexture.dispose();
 	}
 	
 	@Override
@@ -80,40 +67,19 @@ public class MenuScreen extends SionScreen {
 	}
 	
 	private void createUI() {
-		fontTexture = new Texture(Gdx.files.internal("data/ui/chicken.png"), true);
-		fontTexture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		font = new BitmapFont(Gdx.files.internal("data/ui/chicken.fnt"), new TextureRegion(fontTexture), false);
-		
-		fontShader = new ShaderProgram(Gdx.files.internal("data/ui/font.vert"), 
-													 Gdx.files.internal("data/ui/font.frag"));
-		if (!fontShader.isCompiled()) {
-		    Gdx.app.error("fontShader", "compilation failed:\n" + fontShader.getLog());
-		}
-		
-		Assets assets = Env.game.getAssets();
 		Stage stage = Env.game.getStage();
+		Skin skin = GameEnv.game.getSkin();
+		Skin skinNearest = GameEnv.game.getSkinNearest();
 		
-		imgBackground = new Image(assets.get("data/ui/background.png", Texture.class));
-		imgLand = new Image(assets.get("data/ui/land.png", Texture.class));
-		imgFacebook = new Image(assets.get("data/ui/facebook.png", Texture.class));
-		imgTwitter = new Image(assets.get("data/ui/twitter.png", Texture.class));
+		imgBackground = new Image(skin, "background");
+		imgLand = new Image(skin, "land");
+		imgFacebook = new Image(skin, "facebook");
+		imgTwitter = new Image(skin, "twitter");
 		
-		imgTitle = new Image(assets.get("data/ui/title.png", Texture.class));
+		imgTitle = new Image(skin, "title");
 		
-		Texture upText = assets.get("data/ui/upButton.png", Texture.class);
-		upText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		Texture downText = assets.get("data/ui/downButton.png", Texture.class);
-		downText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		TextureRegionDrawable upButton = new TextureRegionDrawable(new TextureRegion(upText));
-		TextureRegionDrawable downButton = new TextureRegionDrawable(new TextureRegion(downText));
 		
-		ShaderButtonStyle buttonStyle = new ShaderButtonStyle();
-		buttonStyle.down = downButton;
-		buttonStyle.up = upButton;
-		buttonStyle.font = font;
-		buttonStyle.shader = fontShader;
-		buttonStyle.backGroundColor = Color.WHITE;
-		buttonStyle.fontColor = Color.BLACK;
+		ShaderButtonStyle buttonStyle = skinNearest.get("menu", ShaderButtonStyle.class);
 		
 		btnPlay = new ShaderButton("Play", buttonStyle);
 		btnAbout = new ShaderButton("About", buttonStyle);
@@ -139,14 +105,7 @@ public class MenuScreen extends SionScreen {
 		btnPlay.setPosition((buttonsGroup.getWidth() - btnPlay.getWidth()) * 0.5f, 600.0f);
 		btnAbout.setPosition((buttonsGroup.getWidth() - btnAbout.getWidth()) * 0.5f, btnPlay.getY() - btnPlay.getHeight() - 30.0f);
 		
-		TextureRegionDrawable onDrawable = new TextureRegionDrawable(new TextureRegion(assets.get("data/ui/musicon.png", Texture.class)));
-		TextureRegionDrawable offDrawable = new TextureRegionDrawable(new TextureRegion(assets.get("data/ui/musicoff.png", Texture.class)));
-		
-		ImageButtonStyle imageButtonStyle = new ImageButtonStyle();
-		imageButtonStyle.up = onDrawable;
-		imageButtonStyle.disabled = offDrawable;
-		
-		btnSound = new ImageButton(imageButtonStyle);
+		btnSound = new ImageButton(skin, "music");
 		btnSound.setPosition(Env.virtualWidth, 20.0f);
 		
 		Preferences preferences = GameEnv.game.getPreferences();
@@ -168,7 +127,7 @@ public class MenuScreen extends SionScreen {
 		imgFacebook.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Env.platform.openURL("http://siondream.com");
+				Env.platform.openURL("http://facebook.com/siondream");
 			}
 		});
 		

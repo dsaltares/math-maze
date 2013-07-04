@@ -2,21 +2,15 @@ package com.siondream.math;
 
 import ashley.core.Engine;
 import ashley.core.Entity;
-import ashley.core.PooledEngine;
-import ashley.utils.IntMap.Values;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.MapLayer;
@@ -30,6 +24,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
@@ -38,10 +33,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.AbsoluteFileHandleResolver;
-import com.siondream.core.Assets;
 import com.siondream.core.Chrono;
 import com.siondream.core.Env;
+import com.siondream.core.ShaderManager;
 import com.siondream.core.SionScreen;
+import com.siondream.core.entity.components.ColorComponent;
 import com.siondream.core.entity.components.FontComponent;
 import com.siondream.core.entity.components.MapComponent;
 import com.siondream.core.entity.components.ShaderComponent;
@@ -76,11 +72,6 @@ public class GameScreen extends SionScreen {
 	private TmxMapLoader mapLoader;
 	private Level level;
 	private Chrono chrono;
-	
-	// Fonts
-	private Texture fontTexture;
-	private BitmapFont fontMap;
-	private ShaderProgram fontShader;
 	
 	// Game UI
 	private Image imgBackground;
@@ -128,8 +119,6 @@ public class GameScreen extends SionScreen {
 		super.dispose();
 		
 		Env.game.getStage().clear();
-		fontMap.dispose();
-		fontTexture.dispose();
 		
 		logger.info("shutting down");
 		
@@ -165,16 +154,9 @@ public class GameScreen extends SionScreen {
 		Engine engine = Env.game.getEngine();
 		TagSystem tagSystem = engine.getSystem(TagSystem.class);
 		GroupSystem groupSystem = engine.getSystem(GroupSystem.class);
-		
-		// Font stuff
-		fontTexture = new Texture(Gdx.files.internal("data/ui/chicken.png"), true);
-		fontTexture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		fontMap = new BitmapFont(Gdx.files.internal("data/ui/chicken.fnt"), new TextureRegion(fontTexture), false);
-		fontMap.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-		
-		fontShader = new ShaderProgram(Gdx.files.internal("data/ui/font.vert"), 
-													 Gdx.files.internal("data/ui/font.frag"));
-		
+		Skin skin = GameEnv.game.getSkin();
+		ShaderManager shaderManager = Env.game.getShaderManager();
+		TextureAtlas atlas = skin.getAtlas();
 		
 		// Map entity
 		if (level.debug) {
@@ -200,34 +182,37 @@ public class GameScreen extends SionScreen {
 		// Player entity
 		Entity player = new Entity();
 		TextureComponent texture = new TextureComponent();
-		texture.region = new TextureRegion(Env.game.getAssets().get("data/player.png", Texture.class));
+		texture.region = new TextureRegion(atlas.findRegion("player"));
 		GridPositionComponent position = new GridPositionComponent();
 		TransformComponent transform = new TransformComponent();
 		ValueComponent value = new ValueComponent();
 		FontComponent font = new FontComponent();
 		ShaderComponent shader = new ShaderComponent();
+		ColorComponent color = new ColorComponent();
 		player.add(position);
 		player.add(texture);
 		player.add(transform);
 		player.add(value);
 		player.add(font);
 		player.add(shader);
+		player.add(color);
 		engine.addEntity(player);
 		tagSystem.setTag(player, GameEnv.playerTag);
+		color.color = Color.BLACK.cpy();
 		
 		Rectangle rectangle = rectangleObject.getRectangle();
 		position.x = (int)(rectangle.x / rectangle.width);
 		position.y = tileLayer.getHeight() - (int)(rectangle.y / rectangle.height) - 1;
 		transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
 		transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
-		font.font = fontMap;
-		shader.shader = fontShader;
+		font.font = skin.getFont("gameFont");
+		shader.shader = shaderManager.get("font");
 		value.value = Integer.parseInt(properties.get("value", "0", String.class));
 		
 		// Exit entity
 		Entity exit = new Entity();
 		texture = new TextureComponent();
-		texture.region = new TextureRegion(Env.game.getAssets().get("data/exit.png", Texture.class));
+		texture.region = new TextureRegion(atlas.findRegion("exit"));
 		position = new GridPositionComponent();
 		transform = new TransformComponent();
 		exit.add(transform);
@@ -270,11 +255,12 @@ public class GameScreen extends SionScreen {
 				
 				Entity condition = new Entity();
 				texture = new TextureComponent();
-				texture.region = new TextureRegion(Env.game.getAssets().get("data/checkpoint.png", Texture.class));
+				texture.region = new TextureRegion(atlas.findRegion("checkpoint"));
 				position = new GridPositionComponent();
 				transform = new TransformComponent();
 				font = new FontComponent();
 				shader = new ShaderComponent();
+				color = new ColorComponent();
 				ConditionComponent conditionComponent = new ConditionComponent();
 				conditionComponent.conditions = conditions;
 				condition.add(texture);
@@ -283,6 +269,7 @@ public class GameScreen extends SionScreen {
 				condition.add(conditionComponent);
 				condition.add(font);
 				condition.add(shader);
+				condition.add(color);
 				engine.addEntity(condition);
 				groupSystem.register(condition, GameEnv.conditionsGroup);
 				rectangleObject = (RectangleMapObject)mapObject;
@@ -292,8 +279,9 @@ public class GameScreen extends SionScreen {
 				transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
 				transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
 				transform.position.z = 100.0f;
-				font.font = fontMap;
-				shader.shader = fontShader;
+				font.font = skin.getFont("gameFont");
+				shader.shader = shaderManager.get("font");
+				color.color = Color.BLACK.cpy();
 			}
 			else if (type.equals("operation")) {
 
@@ -311,15 +299,16 @@ public class GameScreen extends SionScreen {
 				OperationComponent operationComponent = new OperationComponent();
 				font = new FontComponent();
 				shader = new ShaderComponent();
+				color = new ColorComponent();
 				operationComponent.operation = operation;
 				operationComponent.persist = Boolean.parseBoolean(properties.get("persist", "false", String.class));
 				
 				
 				if (operationComponent.persist) {
-					texture.region = new TextureRegion(Env.game.getAssets().get("data/operation-persist.png", Texture.class));
+					texture.region = new TextureRegion(atlas.findRegion("operation-persist"));
 				}
 				else {
-					texture.region = new TextureRegion(Env.game.getAssets().get("data/operation.png", Texture.class));
+					texture.region = new TextureRegion(atlas.findRegion("operation"));
 				}
 				
 				operationEntity.add(texture);
@@ -328,6 +317,7 @@ public class GameScreen extends SionScreen {
 				operationEntity.add(transform);
 				operationEntity.add(font);
 				operationEntity.add(shader);
+				operationEntity.add(color);
 				engine.addEntity(operationEntity);
 				groupSystem.register(operationEntity, GameEnv.operationsGroup);
 				rectangleObject = (RectangleMapObject)mapObject;
@@ -336,8 +326,9 @@ public class GameScreen extends SionScreen {
 				position.y = tileLayer.getHeight() - (int)(rectangle.y / rectangle.height) - 1;
 				transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
 				transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
-				font.font = fontMap;
-				shader.shader = fontShader;
+				font.font = skin.getFont("gameFont");
+				shader.shader = shaderManager.get("font");;
+				color.color = Color.BLACK.cpy();
 			}
 		}
 		
@@ -348,27 +339,17 @@ public class GameScreen extends SionScreen {
 	
 	private void createUI() {
 		Stage stage = Env.game.getStage();
-		Assets assets = Env.game.getAssets();
+		Skin skin = GameEnv.game.getSkin();
+		Skin skinNearest = GameEnv.game.getSkinNearest();
+		TextureAtlas atlas = skin.getAtlas();
+		ShaderManager shaderManager = Env.game.getShaderManager();
 		
-		imgBackground = new Image(assets.get("data/ui/background.png", Texture.class));
-		imgLand = new Image(assets.get("data/ui/land.png", Texture.class));
-		imgTitle = new Image(assets.get("data/ui/title.png", Texture.class));
-		imgMapBackground = new Image(assets.get("data/mapBackground.png", Texture.class));
+		imgBackground = new Image(skin, "background");
+		imgLand = new Image(skin, "land");
+		imgTitle = new Image(skin, "title");
+		imgMapBackground = new Image(skin, "mapBackground");
 		
-		Texture upText = assets.get("data/ui/upButton.png", Texture.class);
-		upText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		Texture downText = assets.get("data/ui/downButton.png", Texture.class);
-		downText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		TextureRegionDrawable upButton = new TextureRegionDrawable(new TextureRegion(upText));
-		TextureRegionDrawable downButton = new TextureRegionDrawable(new TextureRegion(downText));
-		
-		ShaderButtonStyle buttonStyle = new ShaderButtonStyle();
-		buttonStyle.down = downButton;
-		buttonStyle.up = upButton;
-		buttonStyle.font = fontMap;
-		buttonStyle.shader = fontShader;
-		buttonStyle.backGroundColor = Color.WHITE;
-		buttonStyle.fontColor = Color.BLACK;
+		ShaderButtonStyle buttonStyle = skinNearest.get("menu", ShaderButtonStyle.class);
 		
 		btnPause = new ShaderButton("Pause", buttonStyle);
 		btnPause.setScale(3.25f);
@@ -382,12 +363,14 @@ public class GameScreen extends SionScreen {
 			}
 		});
 		
-		LabelStyle labelStyle = new LabelStyle(fontMap, Color.BLACK);
 		
-		lblLevel = new ShaderLabel(level.name, labelStyle, fontShader);
+		LabelStyle labelStyle = skin.get("game", LabelStyle.class);
+		ShaderProgram shader = shaderManager.get("font");
+		
+		lblLevel = new ShaderLabel(level.name, labelStyle, shader);
 		lblLevel.setFontScale(2.0f);
 		
-		lblTime = new ShaderLabel("Time: 00:00", labelStyle, fontShader);
+		lblTime = new ShaderLabel("Time: 00:00", labelStyle, shader);
 		lblTime.setFontScale(2.0f);
 		
 		
@@ -423,7 +406,7 @@ public class GameScreen extends SionScreen {
 		pauseTable.validate();
 		
 		
-		lblCompleted = new ShaderLabel("Level completed!", labelStyle, fontShader);
+		lblCompleted = new ShaderLabel("Level completed!", labelStyle, shader);
 		lblCompleted.setFontScale(3.25f);
 		lblCompleted.invalidate();
 		lblCompleted.layout();
@@ -466,8 +449,8 @@ public class GameScreen extends SionScreen {
 		victoryTable.add(btnNext).width(315.0f).height(150.0f);
 		victoryTable.validate();
 		
-		regionStarOn = new TextureRegionDrawable(new TextureRegion(assets.get("data/ui/staronbig.png", Texture.class)));
-		regionStarOff = new TextureRegionDrawable(new TextureRegion(assets.get("data/ui/staroffbig.png", Texture.class)));
+		regionStarOn = new TextureRegionDrawable(new TextureRegion(atlas.findRegion("staronbig")));
+		regionStarOff = new TextureRegionDrawable(new TextureRegion(atlas.findRegion("staroffbig")));
 		
 		stars = new Image[3];
 		

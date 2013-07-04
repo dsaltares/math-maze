@@ -12,7 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Env;
+import com.siondream.core.entity.components.ColorComponent;
 import com.siondream.core.entity.components.MapComponent;
+import com.siondream.core.entity.components.ParticleComponent;
 import com.siondream.core.entity.components.TextureComponent;
 import com.siondream.core.entity.components.TransformComponent;
 import com.siondream.core.entity.systems.TagSystem;
@@ -20,7 +22,6 @@ import com.siondream.core.tweeners.TransformTweener;
 import com.siondream.math.Condition;
 import com.siondream.math.GameEnv;
 import com.siondream.math.GameScreen;
-import com.siondream.math.LevelSelectionScreen;
 import com.siondream.math.components.ConditionComponent;
 import com.siondream.math.components.GridPositionComponent;
 import com.siondream.math.components.OperationComponent;
@@ -161,6 +162,9 @@ public class PlayerControllerSystem extends EntitySystem {
 					if (!operationComponent.persist) {
 						Env.game.getEngine().removeEntity(operation);
 					}
+					
+					TransformComponent operationTransform = operation.getComponent(TransformComponent.class);
+					spawnParticleEffect(operationTransform.position.x, operationTransform.position.y);
 				}
 				
 				return;
@@ -284,6 +288,22 @@ public class PlayerControllerSystem extends EntitySystem {
 		else {
 			destination.set(position.x + 1, position.y);
 		}
+	}
+	
+	private void spawnParticleEffect (float x, float y) {
+		Entity entity = new Entity();
+		ParticleComponent particle = new ParticleComponent();
+		ColorComponent color = new ColorComponent();
+		particle.effect = Env.game.getParticlePools().obtain("data/particles/starsParticle.project");
+		particle.effect.setPosition(x, y);
+		particle.effect.allowCompletion();
+		color.color.r = GameEnv.starsOperationColor.r;
+		color.color.g = GameEnv.starsOperationColor.g;
+		color.color.b = GameEnv.starsOperationColor.b;
+		color.color.a = GameEnv.starsOperationColor.a;
+		entity.add(particle);
+//		entity.add(color);
+		Env.game.getEngine().addEntity(entity);
 	}
 	
 	private class PlayerMoveCallback implements TweenCallback {

@@ -7,6 +7,7 @@ import ashley.utils.IntMap;
 import ashley.utils.IntMap.Values;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.MathUtils;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Env;
+import com.siondream.core.entity.components.ColorComponent;
 import com.siondream.core.entity.components.FontComponent;
 import com.siondream.core.entity.components.ShaderComponent;
 import com.siondream.core.entity.components.TextureComponent;
@@ -51,7 +53,8 @@ public class MathRenderingSystem extends RenderingSystem {
 		super.addedToEngine(engine);
 		fontEntities = engine.getEntitiesFor(Family.getFamilyFor(FontComponent.class,
 																 TextureComponent.class,
-																 TransformComponent.class));
+																 TransformComponent.class,
+																 ColorComponent.class));
 		
 		renderMap = true;
 	}
@@ -84,7 +87,9 @@ public class MathRenderingSystem extends RenderingSystem {
 			batch.begin();
 			renderWorldEntities();
 			renderFontEntities();
+			renderParticles();
 			batch.end();
+			
 			Gdx.gl.glDisable(GL11.GL_SCISSOR_TEST);
 		}
 		
@@ -121,9 +126,7 @@ public class MathRenderingSystem extends RenderingSystem {
 			TextureComponent texture = entity.getComponent(TextureComponent.class);
 			TransformComponent transform = entity.getComponent(TransformComponent.class);
 			ShaderComponent shader = entity.getComponent(ShaderComponent.class);
-			
-			float scale = font.font.getScaleX();
-			font.font.setScale(1.75f);
+			ColorComponent color = entity.getComponent(ColorComponent.class);
 			
 			boolean validEntity = false;
 			
@@ -144,7 +147,6 @@ public class MathRenderingSystem extends RenderingSystem {
 					string.delete(0, string.length());
 				
 				string.append(value.value);
-				font.font.getBounds(string, textBounds);
 				
 				validEntity = true;
 			}
@@ -152,6 +154,12 @@ public class MathRenderingSystem extends RenderingSystem {
 			if (!validEntity) {
 				continue;
 			}
+			
+			float scale = font.font.getScaleX();
+			font.font.setScale(1.75f);
+			
+			Color oldColor = font.font.getColor();
+			font.font.setColor(color.color);
 			
 			font.font.getBounds(string, textBounds);
 			
@@ -169,6 +177,7 @@ public class MathRenderingSystem extends RenderingSystem {
 			
 			if (shader != null) batch.setShader(null);
 			font.font.setScale(scale);
+			font.font.setColor(oldColor);
 		}
 	}
 	

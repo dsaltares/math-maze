@@ -1,8 +1,7 @@
 package com.siondream.math.systems;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.siondream.core.Assets;
 import com.siondream.core.Env;
 import com.siondream.core.entity.components.TextureComponent;
 import com.siondream.core.entity.systems.TagSystem;
@@ -30,24 +29,14 @@ public class CheckpointSystem extends EntitySystem {
 		
 		conditionEntities = engine.getEntitiesFor(Family.getFamilyFor(TextureComponent.class,
 																	  ConditionComponent.class));
+		
+		TextureAtlas atlas = GameEnv.game.getSkin().getAtlas();
+		open = new TextureRegion(atlas.findRegion("checkpoint-open"));
+		closed = new TextureRegion(atlas.findRegion("checkpoint"));
 	}
 	
 	@Override
 	public void update(float deltaTime) {
-		
-		if (open == null) {
-			Assets assets = Env.game.getAssets();
-			if (assets.isLoaded("data/checkpoint.png", Texture.class) &&
-				assets.isLoaded("data/checkpoint-open.png", Texture.class)) {
-				
-				open = new TextureRegion(assets.get("data/checkpoint-open.png", Texture.class));
-				closed = new TextureRegion(assets.get("data/checkpoint.png", Texture.class));
-			}
-			else {
-				return;
-			}
-		}
-		
 		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
 		Entity player = tagSystem.getEntity(GameEnv.playerTag);
 		

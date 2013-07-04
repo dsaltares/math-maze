@@ -3,15 +3,12 @@ package com.siondream.math.ui;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquations;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.siondream.core.Assets;
 import com.siondream.core.Env;
 import com.siondream.core.tweeners.ActorTweener;
+import com.siondream.math.GameEnv;
 
 public class LevelPanelsBar extends WidgetGroup {
 	
@@ -21,16 +18,10 @@ public class LevelPanelsBar extends WidgetGroup {
 	public LevelPanelsBar(int numLevels, float width, float height) {
 		super();
 		
-		Assets assets = Env.game.getAssets();
-		Texture upText = assets.get("data/ui/upButton.png", Texture.class);
-		upText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		Texture downText = assets.get("data/ui/downButton.png", Texture.class);
-		downText.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		TextureRegionDrawable upButton = new TextureRegionDrawable(new TextureRegion(upText));
-		TextureRegionDrawable downButton = new TextureRegionDrawable(new TextureRegion(downText));
+		Skin skin = GameEnv.game.getSkinNearest();
 		
-		longBar = new Image(upButton);
-		smallBar = new Image(downButton);
+		longBar = new Image(skin, "upButton");
+		smallBar = new Image(skin, "downButton");
 		
 		float fraction = numLevels / 6;
 		

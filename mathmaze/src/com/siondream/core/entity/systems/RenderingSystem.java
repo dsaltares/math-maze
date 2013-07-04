@@ -3,22 +3,31 @@ package com.siondream.core.entity.systems;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.siondream.core.Env;
+import com.siondream.core.entity.components.ColorComponent;
 import com.siondream.core.entity.components.MapComponent;
+import com.siondream.core.entity.components.ParticleComponent;
 import com.siondream.core.entity.components.TextureComponent;
 import com.siondream.core.entity.components.TransformComponent;
 
@@ -37,11 +46,14 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 	protected IntMap<Entity> mapEntities;
 	
 	private IntMap<Entity> worldEntities;
+	private IntMap<Entity> particleEntities;
 	private Array<Entity> sortedEntities;
 	private DepthSorter sorter;
 	private Box2DDebugRenderer box2DRenderer;
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer mapRenderer;
+//	private FrameBuffer particleFrameBuffer;
+//	private TextureRegion particleRegion;
 	
 	private BitmapFont debugFont;
 	
@@ -60,6 +72,9 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 													Env.drawVelocities,
 													Env.drawContacts);
 		
+//		this.particleFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+//		this.particleRegion = new TextureRegion(particleFrameBuffer.getColorBufferTexture());
+		
 		if (Env.debug) {
 			debugFont = Env.game.getAssets().get("data/ui/default.fnt", BitmapFont.class);
 		}
@@ -69,6 +84,7 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 	public void addedToEngine(Engine engine) {
 		super.addedToEngine(engine);
 		worldEntities = engine.getEntitiesFor(Family.getFamilyFor(TextureComponent.class, TransformComponent.class));
+		particleEntities = engine.getEntitiesFor(Family.getFamilyFor(ParticleComponent.class));
 		mapEntities = engine.getEntitiesFor(Family.getFamilyFor(MapComponent.class));
 	}
 
@@ -78,6 +94,7 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 		
 		batch.begin();
 		renderWorldEntities();
+		renderParticles();
 		batch.end();
 		
 		debugDraw();
@@ -93,6 +110,7 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 		batch.dispose();
 		shapeRenderer.dispose();
 		box2DRenderer.dispose();
+//		particleFrameBuffer.dispose();
 	}
 	
 	protected void renderWorldEntities() {
@@ -171,6 +189,41 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 		OrthographicCamera uiCamera = Env.game.getUICamera();
 		stage.setCamera(uiCamera);
 		stage.draw();
+	}
+	
+	protected void renderParticles() {
+//		particleFrameBuffer.begin();
+//		batch.begin();
+//		
+//		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+//		Gdx.gl.glEnable(GL10.GL_BLEND);
+		
+		Color initialColor = batch.getColor();
+		
+		Values<Entity> values = particleEntities.values();
+		
+		while (values.hasNext()) {
+			Entity entity = values.next();
+			ParticleComponent particle = entity.getComponent(ParticleComponent.class);
+			ColorComponent color = entity.getComponent(ColorComponent.class);
+			
+			if (color != null) {
+				batch.setColor(color.color);
+			}
+			
+			particle.effect.draw(batch);
+			
+			batch.setColor(initialColor);
+		}
+		
+//		batch.end();
+//		particleFrameBuffer.end();
+//		
+//		batch.setProjectionMatrix(camera.combined);
+//		batch.begin();
+//		batch.draw(particleRegion, 0.0f, 0.0f);
+//		batch.end();
 	}
 	
 	protected void debugDraw() {

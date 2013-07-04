@@ -1,33 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assets >
 	<group name="base">
-		<asset type="com.badlogic.gdx.scenes.scene2d.ui.Skin" path="data/ui/uiskin.json" />
+		<asset type="com.badlogic.gdx.scenes.scene2d.ui.Skin" path="data/ui.json" />
+		<asset type="com.badlogic.gdx.scenes.scene2d.ui.Skin" path="data/uiNearest.json" />
 		<asset type="com.badlogic.gdx.graphics.g2d.BitmapFont" path="data/ui/default.fnt" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/player.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/checkpoint.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/checkpoint-open.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/exit.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/operation.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/operation-persist.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/background.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/facebook.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/twitter.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/upButton.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/downButton.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/disabledButton.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/land.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/staron.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/staronbig.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/staroff.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/staroffbig.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/title.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/lock.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/musicon.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/ui/musicoff.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/mapBackground.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/siondream.png" />
-		<asset type="com.badlogic.gdx.graphics.Texture" path="data/libgdx.png" />
-		<asset type="com.badlogic.gdx.graphics.g2d.BitmapFont" path="data/game.fnt" />
-		<asset type="com.badlogic.gdx.maps.tiled.TiledMap" path="data/levels/level001.tmx" />
 	</group>
 </assets>

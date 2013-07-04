@@ -25,6 +25,10 @@ public class Env {
 	public static int positionIterations;
 	public static float physicsDeltaTime;
 	
+	// Particles
+	public static int particlePoolInitialCapacity;
+	public static int particlePoolMaxCapacity;
+	
 	// Debug
 	public static int debugLevel;
 	public static boolean debug;
@@ -62,6 +66,9 @@ public class Env {
 		velocityIterations = settings.getInt("velocityIterations", 6);
 		positionIterations = settings.getInt("positionIterations", 10);
 		physicsDeltaTime = settings.getFloat("physicsDeltaTime", 0.01f);
+		
+		particlePoolInitialCapacity = settings.getInt("particlePoolInitialCapacity", 5);
+		particlePoolMaxCapacity = settings.getInt("particlePoolMaxCapacity", 20);
 		
 		debugLevel = settings.getInt("debugLevel", Logger.NONE);
 		debug = debugLevel > Logger.ERROR;

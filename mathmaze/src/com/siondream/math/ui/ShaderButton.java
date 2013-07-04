@@ -8,17 +8,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.siondream.core.Env;
 
 public class ShaderButton extends Button {
 
 	public static class ShaderButtonStyle extends ButtonStyle {
-		public ShaderProgram shader;
+		public String shader;
 		public BitmapFont font;
 		public Color backGroundColor;
 		public Color fontColor;
 	}
 	
 	private Label label;
+	private ShaderProgram shader;
 	private ShaderButtonStyle style;
 	private float scale;
 	
@@ -29,13 +31,14 @@ public class ShaderButton extends Button {
 		this.label.setAlignment(Align.center);
 		this.label.setVisible(false);
 		this.scale = 1.0f;
+		this.shader = Env.game.getShaderManager().get(style.shader);
 	}
 	
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		
 		super.draw(batch, parentAlpha);
-		batch.setShader(style.shader);
+		batch.setShader(shader);
 		float oldScaleX = style.font.getScaleX();
 		float oldScaleY = style.font.getScaleY();
 		style.font.setScale(scale);

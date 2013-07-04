@@ -1,0 +1,3 @@
+<shaders>
+	<shader name="font" vertex="data/font.vert" fragment="data/font.frag" />
+</shaders>

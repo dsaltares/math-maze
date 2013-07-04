@@ -26,6 +26,12 @@
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
-		music: { disabled: musicoff, up: musicon },
+		music: { up: musicon, disabled: musicoff },
+		reset: { up: resetUp, down: resetDown },
+		back: { up: backUp, down: backDown },
+		levels: { up: levelsUp, down: levelsDown },
+		next: { up: nextUp, down: nextDown },
+		pause: { up: pauseUp, down: pauseDown },
+		resume: { up: resumeUp, down: resumeDown },
 	},
 }

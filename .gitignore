@@ -5,3 +5,6 @@ mathmaze-desktop/bin/
 mathmaze-html/war/assets/
 mathmaze-html/gwt-unitCache/gwt-unitCache-0000013E927F7B1C
 mathmaze-html/gwt-unitCache/
+art/textures/*.png
+art/nearest/*.png
+art/tiles/*.png

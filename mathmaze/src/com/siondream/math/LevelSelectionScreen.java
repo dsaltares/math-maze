@@ -148,6 +148,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		imgTitle.setPosition((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight + imgTitle.getHeight());
 		imgTitle.setOrigin(imgTitle.getWidth() * 0.5f, imgTitle.getHeight() * 0.5f);
 		imgTitle.setRotation(10.0f);
+		imgLand.setY(-imgLand.getHeight());
 	}
 	
 	@Override
@@ -246,6 +247,9 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		};
 		
 		timeline.beginSequence()
+				.push(Tween.to(imgLand, ActorTweener.Position, 0.25f)
+						   .target(0.0f, 0.0f, 0.0f)
+						   .ease(TweenEquations.easeInOutQuad))
 				.push(Tween.to(imgTitle, ActorTweener.Position, 0.4f)
 				      	   .target((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight - imgTitle.getHeight() - 60.0f)
 						   .ease(TweenEquations.easeInOutQuad))

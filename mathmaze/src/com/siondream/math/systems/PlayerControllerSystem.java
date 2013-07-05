@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Env;
 import com.siondream.core.entity.components.ColorComponent;
@@ -26,7 +27,6 @@ import com.siondream.math.components.ConditionComponent;
 import com.siondream.math.components.GridPositionComponent;
 import com.siondream.math.components.OperationComponent;
 import com.siondream.math.components.ValueComponent;
-import com.siondream.math.ui.ShaderButton;
 
 import ashley.core.Engine;
 import ashley.core.Entity;
@@ -116,7 +116,7 @@ public class PlayerControllerSystem extends EntitySystem {
 			Actor actor = stage.hit(mouseScenePos.x, mouseScenePos.y, true);
 			Class<?> actorClass = actor != null ? actor.getClass() : null;
 			
-			if (actorClass != null && actorClass == ShaderButton.class) {
+			if (actorClass != null && Button.class.isAssignableFrom(actorClass)) {
 				return;
 			}
 			

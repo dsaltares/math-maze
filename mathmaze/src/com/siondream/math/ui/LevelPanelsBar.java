@@ -35,7 +35,7 @@ public class LevelPanelsBar extends WidgetGroup {
 	}
 	
 	public void scroll(int panel) {
-		Tween.to(smallBar, ActorTweener.Position, 0.6f)
+		Tween.to(smallBar, ActorTweener.Position, 0.3f)
 			 .target(panel * smallBar.getWidth(), smallBar.getY())
 			 .ease(TweenEquations.easeInOutQuad)
 			 .start(Env.game.getTweenManager());

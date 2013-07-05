@@ -532,22 +532,22 @@ public class GameScreen extends SionScreen {
 		
 		timeline.beginSequence()
 					// Animate in sequence
-					.push(Tween.to(imgLand, ActorTweener.Position, 0.5f)
+					.push(Tween.to(imgLand, ActorTweener.Position, 0.20f)
 							   .target(0.0f, 0.0f, 0.0f)
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(imgTitle, ActorTweener.Position, 0.4f)
+					.push(Tween.to(imgTitle, ActorTweener.Position, 0.2f)
 				      	   .target((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight - imgTitle.getHeight() - 60.0f)
 						   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.4f)
+					.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.2f)
 					      	   .target(1.0f, 1.0f, 1.0f, 1.0f)
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(lblLevel, ActorTweener.Position, 0.4f)
+					.push(Tween.to(lblLevel, ActorTweener.Position, 0.2f)
 							   .target(20.0f, lblLevel.getY())
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(lblTime, ActorTweener.Position, 0.4f)
+					.push(Tween.to(lblTime, ActorTweener.Position, 0.2f)
 							   .target(Env.virtualWidth - lblTime.getWidth() * lblTime.getFontScaleX() - 20.0f, lblTime.getY())
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(controlTable, ActorTweener.Position, 0.40f)
+					.push(Tween.to(controlTable, ActorTweener.Position, 0.2f)
 							   .target(controlTable.getX(), 20.0f)
 							   .ease(TweenEquations.easeInOutQuad))
 				.end()
@@ -572,7 +572,7 @@ public class GameScreen extends SionScreen {
 		
 		timeline.beginSequence();
 		
-		timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.20f)
+		timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.12f)
 				   		   .target(controlTable.getX(), -controlTable.getHeight())
 				   		   .ease(TweenEquations.easeInOutQuad))
 				.push(Tween.to(lblTime, ActorTweener.Position, 0.1f)
@@ -583,7 +583,7 @@ public class GameScreen extends SionScreen {
 						   .ease(TweenEquations.easeInOutQuad));
 		
 		if (state == State.VICTORY) {
-			timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.2f)
+			timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.12f)
 								.target(victoryTable.getX(), -victoryTable.getHeight())
 								.ease(TweenEquations.easeInOutQuad));
 			
@@ -593,26 +593,26 @@ public class GameScreen extends SionScreen {
 				
 				star.setVisible(true);
 				
-				timeline.push(Tween.to(star, ActorTweener.Scale, 0.16f)
+				timeline.push(Tween.to(star, ActorTweener.Scale, 0.12f)
 								   .target(0.0f, 0.0f)
 								   .ease(TweenEquations.easeInQuad)
 								   .delay(0.08f * i));
 			}
 			timeline.end();
 			
-			timeline.push(Tween.to(lblCompleted, ActorTweener.Position, 0.2f)
+			timeline.push(Tween.to(lblCompleted, ActorTweener.Position, 0.12f)
 					.target(Env.virtualWidth, lblCompleted.getY())
 					.ease(TweenEquations.easeInOutQuad));
 		}
 		
-		timeline.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.4f)
+		timeline.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.2f)
 						   .target(1.0f, 1.0f, 1.0f, 0.0f)
 						   .ease(TweenEquations.easeInOutQuad));
 		
-		timeline.push(Tween.to(imgTitle, ActorTweener.Position, 0.25f)
+		timeline.push(Tween.to(imgTitle, ActorTweener.Position, 0.12f)
 						   .target((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight + imgTitle.getHeight())
 						   .ease(TweenEquations.easeInOutQuad))
-				.push(Tween.to(imgLand, ActorTweener.Position, 0.20f)
+				.push(Tween.to(imgLand, ActorTweener.Position, 0.12f)
 						   .target(imgLand.getX(), -imgLand.getHeight())
 						   .ease(TweenEquations.easeInOutQuad))		  
 				.end()
@@ -723,10 +723,10 @@ public class GameScreen extends SionScreen {
 		timeline.beginSequence();
 		
 		
-		timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.20f)
+		timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.12f)
 						   .target(controlTable.getX(), -controlTable.getHeight())
 						   .ease(TweenEquations.easeInOutQuad))
-				.push(Tween.to(lblCompleted, ActorTweener.Position, 0.4f)
+				.push(Tween.to(lblCompleted, ActorTweener.Position, 0.2f)
 						   .target((Env.virtualWidth - lblCompleted.getWidth() * lblCompleted.getFontScaleX()) * 0.5f, lblCompleted.getY())
 						   .ease(TweenEquations.easeInQuad));
 		
@@ -746,7 +746,7 @@ public class GameScreen extends SionScreen {
 		timeline.end();
 		
 		
-		timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.4f)
+		timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.25f)
 						   .target(victoryTable.getX(), 20.0f)
 						   .ease(TweenEquations.easeInQuad));
 		

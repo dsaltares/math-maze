@@ -7,13 +7,13 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
@@ -26,9 +26,7 @@ import com.siondream.core.tweeners.ActorTweener;
 import com.siondream.math.LevelManager.Level;
 import com.siondream.math.ui.LevelButton;
 import com.siondream.math.ui.LevelButton.LevelButtonStyle;
-import com.siondream.math.ui.ShaderButton.ShaderButtonStyle;
 import com.siondream.math.ui.LevelPanelsBar;
-import com.siondream.math.ui.ShaderButton;
 import com.siondream.math.ui.ShaderLabel;
 
 public class LevelSelectionScreen extends SionScreen implements GestureListener {
@@ -43,7 +41,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	private Image imgLand;
 	private Image imgTitle;
 	private ShaderLabel lblPick;
-	private ShaderButton btnBack;
+	private ImageButton btnBack;
 	private LevelPanelsBar levelsBar;
 	private WidgetGroup levelsGroup;
 	private GestureDetector gestureDetector;
@@ -100,12 +98,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		lblPick = new ShaderLabel("Pick a level", labelStyle, Env.game.getShaderManager().get("font"));
 		lblPick.setFontScale(2.0f);
 		
-		ShaderButtonStyle buttonStyle = skinNearest.get("menu", ShaderButtonStyle.class);
-		
-		btnBack = new ShaderButton("Back", buttonStyle);
-		btnBack.setScale(3.25f);
-		btnBack.setWidth(400.0f);
-		btnBack.setHeight(125.0f);
+		btnBack = new ImageButton(skin, "back");
 		
 		btnBack.addListener(new ClickListener() {
 			@Override

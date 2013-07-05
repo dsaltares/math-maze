@@ -4,14 +4,14 @@ filter: Linear,Linear
 repeat: none
 resetUp
   rotate: false
-  xy: 1756, 385
+  xy: 724, 360
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
   index: -1
 nextUp
   rotate: false
-  xy: 1273, 494
+  xy: 1576, 584
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
@@ -25,35 +25,35 @@ siondream
   index: -1
 backUp
   rotate: false
-  xy: 724, 521
+  xy: 1046, 521
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
   index: -1
 musicoff
   rotate: false
-  xy: 1207, 360
+  xy: 1207, 464
   size: 102, 102
   orig: 102, 102
   offset: 0, 0
   index: -1
 operation-persist
   rotate: false
-  xy: 1917, 659
+  xy: 1737, 716
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 levelsDown
   rotate: false
-  xy: 1756, 546
+  xy: 885, 521
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
   index: -1
 resumeUp
   rotate: false
-  xy: 1434, 385
+  xy: 1850, 385
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
@@ -67,23 +67,23 @@ staroff
   index: -1
 staroffbig
   rotate: false
-  xy: 1265, 655
-  size: 151, 145
-  orig: 151, 145
+  xy: 1642, 385
+  size: 206, 197
+  orig: 206, 197
   offset: 0, 0
   index: -1
 checkpoint
   rotate: false
-  xy: 1199, 596
+  xy: 1964, 773
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 staronbig
   rotate: false
-  xy: 1046, 521
-  size: 151, 145
-  orig: 151, 145
+  xy: 1434, 385
+  size: 206, 197
+  orig: 206, 197
   offset: 0, 0
   index: -1
 mapBackground
@@ -95,21 +95,21 @@ mapBackground
   index: -1
 levelsUp
   rotate: false
-  xy: 1595, 546
+  xy: 724, 521
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
   index: -1
 pauseDown
   rotate: false
-  xy: 1046, 360
+  xy: 1415, 584
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
   index: -1
 pauseUp
   rotate: false
-  xy: 885, 360
+  xy: 1046, 360
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
@@ -123,21 +123,21 @@ land
   index: -1
 operation
   rotate: false
-  xy: 1917, 593
+  xy: 1737, 650
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 backDown
   rotate: false
-  xy: 885, 521
+  xy: 1207, 598
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
   index: -1
 resumeDown
   rotate: false
-  xy: 1595, 385
+  xy: 1850, 546
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
@@ -151,7 +151,7 @@ title
   index: -1
 lock
   rotate: false
-  xy: 1983, 593
+  xy: 1803, 584
   size: 45, 55
   orig: 45, 55
   offset: 0, 0
@@ -165,14 +165,14 @@ background
   index: -1
 twitter
   rotate: false
-  xy: 1917, 385
+  xy: 1207, 360
   size: 102, 102
   orig: 102, 102
   offset: 0, 0
   index: -1
 facebook
   rotate: false
-  xy: 1311, 390
+  xy: 1311, 494
   size: 102, 102
   orig: 102, 102
   offset: 0, 0
@@ -186,35 +186,35 @@ libgdx
   index: -1
 exit
   rotate: false
-  xy: 1199, 530
+  xy: 1964, 707
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 resetDown
   rotate: false
-  xy: 724, 360
+  xy: 885, 360
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
   index: -1
 checkpoint-open
   rotate: false
-  xy: 1199, 662
+  xy: 1964, 839
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 1207, 464
+  xy: 1737, 584
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 nextDown
   rotate: false
-  xy: 1434, 546
+  xy: 1803, 707
   size: 159, 159
   orig: 159, 159
   offset: 0, 0
@@ -228,7 +228,7 @@ staron
   index: -1
 musicon
   rotate: false
-  xy: 1917, 489
+  xy: 1311, 390
   size: 102, 102
   orig: 102, 102
   offset: 0, 0

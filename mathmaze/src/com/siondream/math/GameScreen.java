@@ -56,9 +56,7 @@ import com.siondream.math.components.ValueComponent;
 import com.siondream.math.systems.CameraControllerSystem;
 import com.siondream.math.systems.MathRenderingSystem;
 import com.siondream.math.systems.PlayerControllerSystem;
-import com.siondream.math.ui.ShaderButton;
 import com.siondream.math.ui.ShaderLabel;
-import com.siondream.math.ui.ShaderButton.ShaderButtonStyle;
 
 public class GameScreen extends SionScreen {
 
@@ -440,12 +438,12 @@ public class GameScreen extends SionScreen {
 		});
 		
 		victoryTable = new Table();
-		victoryTable.setSize(GameEnv.cameraWidth, btnVictoryNext.getHeight());
-		victoryTable.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + 30.0f);
+		victoryTable.setSize(Env.virtualWidth, btnVictoryNext.getHeight());
+		victoryTable.setPosition(0.0f, -victoryTable.getHeight());
 		victoryTable.row();
 		victoryTable.add(btnVictoryReset).padRight(30.0f);
 		victoryTable.add(btnVictoryNext).padRight(30.0f);
-		victoryTable.add(btnVictoryMenu).padRight(30.0f);
+		victoryTable.add(btnVictoryMenu);
 		victoryTable.validate();
 		
 		regionStarOn = new TextureRegionDrawable(new TextureRegion(atlas.findRegion("staronbig")));
@@ -461,7 +459,7 @@ public class GameScreen extends SionScreen {
 			
 			float padding = 20.0f;
 			float startX = (GameEnv.cameraWidth - (star.getWidth() * stars.length) - (padding * (stars.length - 1))) * 0.5f;
-			star.setPosition(startX + (star.getWidth() + padding) * i, 600.0f);
+			star.setPosition(startX + (star.getWidth() + padding) * i, 550.0f);
 			star.setScale(0.0f);
 			star.setVisible(false);
 		}
@@ -586,7 +584,7 @@ public class GameScreen extends SionScreen {
 		
 		if (state == State.VICTORY) {
 			timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.2f)
-								.target(Env.virtualWidth, victoryTable.getY())
+								.target(victoryTable.getX(), -victoryTable.getHeight())
 								.ease(TweenEquations.easeInOutQuad));
 			
 			timeline.beginParallel();
@@ -660,6 +658,7 @@ public class GameScreen extends SionScreen {
 		btnPause.setStyle(GameEnv.game.getSkin().get("resume", ImageButtonStyle.class));
 		Engine engine = Env.game.getEngine();
 		engine.getSystem(PlayerControllerSystem.class).enable(false);
+		engine.getSystem(MathRenderingSystem.class).setRenderMap(false);
 		
 		Timeline timeline = Timeline.createSequence();
 		
@@ -686,6 +685,7 @@ public class GameScreen extends SionScreen {
 					state = State.GAME;
 					Engine engine = Env.game.getEngine();
 					engine.getSystem(PlayerControllerSystem.class).enable(true);
+					engine.getSystem(MathRenderingSystem.class).setRenderMap(true);
 				}
 			}
 		};
@@ -747,7 +747,7 @@ public class GameScreen extends SionScreen {
 		
 		
 		timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.4f)
-						   .target((Env.virtualWidth - victoryTable.getWidth()) * 0.5f, victoryTable.getY())
+						   .target(victoryTable.getX(), 20.0f)
 						   .ease(TweenEquations.easeInQuad));
 		
 		timeline.end()

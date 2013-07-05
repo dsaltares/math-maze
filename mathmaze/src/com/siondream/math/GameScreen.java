@@ -24,6 +24,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -79,19 +81,21 @@ public class GameScreen extends SionScreen {
 	private Image imgTitle;
 	private Image imgMapBackground;
 	private WidgetGroup labelsGroup;
-	private ShaderButton btnPause;
 	private ShaderLabel lblTime;
+	private ShaderLabel lblPause;
 	private ShaderLabel lblLevel;
 	
-	// Pause UI
-	private Table pauseTable;
-	private ShaderButton btnReset;
-	private ShaderButton btnBack;
+	// Control buttons
+	private ImageButton btnPause;
+	private ImageButton btnMenu;
+	private ImageButton btnReset;
+	private Table controlTable;
 	
 	// Victory UI
 	private ShaderLabel lblCompleted;
-	private ShaderButton btnRetry;
-	private ShaderButton btnNext;
+	private ImageButton btnVictoryReset;
+	private ImageButton btnVictoryNext;
+	private ImageButton btnVictoryMenu;
 	private Table victoryTable;
 	private Image[] stars;
 	private TextureRegionDrawable regionStarOn;
@@ -340,7 +344,6 @@ public class GameScreen extends SionScreen {
 	private void createUI() {
 		Stage stage = Env.game.getStage();
 		Skin skin = GameEnv.game.getSkin();
-		Skin skinNearest = GameEnv.game.getSkinNearest();
 		TextureAtlas atlas = skin.getAtlas();
 		ShaderManager shaderManager = Env.game.getShaderManager();
 		
@@ -349,12 +352,9 @@ public class GameScreen extends SionScreen {
 		imgTitle = new Image(skin, "title");
 		imgMapBackground = new Image(skin, "mapBackground");
 		
-		ShaderButtonStyle buttonStyle = skinNearest.get("menu", ShaderButtonStyle.class);
-		
-		btnPause = new ShaderButton("Pause", buttonStyle);
-		btnPause.setScale(3.25f);
-		btnPause.setWidth(400.0f);
-		btnPause.setHeight(125.0f);
+		btnPause = new ImageButton(skin, "pause");
+		btnMenu = new ImageButton(skin, "levels");
+		btnReset = new ImageButton(skin, "reset");
 		
 		btnPause.addListener(new ClickListener() {
 			@Override
@@ -363,6 +363,27 @@ public class GameScreen extends SionScreen {
 			}
 		});
 		
+		btnMenu.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				animateOut(LevelSelectionScreen.class);
+			}
+		});
+		
+		btnReset.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				animateOut(GameScreen.class);
+			}
+		});
+		
+		controlTable = new Table();
+		controlTable.setSize(Env.virtualWidth, btnPause.getHeight());
+		controlTable.row();
+		controlTable.add(btnReset).padRight(20.0f);
+		controlTable.add(btnPause).padRight(20.0f);
+		controlTable.add(btnMenu).padRight(20.0f);
+		controlTable.validate();
 		
 		LabelStyle labelStyle = skin.get("game", LabelStyle.class);
 		ShaderProgram shader = shaderManager.get("font");
@@ -373,38 +394,8 @@ public class GameScreen extends SionScreen {
 		lblTime = new ShaderLabel("Time: 00:00", labelStyle, shader);
 		lblTime.setFontScale(2.0f);
 		
-		
-		btnReset = new ShaderButton("Reset", buttonStyle);
-		btnReset.setScale(4.25f);
-		btnReset.validate();
-		
-		btnReset.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				animateOut(GameScreen.class);
-			}
-		});
-		
-		btnBack = new ShaderButton("Menu", buttonStyle);
-		btnBack.setScale(4.25f);
-		btnBack.validate();
-		
-		btnBack.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				animateOut(LevelSelectionScreen.class);
-			}
-		});
-
-		pauseTable = new Table();
-		pauseTable.setSize(GameEnv.cameraWidth, GameEnv.cameraHeight);
-		pauseTable.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y);
-		pauseTable.row();
-		pauseTable.add(btnReset).width(650.0f).height(150.0f).center().padBottom(30.0f);
-		pauseTable.row();
-		pauseTable.add(btnBack).width(650.0f).height(150.0f).center();
-		pauseTable.validate();
-		
+		lblPause = new ShaderLabel("Paused", labelStyle, shader);
+		lblPause.setFontScale(2.0f);
 		
 		lblCompleted = new ShaderLabel("Level completed!", labelStyle, shader);
 		lblCompleted.setFontScale(3.25f);
@@ -412,20 +403,27 @@ public class GameScreen extends SionScreen {
 		lblCompleted.layout();
 		lblCompleted.setPosition(Env.virtualWidth, 850);
 		
-		btnRetry = new ShaderButton("Retry", buttonStyle);
-		btnRetry.setScale(3.25f);
+		btnVictoryReset = new ImageButton(skin, "reset");
 		
-		btnRetry.addListener(new ClickListener() {
+		btnVictoryReset.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				animateOut(GameScreen.class);
 			}
 		});
 		
-		btnNext = new ShaderButton("Next", buttonStyle);
-		btnNext.setScale(3.25f);
+		btnVictoryMenu = new ImageButton(skin, "levels");
 		
-		btnNext.addListener(new ClickListener() {
+		btnVictoryMenu.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				animateOut(LevelSelectionScreen.class);
+			}
+		});
+		
+		btnVictoryNext = new ImageButton(skin, "next");
+		
+		btnVictoryNext.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				Array<Level> levels = GameEnv.game.getLevelManager().getLevels();
@@ -442,11 +440,12 @@ public class GameScreen extends SionScreen {
 		});
 		
 		victoryTable = new Table();
-		victoryTable.setSize(GameEnv.cameraWidth, 200.0f);
-		victoryTable.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y);
+		victoryTable.setSize(GameEnv.cameraWidth, btnVictoryNext.getHeight());
+		victoryTable.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + 30.0f);
 		victoryTable.row();
-		victoryTable.add(btnRetry).width(315.0f).height(150.0f).padRight(30.0f);
-		victoryTable.add(btnNext).width(315.0f).height(150.0f);
+		victoryTable.add(btnVictoryReset).padRight(30.0f);
+		victoryTable.add(btnVictoryNext).padRight(30.0f);
+		victoryTable.add(btnVictoryMenu).padRight(30.0f);
 		victoryTable.validate();
 		
 		regionStarOn = new TextureRegionDrawable(new TextureRegion(atlas.findRegion("staronbig")));
@@ -475,12 +474,13 @@ public class GameScreen extends SionScreen {
 		stage.addActor(imgLand);
 		stage.addActor(imgTitle);
 		stage.addActor(imgMapBackground);
-		stage.addActor(btnPause);
 		stage.addActor(lblTime);
+		stage.addActor(lblPause);
 		stage.addActor(lblLevel);
-		stage.addActor(pauseTable);
+		stage.addActor(controlTable);
 		stage.addActor(victoryTable);
 		stage.addActor(lblCompleted);
+		stage.addActor(controlTable);
 		
 		for (Image star : stars) {
 			stage.addActor(star);
@@ -490,11 +490,13 @@ public class GameScreen extends SionScreen {
 		imgTitle.setOrigin(imgTitle.getWidth() * 0.5f, imgTitle.getHeight() * 0.5f);
 		imgTitle.setRotation(10.0f);
 		imgLand.setPosition(0.0f, - imgLand.getHeight());
-		btnPause.setPosition((Env.virtualWidth - btnPause.getWidth()) * 0.5f, -btnPause.getHeight());
 		lblTime.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + GameEnv.cameraHeight + 10.0f);
+		lblPause.setPosition(Env.virtualWidth - lblPause.getWidth() * lblPause.getFontScaleX() - 20.0f, GameEnv.cameraScreenPos.y + GameEnv.cameraHeight + 10.0f);
+		lblPause.setColor(0.0f, 0.0f, 0.0f, 0.0f);
 		lblLevel.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + GameEnv.cameraHeight + 10.0f);
 		imgMapBackground.setY(GameEnv.cameraScreenPos.y - 5.0f);
 		imgMapBackground.setColor(1.0f, 1.0f, 1.0f, 0.0f);
+		controlTable.setPosition(0.0f, -controlTable.getHeight());
 		
 		chrono.reset();
 		chrono.pause();
@@ -547,8 +549,8 @@ public class GameScreen extends SionScreen {
 					.push(Tween.to(lblTime, ActorTweener.Position, 0.4f)
 							   .target(Env.virtualWidth - lblTime.getWidth() * lblTime.getFontScaleX() - 20.0f, lblTime.getY())
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(btnPause, ActorTweener.Position, 0.40f)
-							   .target((Env.virtualWidth - btnPause.getWidth()) * 0.5f, 50.0f)
+					.push(Tween.to(controlTable, ActorTweener.Position, 0.40f)
+							   .target(controlTable.getX(), 20.0f)
 							   .ease(TweenEquations.easeInOutQuad))
 				.end()
 				.setCallback(callback)
@@ -572,8 +574,8 @@ public class GameScreen extends SionScreen {
 		
 		timeline.beginSequence();
 		
-		timeline.push(Tween.to(btnPause, ActorTweener.Position, 0.20f)
-				   		   .target((Env.virtualWidth - btnPause.getWidth()) * 0.5f, -btnPause.getHeight())
+		timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.20f)
+				   		   .target(controlTable.getX(), -controlTable.getHeight())
 				   		   .ease(TweenEquations.easeInOutQuad))
 				.push(Tween.to(lblTime, ActorTweener.Position, 0.1f)
 						   .target(Env.virtualWidth, lblTime.getY())
@@ -582,40 +584,32 @@ public class GameScreen extends SionScreen {
 						   .target(Env.virtualWidth, lblLevel.getY())
 						   .ease(TweenEquations.easeInOutQuad));
 		
-		if (state == State.PAUSE) {
-			timeline.push(Tween.to(pauseTable, ActorTweener.Position, 0.2f)
-					.target(Env.virtualWidth, pauseTable.getY())
+		if (state == State.VICTORY) {
+			timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.2f)
+								.target(Env.virtualWidth, victoryTable.getY())
+								.ease(TweenEquations.easeInOutQuad));
+			
+			timeline.beginParallel();
+			for (int i = 0; i < stars.length; ++i) {
+				Image star = stars[i];
+				
+				star.setVisible(true);
+				
+				timeline.push(Tween.to(star, ActorTweener.Scale, 0.16f)
+								   .target(0.0f, 0.0f)
+								   .ease(TweenEquations.easeInQuad)
+								   .delay(0.08f * i));
+			}
+			timeline.end();
+			
+			timeline.push(Tween.to(lblCompleted, ActorTweener.Position, 0.2f)
+					.target(Env.virtualWidth, lblCompleted.getY())
 					.ease(TweenEquations.easeInOutQuad));
 		}
-		else {
-			
-			if (state == State.VICTORY) {
-				timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.2f)
-									.target(Env.virtualWidth, victoryTable.getY())
-									.ease(TweenEquations.easeInOutQuad));
-				
-				timeline.beginParallel();
-				for (int i = 0; i < stars.length; ++i) {
-					Image star = stars[i];
-					
-					star.setVisible(true);
-					
-					timeline.push(Tween.to(star, ActorTweener.Scale, 0.16f)
-									   .target(0.0f, 0.0f)
-									   .ease(TweenEquations.easeInQuad)
-									   .delay(0.08f * i));
-				}
-				timeline.end();
-				
-				timeline.push(Tween.to(lblCompleted, ActorTweener.Position, 0.2f)
-						.target(Env.virtualWidth, lblCompleted.getY())
-						.ease(TweenEquations.easeInOutQuad));
-			}
-			
-			timeline.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.4f)
-							   .target(1.0f, 1.0f, 1.0f, 0.0f)
-							   .ease(TweenEquations.easeInOutQuad));
-		}
+		
+		timeline.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.4f)
+						   .target(1.0f, 1.0f, 1.0f, 0.0f)
+						   .ease(TweenEquations.easeInOutQuad));
 		
 		timeline.push(Tween.to(imgTitle, ActorTweener.Position, 0.25f)
 						   .target((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight + imgTitle.getHeight())
@@ -663,31 +657,26 @@ public class GameScreen extends SionScreen {
 	private void pauseIn() {
 		chrono.pause();
 		state = State.PAUSE;
-		btnPause.setText("Resume");
+		btnPause.setStyle(GameEnv.game.getSkin().get("resume", ImageButtonStyle.class));
 		Engine engine = Env.game.getEngine();
 		engine.getSystem(PlayerControllerSystem.class).enable(false);
-		engine.getSystem(MathRenderingSystem.class).setRenderMap(false);
 		
 		Timeline timeline = Timeline.createSequence();
 		
 		timeline.beginSequence()
-					.push(Tween.to(lblTime, ActorTweener.Position, 0.2f)
-							   .target(Env.virtualWidth, lblTime.getY())
+					.push(Tween.to(lblTime, ActorTweener.Color, 0.2f)
+							   .target(0.0f, 0.0f, 0.0f, 0.0f)
 						       .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(lblLevel, ActorTweener.Position, 0.2f)
-						   .target(Env.virtualWidth, lblLevel.getY())
+					.push(Tween.to(lblPause, ActorTweener.Color, 0.2f)
+						   .target(0.0f, 0.0f, 0.0f, 1.0f)
 						   .ease(TweenEquations.easeInOutQuad))	       
-					.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.4f)
-					      	   .target(1.0f, 1.0f, 1.0f, 0.0f)
-							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(pauseTable, ActorTweener.Position, 0.4f)
-							   .target(GameEnv.cameraScreenPos.x, pauseTable.getY())
-							   .ease(TweenEquations.easeInOutQuad))
 				.end()
 				.start(Env.game.getTweenManager());
 	}
 	
 	private void pauseOut() {
+		btnPause.setStyle(GameEnv.game.getSkin().get("pause", ImageButtonStyle.class));
+		
 		TweenCallback callback = new TweenCallback() {
 
 			@Override
@@ -695,10 +684,8 @@ public class GameScreen extends SionScreen {
 				if (type == TweenCallback.COMPLETE) {
 					chrono.start();
 					state = State.GAME;
-					btnPause.setText("Pause");
 					Engine engine = Env.game.getEngine();
 					engine.getSystem(PlayerControllerSystem.class).enable(true);
-					engine.getSystem(MathRenderingSystem.class).setRenderMap(true);
 				}
 			}
 		};
@@ -706,17 +693,11 @@ public class GameScreen extends SionScreen {
 		Timeline timeline = Timeline.createSequence();
 		
 		timeline.beginSequence()
-					.push(Tween.to(pauseTable, ActorTweener.Position, 0.2f)
-							   .target(Env.virtualWidth, pauseTable.getY())
+					.push(Tween.to(lblPause, ActorTweener.Color, 0.2f)
+					      	   .target(0.0f, 0.0f, 0.0f, 0.0f)
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.2f)
-					      	   .target(1.0f, 1.0f, 1.0f, 1.0f)
-							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(lblLevel, ActorTweener.Position, 0.2f)
-							   .target(20.0f, lblLevel.getY())
-							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(lblTime, ActorTweener.Position, 0.2f)
-							   .target(Env.virtualWidth - lblTime.getWidth() * lblTime.getFontScaleX() - 20.0f, lblTime.getY())
+					.push(Tween.to(lblTime, ActorTweener.Color, 0.2f)
+							   .target(0.0f, 0.0f, 0.0f, 1.0f)
 							   .ease(TweenEquations.easeInOutQuad))
 				.end()
 				.setCallback(callback)
@@ -742,8 +723,8 @@ public class GameScreen extends SionScreen {
 		timeline.beginSequence();
 		
 		
-		timeline.push(Tween.to(btnPause, ActorTweener.Position, 0.20f)
-						   .target((Env.virtualWidth - btnPause.getWidth()) * 0.5f, -btnPause.getHeight())
+		timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.20f)
+						   .target(controlTable.getX(), -controlTable.getHeight())
 						   .ease(TweenEquations.easeInOutQuad))
 				.push(Tween.to(lblCompleted, ActorTweener.Position, 0.4f)
 						   .target((Env.virtualWidth - lblCompleted.getWidth() * lblCompleted.getFontScaleX()) * 0.5f, lblCompleted.getY())

@@ -28,7 +28,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		logger = new Logger(TAG, Env.debugLevel);
 		
 		manager = new AssetManager();
-		manager.setErrorListener(this);
+		//manager.setErrorListener(this);
 		manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 		manager.setLoader(PhysicsData.class, new PhysicsLoader(new InternalFileHandleResolver()));
 		manager.setLoader(AnimationData.class, new AnimationLoader(new InternalFileHandleResolver()));
@@ -100,7 +100,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	
 	@Override
 	public void error(String fileName, Class type, Throwable throwable) {
-		logger.error("error loading " + fileName);
+		logger.error("error loading " + fileName + " message: " + throwable.getMessage());
 	}
 	
 	private void loadGroups(String assetFile) {

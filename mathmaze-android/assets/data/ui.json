@@ -12,6 +12,11 @@
 		falling: { font: gameFont },
 		game: { font: gameFont, fontColor: black },
 	},
+	
+	com.siondream.math.ui.ShaderLabel$ShaderLabelStyle: {
+		falling: { font: gameFont, fontColor: red, shader: "font"},
+		game: { font: gameFont, fontColor: black, shader: "font" },
+	},
 
 
 	com.badlogic.gdx.scenes.scene2d.ui.Image: {

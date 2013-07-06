@@ -6,11 +6,9 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 import aurelienribon.tweenengine.TweenManager;
 
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.siondream.core.Env;
@@ -25,8 +23,8 @@ public class FallingLabelManager {
 	private String[] operators = {"+", "-", "x", "/", "%"};
 	private boolean fadingOut;
 	
-	public FallingLabelManager(LabelStyle style, ShaderProgram shader) {
-		labelsPool = new LabelPool(GameEnv.mathLabelsMaxCount, style, shader);
+	public FallingLabelManager() {
+		labelsPool = new LabelPool(GameEnv.mathLabelsMaxCount);
 		labels = new Array<ShaderLabel>();
 		timeUntilNextSpawn = 0.0f;
 		fadingOut = false;
@@ -99,19 +97,14 @@ public class FallingLabelManager {
 	}
 	
 	private class LabelPool extends Pool<ShaderLabel> {
-
-		private LabelStyle style;
-		private ShaderProgram shader;
 		
-		public LabelPool(int maxSize, LabelStyle style, ShaderProgram shader) {
+		public LabelPool(int maxSize) {
 			super(maxSize);
-			this.style = style;
-			this.shader = shader;
 		}
 		
 		@Override
 		protected ShaderLabel newObject() {
-			return new ShaderLabel("", style, shader);
+			return new ShaderLabel("", GameEnv.game.getSkin(), "falling");
 		}
 		
 	}

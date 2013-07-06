@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -94,8 +93,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		imgLand = new Image(skin, "land");
 		imgTitle = new Image(skin, "title");
 		
-		LabelStyle labelStyle = skin.get("game", LabelStyle.class);
-		lblPick = new ShaderLabel("Pick a level", labelStyle, Env.game.getShaderManager().get("font"));
+		lblPick = new ShaderLabel("Pick a level", skin, "game");
 		lblPick.setFontScale(2.0f);
 		
 		btnBack = new ImageButton(skin, "back");

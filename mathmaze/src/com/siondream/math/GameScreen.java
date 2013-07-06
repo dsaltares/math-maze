@@ -12,7 +12,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -28,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -343,8 +341,7 @@ public class GameScreen extends SionScreen {
 		Stage stage = Env.game.getStage();
 		Skin skin = GameEnv.game.getSkin();
 		TextureAtlas atlas = skin.getAtlas();
-		ShaderManager shaderManager = Env.game.getShaderManager();
-		
+
 		imgBackground = new Image(skin, "background");
 		imgLand = new Image(skin, "land");
 		imgTitle = new Image(skin, "title");
@@ -383,19 +380,16 @@ public class GameScreen extends SionScreen {
 		controlTable.add(btnMenu).padRight(20.0f);
 		controlTable.validate();
 		
-		LabelStyle labelStyle = skin.get("game", LabelStyle.class);
-		ShaderProgram shader = shaderManager.get("font");
-		
-		lblLevel = new ShaderLabel(level.name, labelStyle, shader);
+		lblLevel = new ShaderLabel(level.name, skin, "game");
 		lblLevel.setFontScale(2.0f);
 		
-		lblTime = new ShaderLabel("Time: 00:00", labelStyle, shader);
+		lblTime = new ShaderLabel("Time: 00:00", skin, "game");
 		lblTime.setFontScale(2.0f);
 		
-		lblPause = new ShaderLabel("Paused", labelStyle, shader);
+		lblPause = new ShaderLabel("Paused", skin, "game");
 		lblPause.setFontScale(2.0f);
 		
-		lblCompleted = new ShaderLabel("Level completed!", labelStyle, shader);
+		lblCompleted = new ShaderLabel("Level completed!", skin, "game");
 		lblCompleted.setFontScale(3.25f);
 		lblCompleted.invalidate();
 		lblCompleted.layout();

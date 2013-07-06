@@ -8,10 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.siondream.core.Assets;
 import com.siondream.core.Env;
-import com.siondream.core.ShaderManager;
 import com.siondream.core.SionGame;
 import com.siondream.core.entity.systems.AnimationSystem;
 import com.siondream.core.entity.systems.DisposingSystem;
@@ -125,10 +123,7 @@ public class MathMaze extends SionGame {
 		fontTexture = fontRegion.getTexture();
 		fontTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		ShaderManager shaderManager = Env.game.getShaderManager();	
-		
-		labelManager = new FallingLabelManager(skin.get("falling", LabelStyle.class),
-											   shaderManager.get("font"));
+		labelManager = new FallingLabelManager();
 	}
 
 	public Preferences getPreferences() {

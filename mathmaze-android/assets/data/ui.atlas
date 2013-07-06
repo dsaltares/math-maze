@@ -152,8 +152,8 @@ title
 lock
   rotate: false
   xy: 1803, 584
-  size: 45, 55
-  orig: 45, 55
+  size: 45, 53
+  orig: 45, 53
   offset: 0, 0
   index: -1
 background

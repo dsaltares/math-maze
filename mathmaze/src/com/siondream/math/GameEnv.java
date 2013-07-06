@@ -29,6 +29,7 @@ public class GameEnv {
 	public static float playerMoveCooldown;
 	public static float playerMoveTime;
 	public static int playerMaxValue;
+	public static int playerVibrateTimeMs;
 	
 	private static String TAG = "GameGlobals";
 	private static Settings settings;
@@ -61,6 +62,7 @@ public class GameEnv {
 		playerMoveCooldown = settings.getFloat("playerMoveCooldown", 0.2f);
 		playerMoveTime = settings.getFloat("playerMoveTime", 0.f);
 		playerMaxValue = settings.getInt("playerMaxValue", 1000);
+		playerVibrateTimeMs = settings.getInt("playerVibrateTimeMs", 250);
 		
 		mathLabelsMaxCount = settings.getInt("mathLabelMaxCount", 20);
 		mathLabelsSpawnTime = settings.getFloat("mathLabelSpawnTime", 0.5f);

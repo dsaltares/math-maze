@@ -157,6 +157,7 @@ public class PlayerControllerSystem extends EntitySystem {
 				if (Math.abs(newValue) < GameEnv.playerMaxValue) {
 					value.value = newValue;
 					Env.game.getEngine().getSystem(CameraControllerSystem.class).startShakeEffect(((int)destination.x - position.x) != 0);
+					Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
 					moving = true;
 					
 					if (!operationComponent.persist) {
@@ -171,6 +172,7 @@ public class PlayerControllerSystem extends EntitySystem {
 			}
 			
 			if (isExitAt(destination)) {
+				Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
 				GameEnv.game.getScreen(GameScreen.class).victory();
 				return;
 			}

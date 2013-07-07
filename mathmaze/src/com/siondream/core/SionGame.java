@@ -47,6 +47,7 @@ public class SionGame extends Game implements InputProcessor {
 	private float accumulator;
 	private ParticleEffectPools particlePools;
 	private ShaderManager shaderManager;
+	private EntityFactory entityFactory;
 	
 	@Override
 	public void create() {
@@ -90,6 +91,7 @@ public class SionGame extends Game implements InputProcessor {
 		languageManager = new LanguageManager("data/lang", Locale.getDefault().getLanguage());
 		particlePools = new ParticleEffectPools();
 		shaderManager = new ShaderManager();
+		entityFactory = new EntityFactory();
 	}
 
 	@Override
@@ -241,6 +243,10 @@ public class SionGame extends Game implements InputProcessor {
 	
 	public ShaderManager getShaderManager() {
 		return shaderManager;
+	}
+	
+	public EntityFactory getEntityFactory() {
+		return entityFactory;
 	}
 	
 	private void performScreenChange() {

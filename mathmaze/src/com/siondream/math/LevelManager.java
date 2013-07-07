@@ -81,23 +81,13 @@ public class LevelManager {
 		public String name;
 		public int stars;
 		public boolean unlocked;
-		public boolean debug;
-		
-		public Level(String file) {
-			this.file = file;
-			this.assetGroup = "base";
-			this.name = "test";
-			this.stars = 0;
-			this.debug = true;
-		}
-		
+
 		public Level(String file, String assetGroup, String name, int stars, boolean unlocked) {
 			this.file = file;
 			this.assetGroup = assetGroup;
 			this.name = name;
 			this.stars = stars;
 			this.unlocked = unlocked;
-			this.debug = false;
 		}
 		
 		@Override

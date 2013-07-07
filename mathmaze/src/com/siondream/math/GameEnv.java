@@ -9,9 +9,13 @@ import com.siondream.core.Settings;
 public class GameEnv {
 	public static MathMaze game;
 	
+	public static String debugMap = "";
+	
 	public static final String mapTag = "map";
 	public static final String playerTag = "player";
 	public static final String exitTag = "exit";
+	public static final String conditionTag = "condition";
+	public static final String operationTag = "operation";
 	public static final String conditionsGroup = "conditions";
 	public static final String operationsGroup = "operations";
 	public static final String objectLayer = "objects";

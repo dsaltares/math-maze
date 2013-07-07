@@ -9,17 +9,12 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -32,25 +27,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.siondream.core.AbsoluteFileHandleResolver;
 import com.siondream.core.Chrono;
+import com.siondream.core.EntityFactory;
 import com.siondream.core.Env;
-import com.siondream.core.ShaderManager;
 import com.siondream.core.SionScreen;
-import com.siondream.core.entity.components.ColorComponent;
-import com.siondream.core.entity.components.FontComponent;
 import com.siondream.core.entity.components.MapComponent;
-import com.siondream.core.entity.components.ShaderComponent;
-import com.siondream.core.entity.components.TextureComponent;
-import com.siondream.core.entity.components.TransformComponent;
-import com.siondream.core.entity.systems.GroupSystem;
 import com.siondream.core.entity.systems.TagSystem;
 import com.siondream.core.tweeners.ActorTweener;
 import com.siondream.math.LevelManager.Level;
-import com.siondream.math.components.ConditionComponent;
-import com.siondream.math.components.GridPositionComponent;
-import com.siondream.math.components.OperationComponent;
-import com.siondream.math.components.ValueComponent;
+import com.siondream.math.creators.ConditionCreator.ConditionParams;
+import com.siondream.math.creators.ExitCreator.ExitParams;
+import com.siondream.math.creators.OperationCreator.OperationParams;
+import com.siondream.math.creators.PlayerCreator.PlayerParams;
 import com.siondream.math.systems.CameraControllerSystem;
 import com.siondream.math.systems.MathRenderingSystem;
 import com.siondream.math.systems.PlayerControllerSystem;
@@ -67,7 +55,6 @@ public class GameScreen extends SionScreen {
 	}
 	
 	private Logger logger;
-	private TmxMapLoader mapLoader;
 	private Level level;
 	private Chrono chrono;
 	
@@ -151,187 +138,50 @@ public class GameScreen extends SionScreen {
 	}
 	
 	private void initGame() {
-		Engine engine = Env.game.getEngine();
-		TagSystem tagSystem = engine.getSystem(TagSystem.class);
-		GroupSystem groupSystem = engine.getSystem(GroupSystem.class);
-		Skin skin = GameEnv.game.getSkin();
-		ShaderManager shaderManager = Env.game.getShaderManager();
-		TextureAtlas atlas = skin.getAtlas();
+		EntityFactory factory = Env.game.getEntityFactory();
 		
-		// Map entity
-		if (level.debug) {
-			mapLoader = new TmxMapLoader(new AbsoluteFileHandleResolver());
-		}
-		else {
-			mapLoader = new TmxMapLoader();
-		}
-		
-		Entity map = new Entity();
-		MapComponent mapComponent = new MapComponent();
-		mapComponent.map = mapLoader.load(level.file);
-		map.add(mapComponent);
-		engine.addEntity(map);
-		tagSystem.setTag(map, GameEnv.mapTag);
+		Entity map = factory.createEntity(GameEnv.mapTag, GameEnv.debugMap.length() > 0 ? GameEnv.debugMap : level.file);
+		MapComponent mapComponent = map.getComponent(MapComponent.class);
 		
 		// Relevant layers
 		MapLayer objectLayer = mapComponent.map.getLayers().get(GameEnv.objectLayer);
-		TiledMapTileLayer tileLayer = (TiledMapTileLayer)mapComponent.map.getLayers().get(GameEnv.backgroundLayer);
-		RectangleMapObject rectangleObject = (RectangleMapObject)objectLayer.getObjects().get(GameEnv.playerTag);
-		MapProperties properties = rectangleObject.getProperties();
 		
 		// Player entity
-		Entity player = new Entity();
-		TextureComponent texture = new TextureComponent();
-		texture.region = new TextureRegion(atlas.findRegion("player"));
-		GridPositionComponent position = new GridPositionComponent();
-		TransformComponent transform = new TransformComponent();
-		ValueComponent value = new ValueComponent();
-		FontComponent font = new FontComponent();
-		ShaderComponent shader = new ShaderComponent();
-		ColorComponent color = new ColorComponent();
-		player.add(position);
-		player.add(texture);
-		player.add(transform);
-		player.add(value);
-		player.add(font);
-		player.add(shader);
-		player.add(color);
-		engine.addEntity(player);
-		tagSystem.setTag(player, GameEnv.playerTag);
-		color.color = Color.BLACK.cpy();
-		
-		Rectangle rectangle = rectangleObject.getRectangle();
-		position.x = (int)(rectangle.x / rectangle.width);
-		position.y = tileLayer.getHeight() - (int)(rectangle.y / rectangle.height) - 1;
-		transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
-		transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
-		font.font = skin.getFont("gameFont");
-		shader.shader = shaderManager.get("font");
-		value.value = Integer.parseInt(properties.get("value", "0", String.class));
-		
+		PlayerParams playerParams = new PlayerParams(mapComponent.map,
+													 objectLayer.getObjects().get(GameEnv.playerTag));
+		Entity player = factory.createEntity(GameEnv.playerTag, playerParams);
+
 		// Exit entity
-		Entity exit = new Entity();
-		texture = new TextureComponent();
-		texture.region = new TextureRegion(atlas.findRegion("exit"));
-		position = new GridPositionComponent();
-		transform = new TransformComponent();
-		exit.add(transform);
-		exit.add(texture);
-		exit.add(position);
-		engine.addEntity(exit);
-		tagSystem.setTag(exit, GameEnv.exitTag);
-		rectangleObject = (RectangleMapObject)objectLayer.getObjects().get(GameEnv.exitTag);
-		rectangle = rectangleObject.getRectangle();
-		position.x = (int)(rectangle.x / rectangle.width);
-		position.y = tileLayer.getHeight() - (int)(rectangle.y / rectangle.height) - 1;
-		transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
-		transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
+		ExitParams exitParams = new ExitParams(mapComponent.map,
+											   objectLayer.getObjects().get(GameEnv.exitTag));
+		factory.createEntity(GameEnv.exitTag, exitParams);
 		
 		// Load conditions and operations
 		MapObjects mapObjects = objectLayer.getObjects();
 		int numObjects = mapObjects.getCount();
 		
+		ConditionParams conditionParams = new ConditionParams(mapComponent.map, null);
+		OperationParams operationParams = new OperationParams(mapComponent.map, null);
+		
 		for (int i = 0; i < numObjects; ++i) {
 			MapObject mapObject = mapObjects.get(i);
-			properties = mapObject.getProperties();
+			MapProperties properties = mapObject.getProperties();
 			String type = properties.get("type", "Unknown", String.class);
 			String name = mapObject.getName();
-			String[] parts = name.split(":");
 			
 			logger.info("processing " + name);
 			
 			if (type.equals("condition")) {
-				
-				if (parts.length < 2 || parts.length % 2 != 0) {
-					logger.error("invalid condition entity " + name);
-					continue;
-				}
-				
-				Array<Condition> conditions = new Array<Condition>();
-				
-				for (int j = 0; j < parts.length; j = j + 2) {
-					conditions.add(new Condition(parts[j], Integer.parseInt(parts[j + 1])));
-				}
-				
-				Entity condition = new Entity();
-				texture = new TextureComponent();
-				texture.region = new TextureRegion(atlas.findRegion("checkpoint"));
-				position = new GridPositionComponent();
-				transform = new TransformComponent();
-				font = new FontComponent();
-				shader = new ShaderComponent();
-				color = new ColorComponent();
-				ConditionComponent conditionComponent = new ConditionComponent();
-				conditionComponent.conditions = conditions;
-				condition.add(texture);
-				condition.add(position);
-				condition.add(transform);
-				condition.add(conditionComponent);
-				condition.add(font);
-				condition.add(shader);
-				condition.add(color);
-				engine.addEntity(condition);
-				groupSystem.register(condition, GameEnv.conditionsGroup);
-				rectangleObject = (RectangleMapObject)mapObject;
-				rectangle = rectangleObject.getRectangle();
-				position.x = (int)(rectangle.x / rectangle.width);
-				position.y = tileLayer.getHeight() - (int)(rectangle.y / rectangle.height) - 1;
-				transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
-				transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
-				transform.position.z = 100.0f;
-				font.font = skin.getFont("gameFont");
-				shader.shader = shaderManager.get("font");
-				color.color = Color.BLACK.cpy();
+				conditionParams.object = mapObject;
+				factory.createEntity(GameEnv.conditionTag, conditionParams);
 			}
 			else if (type.equals("operation")) {
-
-				if (parts.length != 2) {
-					logger.error("invalid operation entity " + name);
-					continue;
-				}
-				
-				Operation operation = new Operation(parts[0], Integer.parseInt(parts[1]));
-				
-				Entity operationEntity = new Entity();
-				texture = new TextureComponent();
-				position = new GridPositionComponent();
-				transform = new TransformComponent();
-				OperationComponent operationComponent = new OperationComponent();
-				font = new FontComponent();
-				shader = new ShaderComponent();
-				color = new ColorComponent();
-				operationComponent.operation = operation;
-				operationComponent.persist = Boolean.parseBoolean(properties.get("persist", "false", String.class));
-				
-				
-				if (operationComponent.persist) {
-					texture.region = new TextureRegion(atlas.findRegion("operation-persist"));
-				}
-				else {
-					texture.region = new TextureRegion(atlas.findRegion("operation"));
-				}
-				
-				operationEntity.add(texture);
-				operationEntity.add(position);
-				operationEntity.add(operationComponent);
-				operationEntity.add(transform);
-				operationEntity.add(font);
-				operationEntity.add(shader);
-				operationEntity.add(color);
-				engine.addEntity(operationEntity);
-				groupSystem.register(operationEntity, GameEnv.operationsGroup);
-				rectangleObject = (RectangleMapObject)mapObject;
-				rectangle = rectangleObject.getRectangle();
-				position.x = (int)(rectangle.x / rectangle.width);
-				position.y = tileLayer.getHeight() - (int)(rectangle.y / rectangle.height) - 1;
-				transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
-				transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
-				font.font = skin.getFont("gameFont");
-				shader.shader = shaderManager.get("font");;
-				color.color = Color.BLACK.cpy();
+				operationParams.object = mapObject;
+				factory.createEntity(GameEnv.operationTag, operationParams);
 			}
 		}
 		
+		Engine engine = Env.game.getEngine();
 		engine.getSystem(CameraControllerSystem.class).setTarget(player);
 		engine.getSystem(MathRenderingSystem.class).setRenderMap(false);
 		engine.getSystem(PlayerControllerSystem.class).enable(false);
@@ -708,7 +558,7 @@ public class GameScreen extends SionScreen {
 		
 		int numStars = getStars();
 		
-		if (level.stars < numStars && !level.debug) {
+		if (level.stars < numStars && GameEnv.debugMap.length() == 0) {
 			GameEnv.game.getLevelManager().saveStars(level, numStars);
 		}
 		

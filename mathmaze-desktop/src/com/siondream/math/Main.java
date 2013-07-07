@@ -15,8 +15,9 @@ public class Main {
 		cfg.height = 960;
 		
 		Env.platform = new DesktopResolver();
+		GameEnv.debugMap = args.length > 0 ? args[0] : "";
 		
-		MathMaze game = new MathMaze(args.length > 0 ? args[0] : "");
+		MathMaze game = new MathMaze();
 		
 		new LwjglApplication(game, cfg);
 	}

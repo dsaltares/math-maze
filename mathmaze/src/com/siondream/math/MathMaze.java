@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.siondream.core.Assets;
+import com.siondream.core.EntityFactory;
 import com.siondream.core.Env;
 import com.siondream.core.SionGame;
 import com.siondream.core.entity.systems.AnimationSystem;
@@ -17,7 +18,11 @@ import com.siondream.core.entity.systems.GroupSystem;
 import com.siondream.core.entity.systems.ParticleEffectSystem;
 import com.siondream.core.entity.systems.PhysicsSystem;
 import com.siondream.core.entity.systems.TagSystem;
-import com.siondream.math.LevelManager.Level;
+import com.siondream.math.creators.ConditionCreator;
+import com.siondream.math.creators.ExitCreator;
+import com.siondream.math.creators.MapCreator;
+import com.siondream.math.creators.OperationCreator;
+import com.siondream.math.creators.PlayerCreator;
 import com.siondream.math.systems.CameraControllerSystem;
 import com.siondream.math.systems.CheckpointSystem;
 import com.siondream.math.systems.MathRenderingSystem;
@@ -39,18 +44,9 @@ public class MathMaze extends SionGame {
 	private Preferences preferences;
 	private LevelManager levelManager;
 	private FallingLabelManager labelManager;
-	private String mapFile;
+
 	private Skin skin;
 	private Skin skinNearest;
-	
-	public MathMaze() {
-		this("");
-	}
-	
-	public MathMaze(String mapFile) {
-		super();
-		this.mapFile = mapFile;
-	}
 	
 	@Override
 	public void create() {		
@@ -106,9 +102,7 @@ public class MathMaze extends SionGame {
 		this.addScreen(new MenuScreen());
 		this.addScreen(new SplashScreen());
 		
-		if (mapFile.length() > 0) {
-			Level level = new Level(mapFile);
-			getScreen(GameScreen.class).setLevel(level);
+		if (GameEnv.debugMap.length() > 0) {
 			this.setScreen(GameScreen.class);
 		}
 		else {
@@ -124,6 +118,13 @@ public class MathMaze extends SionGame {
 		fontTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		labelManager = new FallingLabelManager();
+		
+		EntityFactory entityFactory = getEntityFactory();
+		entityFactory.addCreator(GameEnv.playerTag, new PlayerCreator());
+		entityFactory.addCreator(GameEnv.exitTag, new ExitCreator());
+		entityFactory.addCreator(GameEnv.operationTag, new OperationCreator());
+		entityFactory.addCreator(GameEnv.conditionTag, new ConditionCreator());
+		entityFactory.addCreator(GameEnv.mapTag, new MapCreator());
 	}
 
 	public Preferences getPreferences() {

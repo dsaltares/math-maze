@@ -230,7 +230,7 @@ public class GameScreen extends SionScreen {
 		controlTable.add(btnMenu).padRight(20.0f);
 		controlTable.validate();
 		
-		lblLevel = new ShaderLabel(level.name, skin, "game");
+		lblLevel = new ShaderLabel(GameEnv.debugMap.length() > 0 ? "Test level" : level.name, skin, "game");
 		lblLevel.setFontScale(2.0f);
 		
 		lblTime = new ShaderLabel("Time: 00:00", skin, "game");
@@ -558,7 +558,7 @@ public class GameScreen extends SionScreen {
 		
 		int numStars = getStars();
 		
-		if (level.stars < numStars && GameEnv.debugMap.length() == 0) {
+		if (GameEnv.debugMap.length() == 0 && level.stars < numStars) {
 			GameEnv.game.getLevelManager().saveStars(level, numStars);
 		}
 		

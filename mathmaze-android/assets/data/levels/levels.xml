@@ -8,11 +8,11 @@
  <level name="Level 6" file="data/levels/level006.tmx" />
  <level name="Level 7" file="data/levels/level007.tmx" />
  <level name="Level 8" file="data/levels/level008.tmx" />
- <level name="Level 9" file="data/levels/level001.tmx" />
- <level name="Level 10" file="data/levels/level001.tmx" />
- <level name="Level 11" file="data/levels/level001.tmx" />
- <level name="Level 12" file="data/levels/level001.tmx" />
- <level name="Level 13" file="data/levels/level001.tmx" />
+ <level name="Level 9" file="data/levels/level009.tmx" />
+ <level name="Level 10" file="data/levels/level010.tmx" />
+ <level name="Level 11" file="data/levels/level011.tmx" />
+ <level name="Level 12" file="data/levels/level012.tmx" />
+ <level name="Level 13" file="data/levels/level013.tmx" />
  <level name="Level 14" file="data/levels/level001.tmx" />
  <level name="Level 15" file="data/levels/level001.tmx" />
  <level name="Level 16" file="data/levels/level001.tmx" />

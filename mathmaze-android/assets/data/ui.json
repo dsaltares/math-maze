@@ -38,5 +38,7 @@
 		next: { up: nextUp, down: nextDown },
 		pause: { up: pauseUp, down: pauseDown },
 		resume: { up: resumeUp, down: resumeDown },
+		play: { up: playUp, down: playDown },
+		info: { up: infoUp, down: infoDown },
 	},
 }

@@ -20,8 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.siondream.core.Env;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
-import com.siondream.math.ui.ShaderButton;
-import com.siondream.math.ui.ShaderButton.ShaderButtonStyle;
 
 public class MenuScreen extends SionScreen {
 	
@@ -30,11 +28,11 @@ public class MenuScreen extends SionScreen {
 	private Image imgBackground;
 	private Image imgLand;
 	private Image imgTitle;
-	private WidgetGroup buttonsGroup;
 	private Table socialTable;
-	private ShaderButton btnPlay;
-	private ShaderButton btnAbout;
+	private Table buttonsTable;
 	private ImageButton btnSound;
+	private ImageButton btnInfo;
+	private ImageButton btnPlay;
 	
 	public MenuScreen() {
 		super();
@@ -69,7 +67,6 @@ public class MenuScreen extends SionScreen {
 	private void createUI() {
 		Stage stage = Env.game.getStage();
 		Skin skin = GameEnv.game.getSkin();
-		Skin skinNearest = GameEnv.game.getSkinNearest();
 		
 		imgBackground = new Image(skin, "background");
 		imgLand = new Image(skin, "land");
@@ -78,16 +75,9 @@ public class MenuScreen extends SionScreen {
 		
 		imgTitle = new Image(skin, "title");
 		
-		
-		ShaderButtonStyle buttonStyle = skinNearest.get("menu", ShaderButtonStyle.class);
-		
-		btnPlay = new ShaderButton("Play", buttonStyle);
-		btnAbout = new ShaderButton("About", buttonStyle);
-		
-		btnPlay.setScale(4.25f);
-		btnPlay.setSize(650.0f, 150.0f);
-		btnAbout.setScale(3.25f);
-		btnAbout.setSize(400.0f, 125.0f);
+		btnPlay = new ImageButton(skin, "play");
+		btnInfo = new ImageButton(skin, "info");
+		btnSound = new ImageButton(skin, "music");
 		
 		socialTable = new Table();
 		socialTable.row();
@@ -97,16 +87,16 @@ public class MenuScreen extends SionScreen {
 		socialTable.setWidth(imgFacebook.getWidth() + 20.0f + imgTwitter.getWidth());
 		socialTable.setHeight(imgFacebook.getHeight());
 		
-		buttonsGroup = new WidgetGroup();
-		buttonsGroup.setSize(Env.virtualWidth, Env.virtualHeight);
-		buttonsGroup.addActor(btnPlay);
-		buttonsGroup.addActor(btnAbout);
+		buttonsTable = new Table();
+		buttonsTable.row();
+		buttonsTable.add(btnInfo).padBottom(20.0f);
+		buttonsTable.row();
+		buttonsTable.add(btnSound);
+		buttonsTable.validate();
+		buttonsTable.setSize(btnInfo.getWidth(), btnInfo.getHeight() + btnSound.getHeight() + 20.0f);
 		
-		btnPlay.setPosition((buttonsGroup.getWidth() - btnPlay.getWidth()) * 0.5f, 600.0f);
-		btnAbout.setPosition((buttonsGroup.getWidth() - btnAbout.getWidth()) * 0.5f, btnPlay.getY() - btnPlay.getHeight() - 30.0f);
-		
-		btnSound = new ImageButton(skin, "music");
-		btnSound.setPosition(Env.virtualWidth, 20.0f);
+		btnPlay.setPosition((Env.virtualWidth - btnPlay.getWidth()) * 0.5f, -btnPlay.getHeight());
+		buttonsTable.setPosition(Env.virtualWidth + buttonsTable.getWidth() * 0.5f,  20.0f + buttonsTable.getHeight() * 0.5f);
 		
 		Preferences preferences = GameEnv.game.getPreferences();
 		btnSound.setDisabled(!preferences.getBoolean("soundEnabled", true));
@@ -116,10 +106,10 @@ public class MenuScreen extends SionScreen {
 		stage.addActor(imgBackground);
 		stage.addActor(labelsGroup);
 		stage.addActor(imgTitle);
-		stage.addActor(buttonsGroup);
+		stage.addActor(btnPlay);
 		stage.addActor(imgLand);
+		stage.addActor(buttonsTable);
 		stage.addActor(socialTable);
-		stage.addActor(btnSound);
 		
 		
 		GameEnv.game.getLabelManager().setGroup(labelsGroup);
@@ -160,7 +150,6 @@ public class MenuScreen extends SionScreen {
 		imgTitle.setOrigin(imgTitle.getWidth() * 0.5f, imgTitle.getHeight() * 0.5f);
 		imgTitle.setRotation(10.0f);
 		imgLand.setPosition(0.0f, - imgLand.getHeight());
-		buttonsGroup.setPosition(0.0f, -Env.virtualHeight);
 		socialTable.setPosition(-socialTable.getWidth(), 20.0f);
 	}
 	
@@ -183,6 +172,7 @@ public class MenuScreen extends SionScreen {
 			public void onEvent(int type, BaseTween<?> source) {
 				if (type == TweenCallback.COMPLETE) {
 					animateTitle();
+					animatePlay();
 				}
 			}
 		};
@@ -195,15 +185,15 @@ public class MenuScreen extends SionScreen {
 					.push(Tween.to(imgTitle, ActorTweener.Position, 0.2f)
 							   .target((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight - imgTitle.getHeight() - 60.0f)
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(buttonsGroup, ActorTweener.Position, 0.30f)
-							   .target(0.0f, 0.0f)
+					.push(Tween.to(btnPlay, ActorTweener.Position, 0.30f)
+							   .target(btnPlay.getX(), (Env.virtualHeight - btnPlay.getHeight()) * 0.5f)
 							   .ease(TweenEquations.easeInOutQuad))
 					.beginParallel()
 					.push(Tween.to(socialTable, ActorTweener.Position, 0.12f)
 							   .target(20.0f, 20.0f)
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(btnSound, ActorTweener.Position, 0.12f)
-							   .target(Env.virtualWidth - btnSound.getWidth() - 20.0f, btnSound.getY())
+					.push(Tween.to(buttonsTable, ActorTweener.Position, 0.12f)
+							   .target(Env.virtualWidth - buttonsTable.getWidth() * 0.5f - 20.0f, buttonsTable.getY())
 							   .ease(TweenEquations.easeInOutQuad))
 					.end()
 				.end()
@@ -229,12 +219,12 @@ public class MenuScreen extends SionScreen {
 						.push(Tween.to(socialTable, ActorTweener.Position, 0.05f)
 								   .target(-socialTable.getWidth(), 20.0f)
 								   .ease(TweenEquations.easeInOutQuad))
-						.push(Tween.to(btnSound, ActorTweener.Position, 0.25f)
-								   .target(Env.virtualWidth, btnSound.getY())
+						.push(Tween.to(buttonsTable, ActorTweener.Position, 0.25f)
+								   .target(Env.virtualWidth + buttonsTable.getWidth() * 0.5f, buttonsTable.getY())
 								   .ease(TweenEquations.easeInOutQuad))
 					.end()
-					.push(Tween.to(buttonsGroup, ActorTweener.Position, 0.20f)
-							   .target(0.0f, -buttonsGroup.getHeight())
+					.push(Tween.to(btnPlay, ActorTweener.Position, 0.20f)
+							   .target(btnPlay.getX(), -btnPlay.getHeight())
 							   .ease(TweenEquations.easeInOutQuad))
 					.push(Tween.to(imgLand, ActorTweener.Position, 0.12f)
 						   .target(0.0f, -imgLand.getHeight())
@@ -262,4 +252,18 @@ public class MenuScreen extends SionScreen {
 				.start(Env.game.getTweenManager());
 	}
 
+	private void animatePlay() {
+		Timeline timeline = Timeline.createSequence();
+
+		timeline.beginSequence()
+				.push(Tween.to(btnPlay, ActorTweener.Scale, 0.5f)
+						   .target(1.5f, 1.5f)
+						   .ease(TweenEquations.easeInOutQuad))
+				.push(Tween.to(btnPlay, ActorTweener.Scale, 0.5f)
+						   .target(0.8f, 0.8f)
+						   .ease(TweenEquations.easeInOutQuad))
+				.end()
+				.repeat(Tween.INFINITY, 0.1f)
+				.start(Env.game.getTweenManager());
+	}
 }

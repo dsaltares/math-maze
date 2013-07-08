@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.siondream.core.Env;
@@ -271,6 +272,8 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 			debugFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 			debugFont.draw(batch, fpsText, Env.virtualWidth - bounds.width - 20.0f, 20.0f);
 			batch.end();
+			
+			Table.drawDebug(Env.game.getStage());
 		}
 	}
 	

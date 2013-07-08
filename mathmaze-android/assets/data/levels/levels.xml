@@ -14,8 +14,8 @@
  <level name="Level 12" file="data/levels/level012.tmx" />
  <level name="Level 13" file="data/levels/level013.tmx" />
  <level name="Level 14" file="data/levels/level014.tmx" />
- <level name="Level 15" file="data/levels/level001.tmx" />
- <level name="Level 16" file="data/levels/level001.tmx" />
- <level name="Level 17" file="data/levels/level001.tmx" />
- <level name="Level 18" file="data/levels/level001.tmx" />
+ <level name="Level 15" file="data/levels/level015.tmx" />
+ <level name="Level 16" file="data/levels/level016.tmx" />
+ <level name="Level 17" file="data/levels/level017.tmx" />
+ <level name="Level 18" file="data/levels/level018.tmx" />
 </map>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <levels>
- <level name="Template" file="data/levels/template.tmx" />
  <level name="Level 1" file="data/levels/level001.tmx" />
  <level name="Level 2" file="data/levels/level002.tmx" />
  <level name="Level 3" file="data/levels/level003.tmx" />

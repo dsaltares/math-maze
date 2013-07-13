@@ -9,6 +9,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
@@ -78,6 +79,8 @@ public class GameScreen extends SionScreen {
 	
 	// Victory UI
 	private ShaderLabel lblCompleted;
+	private ShaderLabel lblVictoryMsg;
+	private String[] victoryMsgs;
 	private ImageButton btnVictoryReset;
 	private ImageButton btnVictoryNext;
 	private ImageButton btnVictoryMenu;
@@ -93,6 +96,11 @@ public class GameScreen extends SionScreen {
 		
 		logger.info("initialising");
 		chrono = new Chrono();
+		
+		victoryMsgs = new String[3];
+		victoryMsgs[0] = "Well done!";
+		victoryMsgs[1] = "Awesome!";
+		victoryMsgs[2] = "You're a star!";
 	}
 	
 	public String getName() {
@@ -257,6 +265,10 @@ public class GameScreen extends SionScreen {
 		lblCompleted.layout();
 		lblCompleted.setPosition(Env.virtualWidth, 850);
 		
+		lblVictoryMsg = new ShaderLabel("Good job!", skin, "game");
+		lblVictoryMsg.setFontScale(3.0f);
+		lblVictoryMsg.setPosition(Env.virtualWidth, 400.0f);
+		
 		btnVictoryReset = new ImageButton(skin, "reset");
 		
 		btnVictoryReset.addListener(new ClickListener() {
@@ -334,6 +346,7 @@ public class GameScreen extends SionScreen {
 		stage.addActor(controlTable);
 		stage.addActor(victoryTable);
 		stage.addActor(lblCompleted);
+		stage.addActor(lblVictoryMsg);
 		stage.addActor(controlTable);
 		
 		for (Image star : stars) {
@@ -456,9 +469,13 @@ public class GameScreen extends SionScreen {
 			}
 			timeline.end();
 			
+			timeline.push(Tween.to(lblVictoryMsg, ActorTweener.Position, 0.12f)
+							   .target(Env.virtualWidth, lblVictoryMsg.getY())
+							   .ease(TweenEquations.easeInOutQuad));
+			
 			timeline.push(Tween.to(lblCompleted, ActorTweener.Position, 0.12f)
-					.target(Env.virtualWidth, lblCompleted.getY())
-					.ease(TweenEquations.easeInOutQuad));
+							   .target(Env.virtualWidth, lblCompleted.getY())
+							   .ease(TweenEquations.easeInOutQuad));
 		}
 		
 		timeline.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.2f)
@@ -570,6 +587,9 @@ public class GameScreen extends SionScreen {
 		
 		int numStars = getStars();
 		
+		lblVictoryMsg.setText(victoryMsgs[numStars - 1]);
+		TextBounds bounds = lblVictoryMsg.getTextBounds();
+		
 		if (GameEnv.debugMap.length() == 0 && level.stars < numStars) {
 			GameEnv.game.getLevelManager().saveStars(level, numStars);
 		}
@@ -601,6 +621,9 @@ public class GameScreen extends SionScreen {
 		}
 		timeline.end();
 		
+		timeline.push(Tween.to(lblVictoryMsg, ActorTweener.Position, 0.25f)
+						   .target((Env.virtualWidth - bounds.width) * 0.5f, lblVictoryMsg.getY())
+						   .ease(TweenEquations.easeInQuad));
 		
 		timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.25f)
 						   .target(victoryTable.getX(), 20.0f)

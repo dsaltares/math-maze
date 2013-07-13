@@ -278,6 +278,7 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 			}
 			
 			engine.removeEntity(keyEntity);
+			Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
 		}
 		
 		if (isExitAt(destination)) {

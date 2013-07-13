@@ -133,7 +133,6 @@ public class GameScreen extends SionScreen {
 	@Override
 	public void show() {
 		super.show();
-		Env.game.getTweenManager().killAll();
 		initGame();
 		createUI();
 		animateIn();

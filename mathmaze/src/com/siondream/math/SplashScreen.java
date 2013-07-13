@@ -33,8 +33,6 @@ public class SplashScreen extends SionScreen {
 	}
 	
 	private void init() {
-		Env.game.getTweenManager().killAll();
-		
 		createUI();
 		animateSiondream();
 	}
@@ -69,17 +67,6 @@ public class SplashScreen extends SionScreen {
 	
 	private void animateSiondream() {
 
-		
-		TweenCallback libgdxCallback = new TweenCallback() {
-
-			@Override
-			public void onEvent(int type, BaseTween<?> source) {
-				
-			}
-		};
-		
-
-		
 		TweenCallback completeCallback = new TweenCallback() {
 
 			@Override

@@ -59,8 +59,6 @@ public class MenuScreen extends SionScreen {
 		song.setLooping(true);
 		song.play();
 		
-		Env.game.getTweenManager().killAll();
-		
 		createUI();
 		animateIn();
 	}

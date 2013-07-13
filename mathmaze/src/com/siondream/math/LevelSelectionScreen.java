@@ -63,7 +63,6 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	@Override
 	public void show() {
 		super.show();
-		Env.game.getTweenManager().killAll();
 		init();
 	}
 

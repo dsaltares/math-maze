@@ -47,7 +47,6 @@ public class CreditsScreen extends SionScreen {
 	}
 	
 	private void init() {
-		Env.game.getTweenManager().killAll();
 		createUI();
 		animateIn();
 	}
@@ -177,7 +176,7 @@ public class CreditsScreen extends SionScreen {
 
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				if (type == TweenCallback.COMPLETE) {
+				if (type == TweenCallback.COMPLETE && Env.game.getScreen().getClass() == CreditsScreen.class) {
 					animateOut();
 				}
 			}

@@ -146,6 +146,13 @@ public class MenuScreen extends SionScreen {
 			}
 		});
 		
+		btnInfo.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				animateOut(CreditsScreen.class);
+			}
+		});
+		
 		imgTitle.setPosition((Env.virtualWidth - imgTitle.getWidth()) * 0.5f, Env.virtualHeight + imgTitle.getHeight());
 		imgTitle.setOrigin(imgTitle.getWidth() * 0.5f, imgTitle.getHeight() * 0.5f);
 		imgTitle.setRotation(10.0f);

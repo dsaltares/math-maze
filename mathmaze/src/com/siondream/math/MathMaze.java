@@ -103,6 +103,7 @@ public class MathMaze extends SionGame {
 		this.addScreen(new LevelSelectionScreen());
 		this.addScreen(new MenuScreen());
 		this.addScreen(new SplashScreen());
+		this.addScreen(new CreditsScreen());
 		
 		if (GameEnv.debugMap.length() > 0) {
 			this.setScreen(GameScreen.class);

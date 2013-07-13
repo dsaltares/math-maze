@@ -2,14 +2,238 @@ ui.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-resetUp
+greenKey
   rotate: false
-  xy: 1267, 588
+  xy: 1232, 690
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+staron
+  rotate: false
+  xy: 1349, 228
+  size: 83, 79
+  orig: 83, 79
+  offset: 0, 0
+  index: -1
+operation-persist
+  rotate: false
+  xy: 1232, 624
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+exit
+  rotate: false
+  xy: 1841, 662
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+infoUp
+  rotate: false
+  xy: 1529, 662
+  size: 102, 102
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
+nextUp
+  rotate: false
+  xy: 1298, 654
   size: 125, 125
   orig: 125, 125
   offset: 0, 0
   index: -1
-nextUp
+backUp
+  rotate: false
+  xy: 1105, 741
+  size: 125, 125
+  orig: 125, 125
+  offset: 0, 0
+  index: -1
+checkpoint-open
+  rotate: false
+  xy: 1973, 662
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+redDoor
+  rotate: false
+  xy: 1333, 456
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resetUp
+  rotate: false
+  xy: 724, 559
+  size: 125, 125
+  orig: 125, 125
+  offset: 0, 0
+  index: -1
+lock
+  rotate: false
+  xy: 1988, 385
+  size: 45, 53
+  orig: 45, 53
+  offset: 0, 0
+  index: -1
+twitter
+  rotate: false
+  xy: 851, 813
+  size: 102, 102
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
+blueDoor
+  rotate: false
+  xy: 1907, 728
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+musicon
+  rotate: false
+  xy: 955, 813
+  size: 102, 102
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
+libgdx
+  rotate: false
+  xy: 1434, 283
+  size: 600, 100
+  orig: 600, 100
+  offset: 0, 0
+  index: -1
+siondream
+  rotate: false
+  xy: 1446, 2
+  size: 600, 279
+  orig: 600, 279
+  offset: 0, 0
+  index: -1
+land
+  rotate: false
+  xy: 724, 2
+  size: 720, 224
+  orig: 720, 224
+  offset: 0, 0
+  index: -1
+facebook
+  rotate: false
+  xy: 1737, 662
+  size: 102, 102
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
+nextDown
+  rotate: false
+  xy: 724, 686
+  size: 125, 125
+  orig: 125, 125
+  offset: 0, 0
+  index: -1
+blueKey
+  rotate: false
+  xy: 1841, 728
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resumeDown
+  rotate: false
+  xy: 1140, 487
+  size: 125, 125
+  orig: 125, 125
+  offset: 0, 0
+  index: -1
+staroff
+  rotate: false
+  xy: 1349, 309
+  size: 83, 79
+  orig: 83, 79
+  offset: 0, 0
+  index: -1
+mapBackground
+  rotate: false
+  xy: 2, 1284
+  size: 720, 720
+  orig: 720, 720
+  offset: 0, 0
+  index: -1
+resumeUp
+  rotate: false
+  xy: 1140, 360
+  size: 125, 125
+  orig: 125, 125
+  offset: 0, 0
+  index: -1
+staroffbig
+  rotate: false
+  xy: 932, 360
+  size: 206, 197
+  orig: 206, 197
+  offset: 0, 0
+  index: -1
+title
+  rotate: false
+  xy: 724, 228
+  size: 623, 130
+  orig: 623, 130
+  offset: 0, 0
+  index: -1
+yellowKey
+  rotate: false
+  xy: 1267, 360
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+pauseUp
+  rotate: false
+  xy: 978, 559
+  size: 125, 125
+  orig: 125, 125
+  offset: 0, 0
+  index: -1
+purpleKey
+  rotate: false
+  xy: 1267, 492
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+greenDoor
+  rotate: false
+  xy: 1232, 756
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+operation
+  rotate: false
+  xy: 1333, 588
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+background
+  rotate: false
+  xy: 2, 2
+  size: 720, 1280
+  orig: 720, 1280
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 1267, 558
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+pauseDown
   rotate: false
   xy: 1105, 614
   size: 125, 125
@@ -23,88 +247,18 @@ playUp
   orig: 275, 275
   offset: 0, 0
   index: -1
-siondream
-  rotate: false
-  xy: 1446, 2
-  size: 600, 279
-  orig: 600, 279
-  offset: 0, 0
-  index: -1
-backUp
-  rotate: false
-  xy: 1394, 662
-  size: 125, 125
-  orig: 125, 125
-  offset: 0, 0
-  index: -1
-infoDown
-  rotate: false
-  xy: 1521, 662
-  size: 102, 102
-  orig: 102, 102
-  offset: 0, 0
-  index: -1
 musicoff
   rotate: false
-  xy: 828, 813
+  xy: 1425, 662
   size: 102, 102
   orig: 102, 102
-  offset: 0, 0
-  index: -1
-operation-persist
-  rotate: false
-  xy: 1267, 426
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-levelsDown
-  rotate: false
-  xy: 978, 686
-  size: 125, 125
-  orig: 125, 125
-  offset: 0, 0
-  index: -1
-resumeUp
-  rotate: false
-  xy: 1140, 360
-  size: 125, 125
-  orig: 125, 125
-  offset: 0, 0
-  index: -1
-staroff
-  rotate: false
-  xy: 1349, 309
-  size: 83, 79
-  orig: 83, 79
-  offset: 0, 0
-  index: -1
-staroffbig
-  rotate: false
-  xy: 932, 360
-  size: 206, 197
-  orig: 206, 197
   offset: 0, 0
   index: -1
 checkpoint
   rotate: false
-  xy: 1267, 492
+  xy: 1907, 662
   size: 64, 64
   orig: 64, 64
-  offset: 0, 0
-  index: -1
-staronbig
-  rotate: false
-  xy: 724, 360
-  size: 206, 197
-  orig: 206, 197
-  offset: 0, 0
-  index: -1
-mapBackground
-  rotate: false
-  xy: 2, 1284
-  size: 720, 720
-  orig: 720, 720
   offset: 0, 0
   index: -1
 levelsUp
@@ -114,60 +268,18 @@ levelsUp
   orig: 125, 125
   offset: 0, 0
   index: -1
-pauseDown
+levelsDown
   rotate: false
-  xy: 978, 559
+  xy: 978, 686
   size: 125, 125
   orig: 125, 125
-  offset: 0, 0
-  index: -1
-pauseUp
-  rotate: false
-  xy: 851, 559
-  size: 125, 125
-  orig: 125, 125
-  offset: 0, 0
-  index: -1
-land
-  rotate: false
-  xy: 724, 2
-  size: 720, 224
-  orig: 720, 224
-  offset: 0, 0
-  index: -1
-operation
-  rotate: false
-  xy: 1333, 390
-  size: 64, 64
-  orig: 64, 64
   offset: 0, 0
   index: -1
 backDown
   rotate: false
-  xy: 1232, 715
+  xy: 724, 813
   size: 125, 125
   orig: 125, 125
-  offset: 0, 0
-  index: -1
-resumeDown
-  rotate: false
-  xy: 1140, 487
-  size: 125, 125
-  orig: 125, 125
-  offset: 0, 0
-  index: -1
-infoUp
-  rotate: false
-  xy: 932, 813
-  size: 102, 102
-  orig: 102, 102
-  offset: 0, 0
-  index: -1
-title
-  rotate: false
-  xy: 724, 228
-  size: 623, 130
-  orig: 623, 130
   offset: 0, 0
   index: -1
 playDown
@@ -177,87 +289,45 @@ playDown
   orig: 275, 275
   offset: 0, 0
   index: -1
-lock
-  rotate: false
-  xy: 1988, 385
-  size: 45, 53
-  orig: 45, 53
-  offset: 0, 0
-  index: -1
-background
-  rotate: false
-  xy: 2, 2
-  size: 720, 1280
-  orig: 720, 1280
-  offset: 0, 0
-  index: -1
-twitter
-  rotate: false
-  xy: 1105, 741
-  size: 102, 102
-  orig: 102, 102
-  offset: 0, 0
-  index: -1
-facebook
-  rotate: false
-  xy: 1625, 662
-  size: 102, 102
-  orig: 102, 102
-  offset: 0, 0
-  index: -1
-libgdx
-  rotate: false
-  xy: 1434, 283
-  size: 600, 100
-  orig: 600, 100
-  offset: 0, 0
-  index: -1
-exit
-  rotate: false
-  xy: 1333, 456
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
 resetDown
   rotate: false
-  xy: 724, 559
+  xy: 851, 559
   size: 125, 125
   orig: 125, 125
   offset: 0, 0
   index: -1
-checkpoint-open
+purpleDoor
   rotate: false
   xy: 1333, 522
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-player
+yellowDoor
   rotate: false
-  xy: 1267, 360
+  xy: 1333, 390
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-nextDown
+infoDown
   rotate: false
-  xy: 724, 686
-  size: 125, 125
-  orig: 125, 125
-  offset: 0, 0
-  index: -1
-staron
-  rotate: false
-  xy: 1349, 228
-  size: 83, 79
-  orig: 83, 79
-  offset: 0, 0
-  index: -1
-musicon
-  rotate: false
-  xy: 724, 813
+  xy: 1633, 662
   size: 102, 102
   orig: 102, 102
+  offset: 0, 0
+  index: -1
+staronbig
+  rotate: false
+  xy: 724, 360
+  size: 206, 197
+  orig: 206, 197
+  offset: 0, 0
+  index: -1
+redKey
+  rotate: false
+  xy: 1267, 426
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1

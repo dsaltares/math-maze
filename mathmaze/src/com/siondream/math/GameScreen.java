@@ -36,7 +36,9 @@ import com.siondream.core.entity.systems.TagSystem;
 import com.siondream.core.tweeners.ActorTweener;
 import com.siondream.math.LevelManager.Level;
 import com.siondream.math.creators.ConditionCreator.ConditionParams;
+import com.siondream.math.creators.DoorCreator.DoorParams;
 import com.siondream.math.creators.ExitCreator.ExitParams;
+import com.siondream.math.creators.KeyCreator.KeyParams;
 import com.siondream.math.creators.OperationCreator.OperationParams;
 import com.siondream.math.creators.PlayerCreator.PlayerParams;
 import com.siondream.math.systems.CameraControllerSystem;
@@ -162,6 +164,8 @@ public class GameScreen extends SionScreen {
 		
 		ConditionParams conditionParams = new ConditionParams(mapComponent.map, null);
 		OperationParams operationParams = new OperationParams(mapComponent.map, null);
+		DoorParams doorParams = new DoorParams(mapComponent.map, null);
+		KeyParams keyParams = new KeyParams(mapComponent.map, null);
 		
 		for (int i = 0; i < numObjects; ++i) {
 			MapObject mapObject = mapObjects.get(i);
@@ -178,6 +182,14 @@ public class GameScreen extends SionScreen {
 			else if (type.equals("operation")) {
 				operationParams.object = mapObject;
 				factory.createEntity(GameEnv.operationTag, operationParams);
+			}
+			else if (type.equals("door")) {
+				doorParams.object = mapObject;
+				factory.createEntity(GameEnv.doorTag, doorParams);
+			}
+			else if (type.equals("key")) {
+				keyParams.object = mapObject;
+				factory.createEntity(GameEnv.keyTag, keyParams);
 			}
 		}
 		

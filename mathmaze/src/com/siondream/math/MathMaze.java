@@ -19,7 +19,9 @@ import com.siondream.core.entity.systems.ParticleEffectSystem;
 import com.siondream.core.entity.systems.PhysicsSystem;
 import com.siondream.core.entity.systems.TagSystem;
 import com.siondream.math.creators.ConditionCreator;
+import com.siondream.math.creators.DoorCreator;
 import com.siondream.math.creators.ExitCreator;
+import com.siondream.math.creators.KeyCreator;
 import com.siondream.math.creators.MapCreator;
 import com.siondream.math.creators.OperationCreator;
 import com.siondream.math.creators.PlayerCreator;
@@ -125,6 +127,8 @@ public class MathMaze extends SionGame {
 		entityFactory.addCreator(GameEnv.operationTag, new OperationCreator());
 		entityFactory.addCreator(GameEnv.conditionTag, new ConditionCreator());
 		entityFactory.addCreator(GameEnv.mapTag, new MapCreator());
+		entityFactory.addCreator(GameEnv.doorTag, new DoorCreator());
+		entityFactory.addCreator(GameEnv.keyTag, new KeyCreator());
 	}
 
 	public Preferences getPreferences() {

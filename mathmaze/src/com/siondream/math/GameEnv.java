@@ -16,6 +16,8 @@ public class GameEnv {
 	public static final String exitTag = "exit";
 	public static final String conditionTag = "condition";
 	public static final String operationTag = "operation";
+	public static final String doorTag = "door";
+	public static final String keyTag = "key";
 	public static final String conditionsGroup = "conditions";
 	public static final String operationsGroup = "operations";
 	public static final String objectLayer = "objects";

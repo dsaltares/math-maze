@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <levels>
+ <level name="Template" file="data/levels/template.tmx" />
  <level name="Level 1" file="data/levels/level001.tmx" />
  <level name="Level 2" file="data/levels/level002.tmx" />
  <level name="Level 3" file="data/levels/level003.tmx" />
@@ -18,4 +19,5 @@
  <level name="Level 16" file="data/levels/level016.tmx" />
  <level name="Level 17" file="data/levels/level017.tmx" />
  <level name="Level 18" file="data/levels/level018.tmx" />
+ <level name="Level 19" file="data/levels/level019.tmx" />
 </levels>

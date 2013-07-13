@@ -24,7 +24,9 @@ import com.siondream.math.Condition;
 import com.siondream.math.GameEnv;
 import com.siondream.math.GameScreen;
 import com.siondream.math.components.ConditionComponent;
+import com.siondream.math.components.DoorComponent;
 import com.siondream.math.components.GridPositionComponent;
+import com.siondream.math.components.KeyComponent;
 import com.siondream.math.components.OperationComponent;
 import com.siondream.math.components.ValueComponent;
 
@@ -56,6 +58,8 @@ public class PlayerControllerSystem extends EntitySystem {
 	private PlayerMoveCallback callback;
 	private IntMap<Entity> conditionEntities;
 	private IntMap<Entity> operationEntities;
+	private IntMap<Entity> doorEntities;
+	private IntMap<Entity> keyEntities;
 	private boolean enabled;
 	
 	public PlayerControllerSystem() {
@@ -85,6 +89,12 @@ public class PlayerControllerSystem extends EntitySystem {
 		
 		conditionEntities = engine.getEntitiesFor(Family.getFamilyFor(GridPositionComponent.class,
 																	  ConditionComponent.class));
+		
+		doorEntities = engine.getEntitiesFor(Family.getFamilyFor(GridPositionComponent.class,
+				  												 DoorComponent.class));
+		
+		keyEntities = engine.getEntitiesFor(Family.getFamilyFor(GridPositionComponent.class,
+					 											KeyComponent.class));
 	}
 	
 	@Override
@@ -171,6 +181,25 @@ public class PlayerControllerSystem extends EntitySystem {
 				return;
 			}
 			
+			Engine engine = Env.game.getEngine();
+			Entity keyEntity = getKeyAt(destination);
+			
+			if (keyEntity != null) {
+				KeyComponent keyComponent = keyEntity.getComponent(KeyComponent.class);
+				Values<Entity> values = doorEntities.values();
+				
+				while (values.hasNext()) {
+					Entity doorEntity = values.next();
+					DoorComponent doorComponent = doorEntity.getComponent(DoorComponent.class);
+					
+					if (doorComponent.id == keyComponent.id) {
+						engine.removeEntity(doorEntity);
+					}
+				}
+				
+				engine.removeEntity(keyEntity);
+			}
+			
 			if (isExitAt(destination)) {
 				Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
 				GameEnv.game.getScreen(GameScreen.class).victory();
@@ -252,11 +281,37 @@ public class PlayerControllerSystem extends EntitySystem {
 			}
 		}
 		
+		values = doorEntities.values();
+		
+		while(values.hasNext()) {
+			Entity condition = values.next();
+			GridPositionComponent gridPos = condition.getComponent(GridPositionComponent.class);
+			
+			if (gridPos.x == (int)destination.x && gridPos.y == (int)destination.y) {
+				return false;
+			}
+		}
+		
 		return true;
 	}
 	
 	private Entity getOperationAt(Vector2 position) {
 		Values<Entity> values = operationEntities.values();
+		
+		while(values.hasNext()) {
+			Entity operation = values.next();
+			GridPositionComponent gridPos = operation.getComponent(GridPositionComponent.class);
+			
+			if (gridPos.x == (int)position.x && gridPos.y == (int)position.y) {
+				return operation;
+			}
+		}
+		
+		return null;
+	}
+	
+	private Entity getKeyAt(Vector2 position) {
+		Values<Entity> values = keyEntities.values();
 		
 		while(values.hasNext()) {
 			Entity operation = values.next();

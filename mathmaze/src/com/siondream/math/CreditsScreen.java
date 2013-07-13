@@ -6,6 +6,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -27,6 +28,8 @@ public class CreditsScreen extends SionScreen {
 	private ImageButton btnBack;
 	private Table tableCredits;
 	
+	private Sound sfxTap;
+	
 	@Override
 	public void show() {
 		init();
@@ -44,6 +47,7 @@ public class CreditsScreen extends SionScreen {
 	}
 	
 	private void init() {
+		Env.game.getTweenManager().killAll();
 		createUI();
 		animateIn();
 	}
@@ -65,6 +69,9 @@ public class CreditsScreen extends SionScreen {
 		btnBack.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
 				animateOut();
 			}
 		});
@@ -72,11 +79,9 @@ public class CreditsScreen extends SionScreen {
 		WidgetGroup labelsGroup = new WidgetGroup();
 		
 		Image imgSiondream = new Image(skin, "siondream");
-		ShaderLabel lblRoleA = new ShaderLabel("Design & art & programming", skin, "game");
-		lblRoleA.setFontScale(2.0f);
 		ShaderLabel lblDavid = new ShaderLabel("David Saltares Marquez", skin, "game");
 		lblDavid.setColor(0.75f, 0.75f, 0.75f, 1.0f);
-		lblDavid.setFontScale(1.5f);
+		lblDavid.setFontScale(2.0f);
 		ShaderLabel lblRoleB = new ShaderLabel("Powered by", skin, "game");
 		lblRoleB.setFontScale(2.0f);
 		ShaderLabel lbllibgdx = new ShaderLabel("libgdx", skin, "game");
@@ -89,8 +94,6 @@ public class CreditsScreen extends SionScreen {
 		tableCredits.add(imgTitle).center().size(imgTitle.getWidth(), imgTitle.getHeight()).padBottom(75.0f);
 		tableCredits.row();
 		tableCredits.add(imgSiondream).center().size(imgSiondream.getWidth() * 0.5f, imgSiondream.getHeight() * 0.5f).padBottom(40.0f);
-		tableCredits.row();
-		tableCredits.add(lblRoleA).center().padBottom(20.0f);
 		tableCredits.row();
 		tableCredits.add(lblDavid).center().padBottom(30.0f);
 		tableCredits.row();
@@ -111,6 +114,8 @@ public class CreditsScreen extends SionScreen {
 		imgLand.setPosition(0.0f, - imgLand.getHeight());
 		btnBack.setPosition((Env.virtualWidth - btnBack.getWidth()) * 0.5f, -btnBack.getHeight());
 		tableCredits.setY(-tableCredits.getHeight());
+		
+		sfxTap = Env.game.getAssets().get("data/sfx/tap.mp3", Sound.class);
 	}
 	
 	private void animateIn() {

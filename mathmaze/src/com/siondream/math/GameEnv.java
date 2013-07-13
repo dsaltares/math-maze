@@ -48,6 +48,9 @@ public class GameEnv {
 	public static Color mathLabelsColor;
 	
 	public static Color starsOperationColor;
+	
+	public static boolean soundEnabled;
+	public static float musicVolume;
 
 	public static void init(MathMaze game) {
 		logger.info("initialising");
@@ -77,5 +80,7 @@ public class GameEnv {
 		mathLabelsColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 		
 		starsOperationColor = new Color(0.6f, 0.8f, 0.0f, 1.0f);
+		
+		musicVolume = 0.3f;
 	}
 }

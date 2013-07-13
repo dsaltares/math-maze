@@ -6,9 +6,11 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.siondream.core.Assets;
 import com.siondream.core.Env;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
@@ -16,6 +18,9 @@ import com.siondream.core.tweeners.ActorTweener;
 public class SplashScreen extends SionScreen {
 	private Image imgSiondream;
 	private Image imgLibgdx;
+	
+	private Sound sfxSiondream;
+	private Sound sfxLibgdx;
 	
 	@Override
 	public void show() {
@@ -28,8 +33,10 @@ public class SplashScreen extends SionScreen {
 	}
 	
 	private void init() {
+		Env.game.getTweenManager().killAll();
+		
 		createUI();
-		animate();
+		animateSiondream();
 	}
 	
 	@Override
@@ -54,18 +61,39 @@ public class SplashScreen extends SionScreen {
 		Stage stage = Env.game.getStage();
 		stage.addActor(imgLibgdx);
 		stage.addActor(imgSiondream);
+		
+		Assets assets = Env.game.getAssets();
+		sfxSiondream = assets.get("data/sfx/siondream.mp3", Sound.class);
+		sfxLibgdx = assets.get("data/sfx/libgdx.mp3", Sound.class);
 	}
 	
-	private void animate() {
-		TweenCallback callback = new TweenCallback() {
+	private void animateSiondream() {
+
+		
+		TweenCallback libgdxCallback = new TweenCallback() {
+
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				
+			}
+		};
+		
+
+		
+		TweenCallback completeCallback = new TweenCallback() {
 
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				if (type == TweenCallback.COMPLETE) {
-					Env.game.setScreen(MenuScreen.class);
+					animateLibgdx();
 				}
 			}
 		};
+		
+		
+		if (GameEnv.soundEnabled) {
+			sfxSiondream.play();
+		}
 		
 		Timeline timeline = Timeline.createSequence();
 		
@@ -77,6 +105,29 @@ public class SplashScreen extends SionScreen {
 					.push(Tween.to(imgSiondream, ActorTweener.Color, 0.75f)
 							   .target(0.0f, 0.0f, 0.0f, 0.0f)
 							   .ease(TweenEquations.easeInQuad))
+				.end()
+				.setCallback(completeCallback)
+				.start(Env.game.getTweenManager());
+	}
+	
+	private void animateLibgdx() {
+		TweenCallback completeCallback = new TweenCallback() {
+
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				if (type == TweenCallback.COMPLETE) {
+					Env.game.setScreen(MenuScreen.class);
+				}
+			}
+		};
+		
+		if (GameEnv.soundEnabled) {
+			sfxLibgdx.play();
+		}
+		
+		Timeline timeline = Timeline.createSequence();
+		
+		timeline.beginSequence()
 					.push(Tween.to(imgLibgdx, ActorTweener.Color, 0.4f)
 							   .target(1.0f, 1.0f, 1.0f, 1.0f)
 							   .ease(TweenEquations.easeInQuad))
@@ -85,7 +136,7 @@ public class SplashScreen extends SionScreen {
 							   .target(0.0f, 0.0f, 0.0f, 0.0f)
 							   .ease(TweenEquations.easeInQuad))
 				.end()
-				.setCallback(callback)
+				.setCallback(completeCallback)
 				.start(Env.game.getTweenManager());
 	}
 }

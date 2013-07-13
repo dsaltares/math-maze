@@ -1,6 +1,7 @@
 package com.siondream.math.systems;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Logger;
+import com.siondream.core.Assets;
 import com.siondream.core.Env;
 import com.siondream.core.entity.components.ColorComponent;
 import com.siondream.core.entity.components.MapComponent;
@@ -55,6 +57,11 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 	private IntMap<Entity> keyEntities;
 	private GestureDetector gestureDetector;
 	
+	private Sound sfxTap;
+	private Sound sfxSwipe;
+	private Sound sfxShake;
+	private Sound sfxError;
+	
 	public PlayerControllerSystem() {
 		super();
 		
@@ -69,6 +76,12 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 		rightDirection = Vector2.X.cpy();
 		gestureDetector = new GestureDetector(this);
 		Env.game.getInputMultiplexer().addProcessor(gestureDetector);
+		
+		Assets assets = Env.game.getAssets();
+		sfxTap = assets.get("data/sfx/tap.mp3", Sound.class);
+		sfxSwipe = assets.get("data/sfx/swipe.mp3", Sound.class);
+		sfxShake = assets.get("data/sfx/shake.mp3", Sound.class);
+		sfxError = assets.get("data/sfx/error.wav", Sound.class);
 	}
 	
 	@Override
@@ -256,6 +269,10 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 				
 				TransformComponent operationTransform = operation.getComponent(TransformComponent.class);
 				spawnParticleEffect(operationTransform.position.x, operationTransform.position.y);
+				
+				if (GameEnv.soundEnabled) {
+					sfxShake.play();
+				}
 			}
 			
 			return false;
@@ -279,11 +296,20 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 			
 			engine.removeEntity(keyEntity);
 			Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+			
+			if (GameEnv.soundEnabled) {
+				sfxShake.play();
+			}
 		}
 		
 		if (isExitAt(destination)) {
 			Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
 			GameEnv.game.getScreen(GameScreen.class).victory();
+			
+			if (GameEnv.soundEnabled) {
+				sfxShake.play();
+			}
+			
 			return false;
 		}
 		
@@ -303,6 +329,11 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 			
 			return true;
 		}
+		else {
+			if (GameEnv.soundEnabled) {
+				sfxError.play();
+			}
+		}
 		
 		return false;
 	}
@@ -314,6 +345,10 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
+		if (GameEnv.soundEnabled) {
+			sfxTap.play();
+		}
+		
 		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
 		Entity player = tagSystem.getEntity(GameEnv.playerTag);
 		
@@ -346,6 +381,10 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
+		if (GameEnv.soundEnabled) {
+			sfxSwipe.play();
+		}
+		
 		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
 		Entity player = tagSystem.getEntity(GameEnv.playerTag);
 		

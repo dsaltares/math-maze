@@ -9,6 +9,8 @@ import aurelienribon.tweenengine.TweenEquations;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.siondream.core.Assets;
 import com.siondream.core.Env;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
@@ -34,6 +37,8 @@ public class MenuScreen extends SionScreen {
 	private ImageButton btnInfo;
 	private ImageButton btnPlay;
 	
+	private Sound sfxTap;
+	
 	public MenuScreen() {
 		super();
 	}
@@ -49,6 +54,13 @@ public class MenuScreen extends SionScreen {
 	}
 	
 	private void init() {
+		Music song = GameEnv.game.getMusic();
+		song.setVolume(GameEnv.soundEnabled ? GameEnv.musicVolume : 0.0f);
+		song.setLooping(true);
+		song.play();
+		
+		Env.game.getTweenManager().killAll();
+		
 		createUI();
 		animateIn();
 	}
@@ -117,6 +129,10 @@ public class MenuScreen extends SionScreen {
 		imgFacebook.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				Env.platform.openURL("http://facebook.com/siondream");
 			}
 		});
@@ -124,6 +140,10 @@ public class MenuScreen extends SionScreen {
 		imgTwitter.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				Env.platform.openURL("http://twitter.com/siondream");
 			}
 		});
@@ -131,6 +151,10 @@ public class MenuScreen extends SionScreen {
 		btnPlay.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				animateOut(LevelSelectionScreen.class);
 			}
 		});
@@ -138,17 +162,25 @@ public class MenuScreen extends SionScreen {
 		btnSound.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				sfxTap.play();
+				
 				boolean wasDisabled = btnSound.isDisabled();
 				btnSound.setDisabled(!wasDisabled);
 				Preferences preferences = GameEnv.game.getPreferences();
-				preferences.putBoolean("soundEnabled", !btnSound.isDisabled());
+				GameEnv.soundEnabled = !btnSound.isDisabled();
+				preferences.putBoolean("soundEnabled", GameEnv.soundEnabled);
 				preferences.flush();
+				GameEnv.game.getMusic().setVolume(GameEnv.soundEnabled ? GameEnv.musicVolume : 0.0f);
 			}
 		});
 		
 		btnInfo.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				animateOut(CreditsScreen.class);
 			}
 		});
@@ -158,6 +190,9 @@ public class MenuScreen extends SionScreen {
 		imgTitle.setRotation(10.0f);
 		imgLand.setPosition(0.0f, - imgLand.getHeight());
 		socialTable.setPosition(-socialTable.getWidth(), 20.0f);
+		
+		Assets assets = Env.game.getAssets();
+		sfxTap = assets.get("data/sfx/tap.mp3", Sound.class);
 	}
 	
 	@Override

@@ -7,6 +7,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.siondream.core.Assets;
 import com.siondream.core.Env;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
@@ -46,6 +48,10 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	private GestureDetector gestureDetector;
 	private int currentPanel;
 	
+	private Sound sfxTap;
+	private Sound sfxSwipe;
+	private Sound sfxError;
+	
 	public LevelSelectionScreen() {
 		super();
 		
@@ -57,6 +63,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	@Override
 	public void show() {
 		super.show();
+		Env.game.getTweenManager().killAll();
 		init();
 	}
 
@@ -101,6 +108,10 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		btnBack.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				animateOut(MenuScreen.class);
 			}
 		});
@@ -147,6 +158,11 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		imgTitle.setOrigin(imgTitle.getWidth() * 0.5f, imgTitle.getHeight() * 0.5f);
 		imgTitle.setRotation(10.0f);
 		imgLand.setY(-imgLand.getHeight());
+		
+		Assets assets = Env.game.getAssets();
+		sfxTap = assets.get("data/sfx/tap.mp3", Sound.class);
+		sfxSwipe = assets.get("data/sfx/swipe.mp3", Sound.class);
+		sfxError = assets.get("data/sfx/error.wav", Sound.class);
 	}
 	
 	@Override
@@ -182,6 +198,10 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		float absVelocityX = Math.abs(velocityX);
 		
 		if (absVelocityX > 200) {
+			if (GameEnv.soundEnabled) {
+				sfxSwipe.play();
+			}
+			
 			scrollLevelPanels(currentPanel - (int)(velocityX/absVelocityX));
 		}
 		
@@ -337,7 +357,16 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			if (!level.unlocked) {
+				
+				if (GameEnv.soundEnabled) {
+					sfxError.play();
+				}
+				
 				return;
+			}
+			
+			if (GameEnv.soundEnabled) {
+				sfxTap.play();
 			}
 			
 			Env.game.getTweenManager().killTarget(btnBack);

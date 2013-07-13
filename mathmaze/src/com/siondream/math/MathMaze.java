@@ -4,6 +4,7 @@ import ashley.core.Engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -46,6 +47,8 @@ public class MathMaze extends SionGame {
 	private Preferences preferences;
 	private LevelManager levelManager;
 	private FallingLabelManager labelManager;
+	
+	private Music song;
 
 	private Skin skin;
 	private Skin skinNearest;
@@ -130,6 +133,10 @@ public class MathMaze extends SionGame {
 		entityFactory.addCreator(GameEnv.mapTag, new MapCreator());
 		entityFactory.addCreator(GameEnv.doorTag, new DoorCreator());
 		entityFactory.addCreator(GameEnv.keyTag, new KeyCreator());
+		
+		GameEnv.soundEnabled = preferences.getBoolean("soundEnabled", true);
+		
+		song = assets.get("data/music/song.mp3", Music.class);
 	}
 
 	public Preferences getPreferences() {
@@ -150,6 +157,10 @@ public class MathMaze extends SionGame {
 	
 	public Skin getSkinNearest() {
 		return skinNearest;
+	}
+	
+	public Music getMusic() {
+		return song;
 	}
 	
 	@Override

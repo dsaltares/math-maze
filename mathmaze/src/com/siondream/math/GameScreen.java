@@ -9,6 +9,7 @@ import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.siondream.core.Assets;
 import com.siondream.core.Chrono;
 import com.siondream.core.EntityFactory;
 import com.siondream.core.Env;
@@ -89,6 +91,9 @@ public class GameScreen extends SionScreen {
 	private TextureRegionDrawable regionStarOn;
 	private TextureRegionDrawable regionStarOff;
 	
+	private Sound sfxVictory;
+	private Sound sfxTap;
+	
 	private State state;
 	
 	public GameScreen() {
@@ -128,6 +133,7 @@ public class GameScreen extends SionScreen {
 	@Override
 	public void show() {
 		super.show();
+		Env.game.getTweenManager().killAll();
 		initGame();
 		createUI();
 		animateIn();
@@ -224,6 +230,10 @@ public class GameScreen extends SionScreen {
 		btnPause.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				onPauseClicked();
 			}
 		});
@@ -231,6 +241,10 @@ public class GameScreen extends SionScreen {
 		btnMenu.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				animateOut(LevelSelectionScreen.class);
 			}
 		});
@@ -238,6 +252,10 @@ public class GameScreen extends SionScreen {
 		btnReset.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				animateOut(GameScreen.class);
 			}
 		});
@@ -274,6 +292,10 @@ public class GameScreen extends SionScreen {
 		btnVictoryReset.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				animateOut(GameScreen.class);
 			}
 		});
@@ -283,6 +305,10 @@ public class GameScreen extends SionScreen {
 		btnVictoryMenu.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				animateOut(LevelSelectionScreen.class);
 			}
 		});
@@ -292,6 +318,10 @@ public class GameScreen extends SionScreen {
 		btnVictoryNext.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
 				Array<Level> levels = GameEnv.game.getLevelManager().getLevels();
 				int index = levels.indexOf(level, true);
 				
@@ -367,6 +397,10 @@ public class GameScreen extends SionScreen {
 		
 		chrono.reset();
 		chrono.pause();
+		
+		Assets assets = Env.game.getAssets();
+		sfxVictory = assets.get("data/sfx/victory.ogg", Sound.class);
+		sfxTap = assets.get("data/sfx/tap.mp3", Sound.class);
 	}
 	
 	@Override
@@ -631,6 +665,10 @@ public class GameScreen extends SionScreen {
 		
 		timeline.end()
 				.start(Env.game.getTweenManager());
+		
+		if (GameEnv.soundEnabled) {
+			sfxVictory.play();
+		}
 	}
 	
 	private int getStars() {

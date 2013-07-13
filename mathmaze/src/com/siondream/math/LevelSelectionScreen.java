@@ -81,7 +81,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	public void init() {
 		createUI();
 		animateIn();
-		Env.game.getInputMultiplexer().addProcessor(gestureDetector);
+		Env.game.getInputMultiplexer().addProcessor(0, gestureDetector);
 	}
 	
 	private void createUI() {

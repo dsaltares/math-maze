@@ -143,7 +143,6 @@ public class CameraControllerSystem extends EntitySystem {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			if (type == TweenCallback.COMPLETE) {
-				Env.game.getEngine().getSystem(PlayerControllerSystem.class).notifyShakeStop();
 				state = State.FollowTarget;
 			}
 		}

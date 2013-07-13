@@ -3,14 +3,13 @@ package com.siondream.math.systems;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Env;
 import com.siondream.core.entity.components.ColorComponent;
@@ -37,30 +36,24 @@ import ashley.core.Family;
 import ashley.utils.IntMap;
 import ashley.utils.IntMap.Values;
 import ashley.utils.MathUtils;
-import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenEquations;
 
-public class PlayerControllerSystem extends EntitySystem {
+public class PlayerControllerSystem extends EntitySystem implements GestureListener {
 	
 	private static final String TAG = "PlayerControllerSystem";
 	
-	private float moveTimer;
 	private Logger logger;
 	private OrthographicCamera camera;
 	private Vector3 mousePos3;
-	private Vector2 mouseScenePos;
 	private Vector2 direction;
 	private Vector2 destination;
 	private Vector2 rightDirection;
-	private boolean moving;
-	private PlayerMoveCallback callback;
 	private IntMap<Entity> conditionEntities;
 	private IntMap<Entity> operationEntities;
 	private IntMap<Entity> doorEntities;
 	private IntMap<Entity> keyEntities;
-	private boolean enabled;
+	private GestureDetector gestureDetector;
 	
 	public PlayerControllerSystem() {
 		super();
@@ -69,16 +62,13 @@ public class PlayerControllerSystem extends EntitySystem {
 		
 		logger.info("initialising");
 		
-		moveTimer = 0.0f;
 		camera = Env.game.getCamera();
 		mousePos3 = new Vector3();
-		mouseScenePos = new Vector2();
 		direction = new Vector2();
 		destination = new Vector2();
 		rightDirection = Vector2.X.cpy();
-		moving = false;
-		callback = new PlayerMoveCallback();
-		enabled = true;
+		gestureDetector = new GestureDetector(this);
+		Env.game.getInputMultiplexer().addProcessor(gestureDetector);
 	}
 	
 	@Override
@@ -97,137 +87,13 @@ public class PlayerControllerSystem extends EntitySystem {
 					 											KeyComponent.class));
 	}
 	
-	@Override
-	public void update(float deltaTime) {
-		if (!(GameEnv.game.getScreen() instanceof GameScreen)) {
-			return;
-		}
-		
-		if (!enabled) {
-			return;
-		}
-		
-		if (moveTimer > 0.0f) {
-			moveTimer -= deltaTime;
-			return;
-		}
-		
-		boolean touched = Gdx.input.isTouched(); 
-		
-		if (!touched) {
-			moving = false;
-		}
-		else if (!moving && touched) {
-			mouseScenePos.set(Gdx.input.getX(), Gdx.input.getY());
-			
-			Stage stage = Env.game.getStage();
-			stage.screenToStageCoordinates(mouseScenePos);
-			
-			Actor actor = stage.hit(mouseScenePos.x, mouseScenePos.y, true);
-			Class<?> actorClass = actor != null ? actor.getClass() : null;
-			
-			if (actorClass != null && Button.class.isAssignableFrom(actorClass)) {
-				return;
-			}
-			
-			TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
-			Entity player = tagSystem.getEntity(GameEnv.playerTag);
-			Entity map = tagSystem.getEntity(GameEnv.mapTag);
-			
-			if (player == null || map == null) {
-				return;
-			}
-			
-			MapComponent mapComponent = map.getComponent(MapComponent.class);
-			TiledMapTileLayer grid = (TiledMapTileLayer)mapComponent.map.getLayers().get(GameEnv.backgroundLayer);
-			
-			GridPositionComponent position = player.getComponent(GridPositionComponent.class);
-			TransformComponent transform = player.getComponent(TransformComponent.class);
-			
-			mousePos3.set(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
-			mousePos3.set(Gdx.input.getX(), Gdx.input.getY(), 0.0f);
-			camera.unproject(mousePos3);
-			
-			direction.set(mousePos3.x, mousePos3.y);
-			direction.sub(transform.position.x, transform.position.y);
-			direction.nor();
-			
-			getDestinationFor(MathUtils.atan2(rightDirection.y, rightDirection.x) - MathUtils.atan2(direction.y, direction.x),
-							  position,
-							  destination);
-			
-			ValueComponent value = player.getComponent(ValueComponent.class);
-			Entity operation = getOperationAt(destination);
-			
-			// Use operation block
-			if (operation != null) {
-				OperationComponent operationComponent = operation.getComponent(OperationComponent.class);
-				int newValue = operationComponent.operation.run(value.value);
-				
-				if (Math.abs(newValue) < GameEnv.playerMaxValue) {
-					value.value = newValue;
-					Env.game.getEngine().getSystem(CameraControllerSystem.class).startShakeEffect(((int)destination.x - position.x) != 0);
-					Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
-					moving = true;
-					
-					if (!operationComponent.persist) {
-						Env.game.getEngine().removeEntity(operation);
-					}
-					
-					TransformComponent operationTransform = operation.getComponent(TransformComponent.class);
-					spawnParticleEffect(operationTransform.position.x, operationTransform.position.y);
-				}
-				
-				return;
-			}
-			
-			Engine engine = Env.game.getEngine();
-			Entity keyEntity = getKeyAt(destination);
-			
-			if (keyEntity != null) {
-				KeyComponent keyComponent = keyEntity.getComponent(KeyComponent.class);
-				Values<Entity> values = doorEntities.values();
-				
-				while (values.hasNext()) {
-					Entity doorEntity = values.next();
-					DoorComponent doorComponent = doorEntity.getComponent(DoorComponent.class);
-					
-					if (doorComponent.id == keyComponent.id) {
-						engine.removeEntity(doorEntity);
-					}
-				}
-				
-				engine.removeEntity(keyEntity);
-			}
-			
-			if (isExitAt(destination)) {
-				Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
-				GameEnv.game.getScreen(GameScreen.class).victory();
-				return;
-			}
-			
-			// Move (potentially through condition gate)
-			if (isValidGridPosition(grid, value, destination)) {
-				TextureRegion region = player.getComponent(TextureComponent.class).region;
-				float destX = destination.x * region.getRegionWidth() * Env.pixelsToMetres + region.getRegionWidth() * 0.5f * Env.pixelsToMetres;
-				float destY = (grid.getHeight() - destination.y - 1.0f) * region.getRegionHeight() * Env.pixelsToMetres + region.getRegionHeight() * 0.5f * Env.pixelsToMetres;
-				
-				Tween.to(transform, TransformTweener.Position, GameEnv.playerMoveTime)
-					 .target(destX, destY, 0.0f)
-					 .ease(TweenEquations.easeInOutQuad)
-					 .setCallback(callback)
-					 .start(Env.game.getTweenManager());
-				
-				position.x = (int)destination.x;
-				position.y = (int)destination.y;
-				
-				moving = true;
-			}
-		}
-	}
-	
 	public void enable(boolean enable) {
-		enabled = enable;
+		if (enable) {
+			Env.game.getInputMultiplexer().addProcessor(gestureDetector);
+		}
+		else {
+			Env.game.getInputMultiplexer().removeProcessor(gestureDetector);
+		}
 	}
 	
 	public void cancelMovement() {
@@ -235,13 +101,6 @@ public class PlayerControllerSystem extends EntitySystem {
 		Entity player = tagSystem.getEntity(GameEnv.playerTag);
 		TransformComponent transform = player.getComponent(TransformComponent.class);
 		Env.game.getTweenManager().killTarget(transform);
-		moving = false;
-		moveTimer = 0.0f;
-	}
-	
-	public void notifyShakeStop() {
-		moving = false;
-		moveTimer = GameEnv.playerMoveCooldown;
 	}
 	
 	private boolean isExitAt(Vector2 destination) {
@@ -363,14 +222,169 @@ public class PlayerControllerSystem extends EntitySystem {
 		Env.game.getEngine().addEntity(entity);
 	}
 	
-	private class PlayerMoveCallback implements TweenCallback {
-
-		@Override
-		public void onEvent(int type, BaseTween<?> source) {
-			if (type == TweenCallback.COMPLETE) {
-				moving = false;
-				moveTimer = GameEnv.playerMoveCooldown;
-			}
+	private boolean move() {
+		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
+		Entity player = tagSystem.getEntity(GameEnv.playerTag);
+		Entity map = tagSystem.getEntity(GameEnv.mapTag);
+		
+		if (player == null || map == null) {
+			return false;
 		}
+		
+		MapComponent mapComponent = map.getComponent(MapComponent.class);
+		TiledMapTileLayer grid = (TiledMapTileLayer)mapComponent.map.getLayers().get(GameEnv.backgroundLayer);
+		
+		GridPositionComponent position = player.getComponent(GridPositionComponent.class);
+		TransformComponent transform = player.getComponent(TransformComponent.class);
+		ValueComponent value = player.getComponent(ValueComponent.class);
+		
+		Entity operation = getOperationAt(destination);
+		
+		// Use operation block
+		if (operation != null) {
+			OperationComponent operationComponent = operation.getComponent(OperationComponent.class);
+			int newValue = operationComponent.operation.run(value.value);
+			
+			if (Math.abs(newValue) < GameEnv.playerMaxValue) {
+				value.value = newValue;
+				Env.game.getEngine().getSystem(CameraControllerSystem.class).startShakeEffect(((int)destination.x - position.x) != 0);
+				Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+				
+				if (!operationComponent.persist) {
+					Env.game.getEngine().removeEntity(operation);
+				}
+				
+				TransformComponent operationTransform = operation.getComponent(TransformComponent.class);
+				spawnParticleEffect(operationTransform.position.x, operationTransform.position.y);
+			}
+			
+			return false;
+		}
+		
+		Engine engine = Env.game.getEngine();
+		Entity keyEntity = getKeyAt(destination);
+		
+		if (keyEntity != null) {
+			KeyComponent keyComponent = keyEntity.getComponent(KeyComponent.class);
+			Values<Entity> values = doorEntities.values();
+			
+			while (values.hasNext()) {
+				Entity doorEntity = values.next();
+				DoorComponent doorComponent = doorEntity.getComponent(DoorComponent.class);
+				
+				if (doorComponent.id == keyComponent.id) {
+					engine.removeEntity(doorEntity);
+				}
+			}
+			
+			engine.removeEntity(keyEntity);
+		}
+		
+		if (isExitAt(destination)) {
+			Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+			GameEnv.game.getScreen(GameScreen.class).victory();
+			return false;
+		}
+		
+		// Move (potentially through condition gate)
+		if (isValidGridPosition(grid, value, destination)) {
+			TextureRegion region = player.getComponent(TextureComponent.class).region;
+			float destX = destination.x * region.getRegionWidth() * Env.pixelsToMetres + region.getRegionWidth() * 0.5f * Env.pixelsToMetres;
+			float destY = (grid.getHeight() - destination.y - 1.0f) * region.getRegionHeight() * Env.pixelsToMetres + region.getRegionHeight() * 0.5f * Env.pixelsToMetres;
+			
+			Tween.to(transform, TransformTweener.Position, GameEnv.playerMoveTime)
+				 .target(destX, destY, 0.0f)
+				 .ease(TweenEquations.easeInOutQuad)
+				 .start(Env.game.getTweenManager());
+			
+			position.x = (int)destination.x;
+			position.y = (int)destination.y;
+			
+			return true;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(float x, float y, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean tap(float x, float y, int count, int button) {
+		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
+		Entity player = tagSystem.getEntity(GameEnv.playerTag);
+		
+		if (player == null) {
+			return false;
+		}
+		
+		GridPositionComponent position = player.getComponent(GridPositionComponent.class);
+		TransformComponent transform = player.getComponent(TransformComponent.class);
+		
+		mousePos3.set(x, y, 0);
+		camera.unproject(mousePos3);
+		
+		direction.set(mousePos3.x, mousePos3.y);
+		direction.sub(transform.position.x, transform.position.y);
+		direction.nor();
+		
+		getDestinationFor(MathUtils.atan2(rightDirection.y, rightDirection.x) - MathUtils.atan2(direction.y, direction.x),
+						  position,
+						  destination);
+		
+		return move();
+	}
+
+	@Override
+	public boolean longPress(float x, float y) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean fling(float velocityX, float velocityY, int button) {
+		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
+		Entity player = tagSystem.getEntity(GameEnv.playerTag);
+		
+		if (player == null) {
+			return false;
+		}
+		
+		GridPositionComponent position = player.getComponent(GridPositionComponent.class);
+		
+		float absVelocityX = Math.abs(velocityX);
+		float absVelocityY = Math.abs(velocityY);
+
+		destination.set(position.x, position.y);
+		
+		if (absVelocityX > absVelocityY) {
+			destination.x += 1 * Math.signum(velocityX);
+		}
+		else {
+			destination.y += 1 * Math.signum(velocityY);
+		}
+		
+		return move();
+	}
+
+	@Override
+	public boolean pan(float x, float y, float deltaX, float deltaY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean zoom(float initialDistance, float distance) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2,
+			Vector2 pointer1, Vector2 pointer2) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

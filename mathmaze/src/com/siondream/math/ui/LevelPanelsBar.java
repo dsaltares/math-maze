@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.siondream.core.Env;
 import com.siondream.core.tweeners.ActorTweener;
 import com.siondream.math.GameEnv;
+import com.siondream.math.LevelSelectionScreen;
 
 public class LevelPanelsBar extends WidgetGroup {
 	
@@ -23,7 +24,7 @@ public class LevelPanelsBar extends WidgetGroup {
 		longBar = new Image(skin, "upButton");
 		smallBar = new Image(skin, "downButton");
 		
-		float fraction = numLevels / 6;
+		float fraction = (float)Math.ceil(numLevels / (double)LevelSelectionScreen.LEVELS_PER_PANEL);
 		
 		longBar.setWidth(width);
 		longBar.setHeight(height);

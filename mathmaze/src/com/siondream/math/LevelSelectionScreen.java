@@ -34,7 +34,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 
 	public final static String TAG = "LevelSelectionScreen";
 	
-	private final static int LEVELS_PER_PANEL = 6;
+	public final static int LEVELS_PER_PANEL = 6;
 	
 	private Logger logger;
 	
@@ -227,7 +227,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 	}
 	
 	private void scrollLevelPanels(int panel) {
-		if (panel >= 0 && panel < GameEnv.game.getLevelManager().getLevels().size / LEVELS_PER_PANEL) {
+		if (panel >= 0 && panel <= GameEnv.game.getLevelManager().getLevels().size / LEVELS_PER_PANEL) {
 			currentPanel = panel;
 			
 			Tween.to(levelsGroup, ActorTweener.Position, 0.3f)
@@ -258,7 +258,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 						}
 					}
 					
-					scrollLevelPanels(Math.min(index / LEVELS_PER_PANEL, (numLevels / LEVELS_PER_PANEL) - 1));
+					scrollLevelPanels(index / LEVELS_PER_PANEL);
 				}
 			}
 		};

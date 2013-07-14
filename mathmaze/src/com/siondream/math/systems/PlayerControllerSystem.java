@@ -62,6 +62,8 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 	private Sound sfxShake;
 	private Sound sfxError;
 	
+	private boolean enabled;
+	
 	public PlayerControllerSystem() {
 		super();
 		
@@ -82,6 +84,8 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 		sfxSwipe = assets.get("data/sfx/swipe.mp3", Sound.class);
 		sfxShake = assets.get("data/sfx/shake.mp3", Sound.class);
 		sfxError = assets.get("data/sfx/error.wav", Sound.class);
+		
+		enabled = false;
 	}
 	
 	@Override
@@ -107,6 +111,8 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 		else {
 			Env.game.getInputMultiplexer().removeProcessor(gestureDetector);
 		}
+		
+		enabled = enable;
 	}
 	
 	public void cancelMovement() {
@@ -345,6 +351,10 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
+		if (!enabled) {
+			return false;
+		}
+		
 		if (GameEnv.soundEnabled) {
 			sfxTap.play();
 		}
@@ -381,6 +391,10 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
+		if (!enabled) {
+			return false;
+		}
+		
 		if (GameEnv.soundEnabled) {
 			sfxSwipe.play();
 		}

@@ -19,4 +19,5 @@
  <level name="Level 17" file="data/levels/level017.tmx" />
  <level name="Level 18" file="data/levels/level018.tmx" />
  <level name="Level 19" file="data/levels/level019.tmx" />
+ <level name="Level 20" file="data/levels/level020.tmx" />
 </levels>

@@ -5,8 +5,18 @@
 	<float 	key="cameraZoomSpeed" 			value="100.0" />
 	<float 	key="cameraWidth"				value="710.0" />
 	<float 	key="cameraHeight"				value="710.0" />
+	<float 	key="cameraShakeTime"			value="0.1" />
+	<int 	key="cameraShakeRepetitions"	value="1" />
 	<vector key="cameraScreenPos"			x="5.0" y="250.0" z="0.0" />
 	
 	<float 	key="playerMoveTime" 			value="0.2" />
 	<float 	key="playerMoveCooldown" 		value="0.07" />
+	<int 	key="playerMaxValue"	 		value="99" />
+	<int 	key="playerVibrateTimeMs"	 	value="150" />
+	
+	
+	<int 	key="mathLabelMaxCount"	 		value="20" />
+	<float 	key="mathLabelSpawnTime" 		value="0.5" />
+	<float 	key="mathLabelMaxTweenTime" 	value="10.0" />
+	<float 	key="mathLabelMinTweenTime" 	value="7.0" />
 </settings>

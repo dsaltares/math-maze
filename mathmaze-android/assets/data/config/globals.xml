@@ -21,4 +21,9 @@
 	<bool 	key="drawContacts"	 		value="true" />
 	<bool 	key="drawStage" 			value="true" />
 	<bool 	key="drawGrid" 				value="false" />
+	
+	<int 	key="particlePoolInitialCapacity"	value="5" />
+	<int 	key="particlePoolMaxCapacity" 		value="20" />
+	
+	
 </settings>

@@ -70,9 +70,9 @@ public class ExitCreator implements EntityCreator {
 		transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
 		transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
 		
-		tagSystem.setTag(exit, GameEnv.exitTag);
-		
 		engine.addEntity(exit);
+		
+		tagSystem.setTag(exit, GameEnv.exitTag);
 		
 		return exit;
 	}

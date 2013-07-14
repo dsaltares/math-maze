@@ -93,9 +93,9 @@ public class PlayerCreator implements EntityCreator {
 		shader.shader = shaderManager.get("font");
 		value.value = Integer.parseInt(properties.get("value", "0", String.class));
 		
-		tagSystem.setTag(player, GameEnv.playerTag);
-		
 		engine.addEntity(player);
+		
+		tagSystem.setTag(player, GameEnv.playerTag);
 		
 		return player;
 	}

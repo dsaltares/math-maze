@@ -105,9 +105,9 @@ public class ConditionCreator implements EntityCreator {
 		shader.shader = Env.game.getShaderManager().get("font");
 		color.color = Color.BLACK.cpy();
 		
-		groupSystem.register(condition, GameEnv.conditionsGroup);
-		
 		engine.addEntity(condition);
+		
+		groupSystem.register(condition, GameEnv.conditionsGroup);
 		
 		return condition;
 	}

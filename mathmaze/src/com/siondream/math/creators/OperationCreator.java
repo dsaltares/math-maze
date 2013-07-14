@@ -110,9 +110,9 @@ public class OperationCreator implements EntityCreator {
 		shader.shader = Env.game.getShaderManager().get("font");
 		color.color = Color.BLACK.cpy();
 		
-		groupSystem.register(operationEntity, GameEnv.operationsGroup);
-		
 		engine.addEntity(operationEntity);
+		
+		groupSystem.register(operationEntity, GameEnv.operationsGroup);
 		
 		return operationEntity;
 	}

@@ -47,9 +47,9 @@ public class MapCreator implements EntityCreator {
 		mapComponent.map = mapLoader.load(levelName);
 		map.add(mapComponent);
 		
-		tagSystem.setTag(map, GameEnv.mapTag);
-		
 		engine.addEntity(map);
+		
+		tagSystem.setTag(map, GameEnv.mapTag);
 		
 		return map;
 	}

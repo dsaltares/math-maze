@@ -82,9 +82,9 @@ public class KeyCreator implements EntityCreator {
 		transform.position.x = (position.x * tileLayer.getTileWidth() + texture.region.getRegionWidth() * 0.5f) * Env.pixelsToMetres;
 		transform.position.y = ((tileLayer.getHeight() - position.y - 1) * tileLayer.getTileHeight() + texture.region.getRegionHeight() * 0.5f) * Env.pixelsToMetres;
 		
-		groupSystem.register(door, GameEnv.keyTag);
-		
 		engine.addEntity(door);
+		
+		groupSystem.register(door, GameEnv.keyTag);
 		
 		return door;
 	}

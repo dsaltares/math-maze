@@ -87,8 +87,9 @@ public class MathRenderingSystem extends RenderingSystem {
 			batch.begin();
 			renderWorldEntities();
 			renderFontEntities();
-			renderParticles();
 			batch.end();
+			
+			//renderParticles();
 			
 			Gdx.gl.glDisable(GL11.GL_SCISSOR_TEST);
 		}

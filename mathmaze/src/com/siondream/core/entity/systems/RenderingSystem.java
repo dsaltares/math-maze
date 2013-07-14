@@ -53,8 +53,8 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 	private Box2DDebugRenderer box2DRenderer;
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer mapRenderer;
-//	private FrameBuffer particleFrameBuffer;
-//	private TextureRegion particleRegion;
+	private FrameBuffer particleFrameBuffer;
+	private TextureRegion particleRegion;
 	
 	private BitmapFont debugFont;
 	
@@ -73,8 +73,9 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 													Env.drawVelocities,
 													Env.drawContacts);
 		
-//		this.particleFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-//		this.particleRegion = new TextureRegion(particleFrameBuffer.getColorBufferTexture());
+		this.particleFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		this.particleRegion = new TextureRegion(particleFrameBuffer.getColorBufferTexture());
+		this.particleRegion.flip(false, true);
 		
 		if (Env.debug) {
 			debugFont = Env.game.getAssets().get("data/ui/default.fnt", BitmapFont.class);
@@ -193,12 +194,12 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 	}
 	
 	protected void renderParticles() {
-//		particleFrameBuffer.begin();
-//		batch.begin();
-//		
-//		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-//		Gdx.gl.glEnable(GL10.GL_BLEND);
+		particleFrameBuffer.begin();
+		batch.begin();
+		
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glEnable(GL10.GL_BLEND);
 		
 		Color initialColor = batch.getColor();
 		
@@ -218,13 +219,12 @@ public class RenderingSystem extends EntitySystem implements Disposable {
 			batch.setColor(initialColor);
 		}
 		
-//		batch.end();
-//		particleFrameBuffer.end();
-//		
-//		batch.setProjectionMatrix(camera.combined);
-//		batch.begin();
-//		batch.draw(particleRegion, 0.0f, 0.0f);
-//		batch.end();
+		batch.end();
+		particleFrameBuffer.end();
+		
+		batch.begin();
+		batch.draw(particleRegion, 0.0f, 0.0f);
+		batch.end();
 	}
 	
 	protected void debugDraw() {

@@ -80,7 +80,7 @@ public class CreditsScreen extends SionScreen {
 		WidgetGroup labelsGroup = new WidgetGroup();
 		
 		Image imgSiondream = new Image(skin, "siondream");
-		ShaderLabel lblDavid = new ShaderLabel("David Saltares Marquez", skin, "game");
+		ShaderLabel lblDavid = new ShaderLabel("David Saltares Márquez", skin, "game");
 		lblDavid.setColor(0.75f, 0.75f, 0.75f, 1.0f);
 		lblDavid.setFontScale(2.0f);
 		ShaderLabel lblRoleB = new ShaderLabel(lang.getString("Powered by"), skin, "game");

@@ -30,7 +30,8 @@ public class LevelManager {
 			XmlReader reader = new XmlReader();
 			Element root = reader.parse(fileHandle);
 			boolean first = true;
-
+			int index = 1;
+			
 			for (Element levelElement : root.getChildrenByName("level")) {
 				String fileName = levelElement.get("file");
 				String name = levelElement.get("name");
@@ -39,9 +40,10 @@ public class LevelManager {
 				boolean unlocked = first ? true : preferences.getBoolean(name + ".unlocked", false);
 				first = false;
 				
-				Level level = new Level(fileName, assetGroup, name, stars, unlocked); 
+				Level level = new Level(fileName, assetGroup, name, stars, index, unlocked); 
 				levels.add(level);
 				logger.info("found " + level);
+				++index;
 			}
 			
 		} catch (Exception e) {
@@ -80,13 +82,15 @@ public class LevelManager {
 		public String assetGroup;
 		public String name;
 		public int stars;
+		public int index;
 		public boolean unlocked;
 
-		public Level(String file, String assetGroup, String name, int stars, boolean unlocked) {
+		public Level(String file, String assetGroup, String name, int stars, int index, boolean unlocked) {
 			this.file = file;
 			this.assetGroup = assetGroup;
 			this.name = name;
 			this.stars = stars;
+			this.index = index;
 			this.unlocked = unlocked;
 		}
 		

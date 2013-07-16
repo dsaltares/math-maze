@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.siondream.core.Assets;
 import com.siondream.core.Env;
+import com.siondream.core.LanguageManager;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
 import com.siondream.math.LevelManager.Level;
@@ -94,12 +95,13 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 		Stage stage = Env.game.getStage();
 		Skin skin = GameEnv.game.getSkin();
 		Skin skinNearest = GameEnv.game.getSkinNearest();
+		LanguageManager lang = Env.game.getLang();
 		
 		imgBackground = new Image(skin, "background");
 		imgLand = new Image(skin, "land");
 		imgTitle = new Image(skin, "title");
 		
-		lblPick = new ShaderLabel("Pick a level", skin, "game");
+		lblPick = new ShaderLabel(lang.getString("Pick a level"), skin, "game");
 		lblPick.setFontScale(2.0f);
 		
 		btnBack = new ImageButton(skin, "back");

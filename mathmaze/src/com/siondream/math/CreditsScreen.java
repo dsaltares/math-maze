@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.siondream.core.Env;
+import com.siondream.core.LanguageManager;
 import com.siondream.core.SionScreen;
 import com.siondream.core.tweeners.ActorTweener;
 import com.siondream.math.ui.ShaderLabel;
@@ -59,6 +60,7 @@ public class CreditsScreen extends SionScreen {
 	private void createUI() {
 		Stage stage = Env.game.getStage();
 		Skin skin = GameEnv.game.getSkin();
+		LanguageManager lang = Env.game.getLang();
 		
 		imgBackground = new Image(skin, "background");
 		imgLand = new Image(skin, "land");
@@ -81,7 +83,7 @@ public class CreditsScreen extends SionScreen {
 		ShaderLabel lblDavid = new ShaderLabel("David Saltares Marquez", skin, "game");
 		lblDavid.setColor(0.75f, 0.75f, 0.75f, 1.0f);
 		lblDavid.setFontScale(2.0f);
-		ShaderLabel lblRoleB = new ShaderLabel("Powered by", skin, "game");
+		ShaderLabel lblRoleB = new ShaderLabel(lang.getString("Powered by"), skin, "game");
 		lblRoleB.setFontScale(2.0f);
 		ShaderLabel lbllibgdx = new ShaderLabel("libgdx", skin, "game");
 		lbllibgdx.setColor(0.75f, 0.75f, 0.75f, 1.0f);

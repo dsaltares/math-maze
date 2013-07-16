@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.siondream.core.Env;
+import com.siondream.core.LanguageManager;
 import com.siondream.math.GameEnv;
 import com.siondream.math.LevelManager.Level;
 
@@ -27,6 +28,7 @@ public class LevelButton extends Button {
 	
 	private LevelButtonStyle style;
 	private Level level;
+	private String name;
 	private TextureRegion regionStarOn;
 	private TextureRegion regionStarOff;
 	private Image[] stars;
@@ -43,6 +45,9 @@ public class LevelButton extends Button {
 		
 		Skin skin = GameEnv.game.getSkin();
 		TextureAtlas atlas = skin.getAtlas();
+		LanguageManager lang = Env.game.getLang();
+		
+		this.name = lang.getString("Level %d", level.index);
 		
 		if (level.unlocked) {
 			regionStarOn = new TextureRegion(atlas.findRegion("staron"));
@@ -76,9 +81,9 @@ public class LevelButton extends Button {
 		float oldScaleY = style.font.getScaleY();
 		Color oldColor = style.fontColor;
 		style.font.setScale(style.scale);
-		TextBounds bounds = style.font.getBounds(level.name);
+		TextBounds bounds = style.font.getBounds(name);
 		style.font.setColor(style.fontColor);
-		style.font.draw(batch, level.name, getX() + 20.0f, getY() + bounds.height * 1.1f);
+		style.font.draw(batch, name, getX() + 20.0f, getY() + bounds.height * 1.1f);
 		style.font.setScale(oldScaleX, oldScaleY);
 		style.font.setColor(oldColor);
 		batch.setShader(null);

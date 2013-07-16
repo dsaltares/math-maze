@@ -33,6 +33,7 @@ import com.siondream.core.Assets;
 import com.siondream.core.Chrono;
 import com.siondream.core.EntityFactory;
 import com.siondream.core.Env;
+import com.siondream.core.LanguageManager;
 import com.siondream.core.SionScreen;
 import com.siondream.core.entity.components.MapComponent;
 import com.siondream.core.entity.systems.TagSystem;
@@ -102,10 +103,12 @@ public class GameScreen extends SionScreen {
 		logger.info("initialising");
 		chrono = new Chrono();
 		
+		LanguageManager lang = Env.game.getLang();
+		
 		victoryMsgs = new String[3];
-		victoryMsgs[0] = "Well done!";
-		victoryMsgs[1] = "Awesome!";
-		victoryMsgs[2] = "You're a star!";
+		victoryMsgs[0] = lang.getString("Well done!");
+		victoryMsgs[1] = lang.getString("Awesome!");
+		victoryMsgs[2] = lang.getString("You're a star!");
 	}
 	
 	public String getName() {
@@ -149,7 +152,7 @@ public class GameScreen extends SionScreen {
 		super.render(delta);
 		
 		GameEnv.game.getLabelManager().update(delta);
-		lblTime.setText("Time " + chrono.getTime());
+		lblTime.setText(Env.game.getLang().getString("Time") + ": " + chrono.getTime());
 	}
 	
 	private void initGame() {
@@ -216,6 +219,7 @@ public class GameScreen extends SionScreen {
 		Stage stage = Env.game.getStage();
 		Skin skin = GameEnv.game.getSkin();
 		TextureAtlas atlas = skin.getAtlas();
+		LanguageManager lang = Env.game.getLang();
 
 		imgBackground = new Image(skin, "background");
 		imgLand = new Image(skin, "land");
@@ -267,22 +271,22 @@ public class GameScreen extends SionScreen {
 		controlTable.add(btnMenu).padRight(20.0f);
 		controlTable.validate();
 		
-		lblLevel = new ShaderLabel(GameEnv.debugMap.length() > 0 ? "Test level" : level.name, skin, "game");
+		lblLevel = new ShaderLabel(GameEnv.debugMap.length() > 0 ? "Test level" : lang.getString("Level %d", level.index), skin, "game");
 		lblLevel.setFontScale(2.0f);
 		
-		lblTime = new ShaderLabel("Time: 00:00", skin, "game");
+		lblTime = new ShaderLabel(lang.getString("Time") + ": " + "00:00", skin, "game");
 		lblTime.setFontScale(2.0f);
 		
-		lblPause = new ShaderLabel("Paused", skin, "game");
+		lblPause = new ShaderLabel(lang.getString("Paused"), skin, "game");
 		lblPause.setFontScale(2.0f);
 		
-		lblCompleted = new ShaderLabel("Level completed!", skin, "game");
+		lblCompleted = new ShaderLabel(lang.getString("Level completed!"), skin, "game");
 		lblCompleted.setFontScale(3.25f);
 		lblCompleted.invalidate();
 		lblCompleted.layout();
 		lblCompleted.setPosition(Env.virtualWidth, 850);
 		
-		lblVictoryMsg = new ShaderLabel("Good job!", skin, "game");
+		lblVictoryMsg = new ShaderLabel("", skin, "game");
 		lblVictoryMsg.setFontScale(3.0f);
 		lblVictoryMsg.setPosition(Env.virtualWidth, 400.0f);
 		

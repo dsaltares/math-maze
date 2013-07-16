@@ -19,4 +19,7 @@
 	<float 	key="mathLabelSpawnTime" 		value="0.5" />
 	<float 	key="mathLabelMaxTweenTime" 	value="10.0" />
 	<float 	key="mathLabelMinTweenTime" 	value="7.0" />
+	
+	<float 	key="musicVolume" 				value="0.3" />
+	<bool 	key="effectsOnly" 				value="false" />
 </settings>

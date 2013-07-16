@@ -54,10 +54,12 @@ public class MenuScreen extends SionScreen {
 	}
 	
 	private void init() {
-		Music song = GameEnv.game.getMusic();
-		song.setVolume(GameEnv.soundEnabled ? GameEnv.musicVolume : 0.0f);
-		song.setLooping(true);
-		song.play();
+		if (!GameEnv.effectsOnly) {
+			Music song = GameEnv.game.getMusic();
+			song.setVolume(GameEnv.soundEnabled ? GameEnv.musicVolume : 0.0f);
+			song.setLooping(true);
+			song.play();
+		}
 		
 		createUI();
 		animateIn();

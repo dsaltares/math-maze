@@ -50,7 +50,9 @@ public class GameEnv {
 	public static Color starsOperationColor;
 	
 	public static boolean soundEnabled;
+	public static boolean effectsOnly;
 	public static float musicVolume;
+	
 
 	public static void init(MathMaze game) {
 		logger.info("initialising");
@@ -81,6 +83,7 @@ public class GameEnv {
 		
 		starsOperationColor = new Color(0.6f, 0.8f, 0.0f, 1.0f);
 		
-		musicVolume = 0.3f;
+		musicVolume = settings.getFloat("musicVolume", 0.3f);
+		effectsOnly = settings.getBoolean("effectsOnly", false);
 	}
 }

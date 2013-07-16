@@ -15,12 +15,19 @@
 
 package com.siondream.core;
 
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.XmlReader;
-import com.badlogic.gdx.utils.XmlReader.Element;
 
 /**
  * @class LanguageManager
@@ -79,6 +86,7 @@ public class LanguageManager {
 		String string = strings.get(key);
 		
 		if (string != null) {
+			logger.info("retrieving => " + string);
 			return string;
 		}
 	
@@ -100,22 +108,27 @@ public class LanguageManager {
 		logger.info("loading " + languageName);
 		
 		try {
-			XmlReader reader = new XmlReader();
-			Element root = reader.parse(Gdx.files.internal(folder + "/" + languageName + ".xml").read());
-			
-			// Don't clear the previous lang just yet
-			Array<Element> stringElements = root.getChildrenByName("string");
-			ObjectMap<String, String> newStrings = new ObjectMap<String, String>(strings.size);
-			
-			// Load all the strings for that language
-			for (int j = 0; j < stringElements.size; ++j) {
-				Element stringNode = stringElements.get(j);
-				String key = stringNode.getAttribute("key");
-				String value = stringNode.getAttribute("value");
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputSource input = new InputSource(Gdx.files.internal(folder + "/" + languageName + ".xml").read());
+            input.setEncoding("UTF-8");
+            Document document = builder.parse(input);
+
+            NodeList stringList = document.getElementsByTagName("string");
+            int numStrings = stringList.getLength();
+            
+            ObjectMap<String, String> newStrings = new ObjectMap<String, String>(strings.size);
+            
+            for (int i = 0; i < numStrings; ++i) {
+            	Node stringNode = stringList.item(i);
+            	NamedNodeMap attributes = stringNode.getAttributes();
+            	
+            	String key = attributes.getNamedItem("key").getNodeValue();
+				String value = attributes.getNamedItem("value").getNodeValue();
 				value = value.replace("<br />", "\n");
 				newStrings.put(key, value);
 				logger.info("LanguageManager: loading key " + key);
-			}
+            }
 			
 			// Swap the languages now that is safe to do so
 			this.languageName = languageName;

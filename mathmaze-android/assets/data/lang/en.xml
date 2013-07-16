@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+	<string key="Well done!" value="Well done!" />
+	<string key="Awesome!" value="Awesome!" />
+	<string key="You're a star!" value="You're a star!" />
+	<string key="Pick a level" value="Pick a level" />
+	<string key="Level %d" value="Level %d" />
+	<string key="Time" value="Time" />
+	<string key="Paused" value="Paused" />
+	<string key="Level completed!" value="Level completed!" />
+	<string key="Powered by" value="Powered by" />
+</string>

@@ -87,7 +87,7 @@ public class LanguageManager {
 	}
 	
 	public String getString(String key, Object... args) {
-		return String.format(getString(key, args));
+		return String.format(getString(key), args);
 	}
 	
 	/**
@@ -108,7 +108,7 @@ public class LanguageManager {
 			ObjectMap<String, String> newStrings = new ObjectMap<String, String>(strings.size);
 			
 			// Load all the strings for that language
-			for (int j = 0; j < strings.size; ++j) {
+			for (int j = 0; j < stringElements.size; ++j) {
 				Element stringNode = stringElements.get(j);
 				String key = stringNode.getAttribute("key");
 				String value = stringNode.getAttribute("value");

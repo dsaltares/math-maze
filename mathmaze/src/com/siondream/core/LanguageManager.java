@@ -16,14 +16,11 @@
 package com.siondream.core;
 
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
@@ -39,6 +36,10 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class LanguageManager {
 	private static final String DEFAULT_LANGUAGE = "en";
+	
+	private static final int COLUMN_KEY = 0;
+	private static final int COLUMN_VALUE = 1;
+	private static final int COLUMN_CONTEXT = 2;
 	
 	private Logger logger;
 	private String folder;
@@ -108,27 +109,29 @@ public class LanguageManager {
 		logger.info("loading " + languageName);
 		
 		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            InputSource input = new InputSource(Gdx.files.internal(folder + "/" + languageName + ".xml").read());
-            input.setEncoding("UTF-8");
-            Document document = builder.parse(input);
-
-            NodeList stringList = document.getElementsByTagName("string");
-            int numStrings = stringList.getLength();
-            
-            ObjectMap<String, String> newStrings = new ObjectMap<String, String>(strings.size);
-            
-            for (int i = 0; i < numStrings; ++i) {
-            	Node stringNode = stringList.item(i);
-            	NamedNodeMap attributes = stringNode.getAttributes();
-            	
-            	String key = attributes.getNamedItem("key").getNodeValue();
-				String value = attributes.getNamedItem("value").getNodeValue();
+			InputStream inputStream = Gdx.files.internal(folder + "/" + languageName + ".csv").read();
+			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");
+			CSVReader reader = new CSVReader(streamReader, '|');
+			
+			String[] line;
+			boolean skip = true;
+			ObjectMap<String, String> newStrings = new ObjectMap<String, String>(strings.size);
+			
+			while ((line = reader.readNext()) != null) {
+				if (skip) {
+					skip = false;
+					continue;
+				}
+				
+				String key = line[COLUMN_KEY];
+				String value = line[COLUMN_VALUE];
+				
 				value = value.replace("<br />", "\n");
 				newStrings.put(key, value);
 				logger.info("LanguageManager: loading key " + key);
-            }
+			}
+			
+			reader.close();
 			
 			// Swap the languages now that is safe to do so
 			this.languageName = languageName;

@@ -20,11 +20,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-import au.com.bytecode.opencsv.CSVReader;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.csvreader.CsvReader;
 
 /**
  * @class LanguageManager
@@ -40,6 +39,7 @@ public class LanguageManager {
 	private static final int COLUMN_KEY = 0;
 	private static final int COLUMN_VALUE = 1;
 	private static final int COLUMN_CONTEXT = 2;
+	private static final char DELIMITER = ',';
 	
 	private Logger logger;
 	private String folder;
@@ -111,20 +111,20 @@ public class LanguageManager {
 		try {
 			InputStream inputStream = Gdx.files.internal(folder + "/" + languageName + ".csv").read();
 			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");
-			CSVReader reader = new CSVReader(streamReader, '|');
+			CsvReader reader = new CsvReader(streamReader, DELIMITER);
 			
 			String[] line;
 			boolean skip = true;
 			ObjectMap<String, String> newStrings = new ObjectMap<String, String>(strings.size);
 			
-			while ((line = reader.readNext()) != null) {
+			while (reader.readRecord()) {
 				if (skip) {
 					skip = false;
 					continue;
 				}
 				
-				String key = line[COLUMN_KEY];
-				String value = line[COLUMN_VALUE];
+				String key = reader.get(COLUMN_KEY);
+				String value = reader.get(COLUMN_VALUE);
 				
 				value = value.replace("<br />", "\n");
 				newStrings.put(key, value);

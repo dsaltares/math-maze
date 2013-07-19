@@ -1,10 +1,10 @@
-Key|Value|Context
-Well done!|Well done!|
-Awesome!|Awesome!|
-You're a star!|You're a star!|
-Pick a level|Pick a level|
-Level %d|Level %d|
-Time|Time|
-Paused|Paused|
-Level completed!|Level completed!|
-Powered by|Powered by|
+Key,Value,Context
+Well done!,Well done!,
+Awesome!,Awesome!,
+You're a star!,You're a star!,
+Pick a level,Pick a level,
+Level %d,Level %d,
+Time,Time,
+Paused,Paused,
+Level completed!,Level completed!,
+Powered by,Powered by,

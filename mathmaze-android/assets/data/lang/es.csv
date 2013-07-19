@@ -1,10 +1,10 @@
-Key|Value|Context
-Well done!|!Bien hecho!|
-Awesome!|!Genial!|
-You're a star!|!Eres el mejor!|
-Pick a level|Elije un nivel|
-Level %d|Nivel %d|
-Time|Tiempo|
-Paused|Pausa|
-Level completed!|!Nivel completado!|
-Powered by|Gracias a|
+Key,Value,Context
+Well done!,¡Bien hecho!,
+Awesome!,¡Genial!,
+You're a star!,¡Eres el mejor!,
+Pick a level,Elije un nivel,
+Level %d,Nivel %d,
+Time,Tiempo,
+Paused,Pausa,
+Level completed!,¡Nivel completado!,
+Powered by,Gracias a,

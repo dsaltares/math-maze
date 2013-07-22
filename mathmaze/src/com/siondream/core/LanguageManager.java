@@ -87,7 +87,6 @@ public class LanguageManager {
 		String string = strings.get(key);
 		
 		if (string != null) {
-			logger.info("retrieving => " + string);
 			return string;
 		}
 	

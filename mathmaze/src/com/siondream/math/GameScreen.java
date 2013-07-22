@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -55,6 +56,7 @@ public class GameScreen extends SionScreen {
 	public final static String TAG = "GameScreen";
 	
 	private enum State {
+		HELP,
 		GAME,
 		PAUSE,
 		VICTORY,
@@ -91,6 +93,11 @@ public class GameScreen extends SionScreen {
 	private Image[] stars;
 	private TextureRegionDrawable regionStarOn;
 	private TextureRegionDrawable regionStarOff;
+	
+	// Help UI
+	private ImageButton btnClose;
+	private Image imgHelp;
+	private ShaderLabel lblHelp;
 	
 	private Sound sfxVictory;
 	private Sound sfxTap;
@@ -153,6 +160,66 @@ public class GameScreen extends SionScreen {
 		
 		GameEnv.game.getLabelManager().update(delta);
 		lblTime.setText(Env.game.getLang().getString("Time") + ": " + chrono.getTime());
+	}
+	
+	public void victory() {
+		state = State.VICTORY;
+		chrono.pause();
+		
+		Engine engine = Env.game.getEngine();
+		engine.getSystem(PlayerControllerSystem.class).enable(false);
+		engine.getSystem(MathRenderingSystem.class).setRenderMap(false);
+		
+		int numStars = getStars();
+		
+		lblVictoryMsg.setText(victoryMsgs[numStars - 1]);
+		TextBounds bounds = lblVictoryMsg.getTextBounds();
+		
+		if (GameEnv.debugMap.length() == 0 && level.stars < numStars) {
+			GameEnv.game.getLevelManager().saveStars(level, numStars);
+		}
+		
+		Timeline timeline = Timeline.createSequence();
+		
+		timeline.beginSequence();
+		
+		
+		timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.12f)
+						   .target(controlTable.getX(), -controlTable.getHeight())
+						   .ease(TweenEquations.easeInOutQuad))
+				.push(Tween.to(lblCompleted, ActorTweener.Position, 0.2f)
+						   .target((Env.virtualWidth - lblCompleted.getWidth() * lblCompleted.getFontScaleX()) * 0.5f, lblCompleted.getY())
+						   .ease(TweenEquations.easeInQuad));
+		
+		timeline.beginParallel();
+		for (int i = 0; i < stars.length; ++i) {
+			Image star = stars[i];
+			
+			star.setVisible(true);
+			
+			star.setDrawable((i < numStars) ? regionStarOn : regionStarOff);
+			
+			timeline.push(Tween.to(star, ActorTweener.Scale, 0.3f)
+							   .target(1.0f, 1.0f)
+							   .ease(TweenEquations.easeInQuad)
+							   .delay(0.2f * i));
+		}
+		timeline.end();
+		
+		timeline.push(Tween.to(lblVictoryMsg, ActorTweener.Position, 0.25f)
+						   .target((Env.virtualWidth - bounds.width) * 0.5f, lblVictoryMsg.getY())
+						   .ease(TweenEquations.easeInQuad));
+		
+		timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.25f)
+						   .target(victoryTable.getX(), 20.0f)
+						   .ease(TweenEquations.easeInQuad));
+		
+		timeline.end()
+				.start(Env.game.getTweenManager());
+		
+		if (GameEnv.soundEnabled) {
+			sfxVictory.play();
+		}
 	}
 	
 	private void initGame() {
@@ -368,6 +435,21 @@ public class GameScreen extends SionScreen {
 		labelsGroup = new WidgetGroup();
 		GameEnv.game.getLabelManager().setGroup(labelsGroup);
 		
+		btnClose = new ImageButton(skin, "close");
+		imgHelp = new Image(skin, "help");
+		lblHelp = new ShaderLabel("", skin, "game");
+		
+		btnClose.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
+				helpOut();
+			}
+		});
+		
 		stage.addActor(imgBackground);
 		stage.addActor(labelsGroup);
 		stage.addActor(imgLand);
@@ -381,6 +463,9 @@ public class GameScreen extends SionScreen {
 		stage.addActor(lblCompleted);
 		stage.addActor(lblVictoryMsg);
 		stage.addActor(controlTable);
+		stage.addActor(btnClose);
+		stage.addActor(imgHelp);
+		stage.addActor(lblHelp);
 		
 		for (Image star : stars) {
 			stage.addActor(star);
@@ -397,6 +482,10 @@ public class GameScreen extends SionScreen {
 		imgMapBackground.setY(GameEnv.cameraScreenPos.y - 5.0f);
 		imgMapBackground.setColor(1.0f, 1.0f, 1.0f, 0.0f);
 		controlTable.setPosition(0.0f, -controlTable.getHeight());
+		imgHelp.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + GameEnv.cameraHeight - imgHelp.getHeight() - 35.0f);
+		lblHelp.setVisible(false);
+		lblHelp.setFontScale(2.0f);
+		btnClose.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + 35.0f);
 		
 		chrono.reset();
 		chrono.pause();
@@ -431,7 +520,19 @@ public class GameScreen extends SionScreen {
 			public void onEvent(int type, BaseTween<?> source) {
 				if (type == TweenCallback.COMPLETE) {
 					animateTitle();
-					onGameStart();
+					
+					TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
+					Entity mapEntity = tagSystem.getEntity(GameEnv.mapTag);
+					MapComponent map = mapEntity != null ? mapEntity.getComponent(MapComponent.class) : null;
+					String helpText = map.map.getProperties().get("help", "", String.class);
+					
+					if (helpText.isEmpty() || level.stars > 0) {
+						gameIn();
+					}
+					else {
+						lblHelp.setText(helpText);
+						helpIn();
+					}
 				}
 			}
 		};
@@ -453,14 +554,11 @@ public class GameScreen extends SionScreen {
 					.push(Tween.to(lblTime, ActorTweener.Position, 0.2f)
 							   .target(Env.virtualWidth - lblTime.getWidth() * lblTime.getFontScaleX() - 20.0f, lblTime.getY())
 							   .ease(TweenEquations.easeInOutQuad))
-					.push(Tween.to(controlTable, ActorTweener.Position, 0.2f)
-							   .target(controlTable.getX(), 20.0f)
-							   .ease(TweenEquations.easeInOutQuad))
 				.end()
 				.setCallback(callback)
 				.start(Env.game.getTweenManager());
 	}
-	
+
 	public void animateOut(final Class<? extends SionScreen> screenType) {
 		Env.game.getEngine().getSystem(MathRenderingSystem.class).setRenderMap(false);
 		
@@ -478,10 +576,13 @@ public class GameScreen extends SionScreen {
 		
 		timeline.beginSequence();
 		
-		timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.12f)
-				   		   .target(controlTable.getX(), -controlTable.getHeight())
-				   		   .ease(TweenEquations.easeInOutQuad))
-				.push(Tween.to(lblTime, ActorTweener.Position, 0.1f)
+		if (state != State.HELP) {
+			timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.12f)
+					.target(controlTable.getX(), -controlTable.getHeight())
+			   		.ease(TweenEquations.easeInOutQuad));
+		}
+		
+		timeline.push(Tween.to(lblTime, ActorTweener.Position, 0.1f)
 						   .target(Env.virtualWidth, lblTime.getY())
 						   .ease(TweenEquations.easeInOutQuad))
 				.push(Tween.to(lblLevel, ActorTweener.Position, 0.2f)
@@ -514,6 +615,17 @@ public class GameScreen extends SionScreen {
 							   .target(Env.virtualWidth, lblCompleted.getY())
 							   .ease(TweenEquations.easeInOutQuad));
 		}
+		else if (state == State.HELP) {
+			timeline.push(Tween.to(btnClose, ActorTweener.Position, 0.2f)
+					   		   .target(Env.virtualWidth, btnClose.getY())
+					   		   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(lblHelp, ActorTweener.Color, 0.2f)
+					      	   .target(0.0f, 0.0f, 0.0f, 0.0f)
+							   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(imgHelp, ActorTweener.Position, 0.2f)
+							   .target(Env.virtualWidth, imgHelp.getY())
+							   .ease(TweenEquations.easeInOutQuad));
+		}
 		
 		timeline.push(Tween.to(imgMapBackground, ActorTweener.Color, 0.2f)
 						   .target(1.0f, 1.0f, 1.0f, 0.0f)
@@ -528,6 +640,24 @@ public class GameScreen extends SionScreen {
 				.end()
 				.setCallback(callback)
 				.start(Env.game.getTweenManager());
+	}
+	
+	private void gameIn() {
+		TweenCallback callback = new TweenCallback() {
+
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				if (type == TweenCallback.COMPLETE) {
+					onGameStart();
+				}
+			}
+		};
+		
+		Tween.to(controlTable, ActorTweener.Position, 0.2f)
+		     .target(controlTable.getX(), 20.0f)
+			 .ease(TweenEquations.easeInOutQuad)
+			 .setCallback(callback)
+			 .start(Env.game.getTweenManager());
 	}
 	
 	private void animateTitle() {
@@ -614,64 +744,67 @@ public class GameScreen extends SionScreen {
 				.start(Env.game.getTweenManager());
 	}
 	
-	public void victory() {
-		state = State.VICTORY;
-		chrono.pause();
+	private void helpIn() {
+		state = State.HELP;
 		
-		Engine engine = Env.game.getEngine();
-		engine.getSystem(PlayerControllerSystem.class).enable(false);
-		engine.getSystem(MathRenderingSystem.class).setRenderMap(false);
+		lblHelp.setVisible(true);
+		lblHelp.setColor(0.0f, 0.0f, 0.0f, 0.0f);
 		
-		int numStars = getStars();
+		TextBounds bounds = lblHelp.getTextBounds();
+		lblHelp.setPosition((Env.virtualWidth - bounds.width) * 0.5f,
+							GameEnv.cameraScreenPos.y + (GameEnv.cameraHeight - bounds.height) * 0.5f);
 		
-		lblVictoryMsg.setText(victoryMsgs[numStars - 1]);
-		TextBounds bounds = lblVictoryMsg.getTextBounds();
+		lblHelp.setWrap(true);
+		lblHelp.setHeight(200.0f);
+		lblHelp.setWidth(GameEnv.cameraWidth - 40.0f);
+		lblHelp.setAlignment(Align.center, Align.left);
+		lblHelp.layout();
 		
-		if (GameEnv.debugMap.length() == 0 && level.stars < numStars) {
-			GameEnv.game.getLevelManager().saveStars(level, numStars);
-		}
 		
 		Timeline timeline = Timeline.createSequence();
 		
-		timeline.beginSequence();
-		
-		
-		timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.12f)
-						   .target(controlTable.getX(), -controlTable.getHeight())
-						   .ease(TweenEquations.easeInOutQuad))
-				.push(Tween.to(lblCompleted, ActorTweener.Position, 0.2f)
-						   .target((Env.virtualWidth - lblCompleted.getWidth() * lblCompleted.getFontScaleX()) * 0.5f, lblCompleted.getY())
-						   .ease(TweenEquations.easeInQuad));
-		
-		timeline.beginParallel();
-		for (int i = 0; i < stars.length; ++i) {
-			Image star = stars[i];
-			
-			star.setVisible(true);
-			
-			star.setDrawable((i < numStars) ? regionStarOn : regionStarOff);
-			
-			timeline.push(Tween.to(star, ActorTweener.Scale, 0.3f)
-							   .target(1.0f, 1.0f)
-							   .ease(TweenEquations.easeInQuad)
-							   .delay(0.2f * i));
-		}
-		timeline.end();
-		
-		timeline.push(Tween.to(lblVictoryMsg, ActorTweener.Position, 0.25f)
-						   .target((Env.virtualWidth - bounds.width) * 0.5f, lblVictoryMsg.getY())
-						   .ease(TweenEquations.easeInQuad));
-		
-		timeline.push(Tween.to(victoryTable, ActorTweener.Position, 0.25f)
-						   .target(victoryTable.getX(), 20.0f)
-						   .ease(TweenEquations.easeInQuad));
-		
-		timeline.end()
+		timeline.beginSequence()
+					.push(Tween.to(imgHelp, ActorTweener.Position, 0.2f)
+							   .target((Env.virtualWidth - imgHelp.getWidth()) * 0.5f, imgHelp.getY())
+							   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(lblHelp, ActorTweener.Color, 0.2f)
+					      	   .target(0.0f, 0.0f, 0.0f, 1.0f)
+							   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(btnClose, ActorTweener.Position, 0.2f)
+							   .target((Env.virtualWidth - btnClose.getWidth()) * 0.5f, btnClose.getY())
+							   .ease(TweenEquations.easeInOutQuad))
+				.end()
 				.start(Env.game.getTweenManager());
+	}
+	
+	private void helpOut() {
+		TweenCallback callback = new TweenCallback() {
+
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+				if (type == TweenCallback.COMPLETE) {
+					lblHelp.setVisible(false);
+					gameIn();
+				}
+			}
+		};
 		
-		if (GameEnv.soundEnabled) {
-			sfxVictory.play();
-		}
+		Timeline timeline = Timeline.createSequence();
+		
+		timeline.beginSequence()
+					.push(Tween.to(btnClose, ActorTweener.Position, 0.2f)
+							   .target(Env.virtualWidth, btnClose.getY())
+							   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(lblHelp, ActorTweener.Color, 0.2f)
+					      	   .target(0.0f, 0.0f, 0.0f, 0.0f)
+							   .ease(TweenEquations.easeInOutQuad))
+					.push(Tween.to(imgHelp, ActorTweener.Position, 0.2f)
+							   .target(Env.virtualWidth, imgHelp.getY())
+							   .ease(TweenEquations.easeInOutQuad))
+					
+				.end()
+				.setCallback(callback)
+				.start(Env.game.getTweenManager());
 	}
 	
 	private int getStars() {

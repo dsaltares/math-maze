@@ -40,5 +40,6 @@
 		resume: { up: resumeUp, down: resumeDown },
 		play: { up: playUp, down: playDown },
 		info: { up: infoUp, down: infoDown },
+		close: { up: closeUp, down: closeDown },
 	},
 }

@@ -526,7 +526,8 @@ public class GameScreen extends SionScreen {
 					MapComponent map = mapEntity != null ? mapEntity.getComponent(MapComponent.class) : null;
 					String helpText = map.map.getProperties().get("help", "", String.class);
 					
-					if (helpText.isEmpty() || level.stars > 0) {
+					if ((helpText.isEmpty() || level.stars > 0) && 
+						!Env.debug) {
 						gameIn();
 					}
 					else {
@@ -757,7 +758,7 @@ public class GameScreen extends SionScreen {
 		lblHelp.setWrap(true);
 		lblHelp.setHeight(200.0f);
 		lblHelp.setWidth(GameEnv.cameraWidth - 40.0f);
-		lblHelp.setAlignment(Align.center, Align.left);
+//		lblHelp.setAlignment(Align.center, Align.left);
 		lblHelp.layout();
 		
 		

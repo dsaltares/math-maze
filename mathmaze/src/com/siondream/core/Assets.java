@@ -1,6 +1,7 @@
 package com.siondream.core;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -99,8 +100,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
 	
 	@Override
-	public void error(String fileName, Class type, Throwable throwable) {
-		logger.error("error loading " + fileName + " message: " + throwable.getMessage());
+	public void error(AssetDescriptor asset, Throwable throwable) {
+		logger.error("error loading " + asset.fileName + " message: " + throwable.getMessage());
 	}
 	
 	private void loadGroups(String assetFile) {

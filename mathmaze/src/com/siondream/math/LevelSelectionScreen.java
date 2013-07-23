@@ -260,7 +260,7 @@ public class LevelSelectionScreen extends SionScreen implements GestureListener 
 						}
 					}
 					
-					scrollLevelPanels(index / LEVELS_PER_PANEL);
+					scrollLevelPanels((index - 1) / LEVELS_PER_PANEL);
 				}
 			}
 		};

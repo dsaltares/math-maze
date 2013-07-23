@@ -484,7 +484,7 @@ public class GameScreen extends SionScreen {
 		controlTable.setPosition(0.0f, -controlTable.getHeight());
 		imgHelp.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + GameEnv.cameraHeight - imgHelp.getHeight() - 35.0f);
 		lblHelp.setVisible(false);
-		lblHelp.setFontScale(2.0f);
+		lblHelp.setFontScale(1.0f);
 		btnClose.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + 35.0f);
 		
 		chrono.reset();
@@ -750,18 +750,14 @@ public class GameScreen extends SionScreen {
 		
 		lblHelp.setVisible(true);
 		lblHelp.setColor(0.0f, 0.0f, 0.0f, 0.0f);
-		
-		TextBounds bounds = lblHelp.getTextBounds();
-		lblHelp.setPosition((Env.virtualWidth - bounds.width) * 0.5f,
-							GameEnv.cameraScreenPos.y + (GameEnv.cameraHeight - bounds.height) * 0.5f);
-		
 		lblHelp.setWrap(true);
-		lblHelp.setHeight(200.0f);
-		lblHelp.setWidth(GameEnv.cameraWidth - 40.0f);
-//		lblHelp.setAlignment(Align.center, Align.left);
+		lblHelp.setWidth(Env.virtualWidth - 40.0f);
+		lblHelp.setHeight(0.0f);
+		lblHelp.setAlignment(Align.center, Align.left);
 		lblHelp.layout();
-		
-		
+		lblHelp.setPosition((Env.virtualWidth - lblHelp.getWidth()) * 0.5f,
+							 GameEnv.cameraScreenPos.y + GameEnv.cameraHeight - 275.0f);
+
 		Timeline timeline = Timeline.createSequence();
 		
 		timeline.beginSequence()

@@ -175,7 +175,7 @@ public class GameScreen extends SionScreen {
 		lblVictoryMsg.setText(victoryMsgs[numStars - 1]);
 		TextBounds bounds = lblVictoryMsg.getTextBounds();
 		
-		if (GameEnv.debugMap.length() == 0 && level.stars < numStars) {
+		if (GameEnv.debugMap.length() == 0) {
 			GameEnv.game.getLevelManager().saveStars(level, numStars);
 		}
 		

@@ -10,8 +10,9 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 import com.siondream.core.Env;
 
 public class LevelManager {
-	
+		
 	private static final String TAG = "LevelManager";
+	private static final String LAST_UNLOCKED_LEVEL = "lastUnlockedLevel";
 	
 	private Logger logger;
 	private Array<Level> levels;
@@ -23,6 +24,7 @@ public class LevelManager {
 		
 		logger.info("initialising");
 		
+		int lastUnlockedLevel = preferences.getInteger("lastUnlockedLevel", 1);
 		this.levels = new Array<Level>();
 		
 		try {
@@ -37,7 +39,7 @@ public class LevelManager {
 				String name = levelElement.get("name");
 				String assetGroup = levelElement.get("assetGroup", "");
 				int stars = preferences.getInteger(name + ".stars", 0);
-				boolean unlocked = first ? true : preferences.getBoolean(name + ".unlocked", false);
+				boolean unlocked = index <= lastUnlockedLevel;
 				first = false;
 				
 				Level level = new Level(fileName, assetGroup, name, stars, index, unlocked); 
@@ -63,15 +65,24 @@ public class LevelManager {
 			return;
 		}
 		
-		logger.info(level.name + " has now " + stars + " stars");
-		level.stars = stars;
-		preferences.putInteger(level.name + ".stars", stars);
+		if (level.stars < stars) {
+			logger.info(level.name + " has now " + stars + " stars");
+			level.stars = stars;
+			preferences.putInteger(level.name + ".stars", stars);
+		}
 		
-		if ((index + 1) < levels.size) {
-			Level nextLevel = levels.get(index + 1);
+		int nextIndex = index + 1;
+		
+		if (nextIndex < levels.size) {
+			Level nextLevel = levels.get(nextIndex);
 			nextLevel.unlocked = true;
 			logger.info("unlocking " + nextLevel.name);
-			preferences.putBoolean(nextLevel.name + ".unlocked", true);
+			
+			int lastUnlocked = preferences.getInteger(LAST_UNLOCKED_LEVEL, 0);
+			
+			if (lastUnlocked < nextIndex + 1) {
+				preferences.putInteger(LAST_UNLOCKED_LEVEL, nextIndex + 1);
+			}
 		}
 		
 		preferences.flush();

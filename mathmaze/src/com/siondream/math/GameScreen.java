@@ -578,14 +578,23 @@ public class GameScreen extends SionScreen {
 		
 		if (state != State.HELP) {
 			timeline.push(Tween.to(controlTable, ActorTweener.Position, 0.12f)
-					.target(controlTable.getX(), -controlTable.getHeight())
-			   		.ease(TweenEquations.easeInOutQuad));
+							   .target(controlTable.getX(), -controlTable.getHeight())
+							   .ease(TweenEquations.easeInOutQuad));
 		}
 		
-		timeline.push(Tween.to(lblTime, ActorTweener.Position, 0.1f)
-						   .target(Env.virtualWidth, lblTime.getY())
-						   .ease(TweenEquations.easeInOutQuad))
-				.push(Tween.to(lblLevel, ActorTweener.Position, 0.2f)
+		if (state == State.PAUSE) {
+			timeline.push(Tween.to(lblPause, ActorTweener.Position, 0.1f)
+					   .target(Env.virtualWidth, lblPause.getY())
+					   .ease(TweenEquations.easeInOutQuad));
+		}
+		else {
+			timeline.push(Tween.to(lblTime, ActorTweener.Position, 0.1f)
+					   		   .target(Env.virtualWidth, lblTime.getY())
+					   		   .ease(TweenEquations.easeInOutQuad));
+		}
+		
+		
+		timeline.push(Tween.to(lblLevel, ActorTweener.Position, 0.2f)
 						   .target(Env.virtualWidth, lblLevel.getY())
 						   .ease(TweenEquations.easeInOutQuad));
 		

@@ -24,7 +24,7 @@
    </properties>
   </object>
   <object name="exit" x="128" y="384" width="64" height="64"/>
-  <object name="&lt;:2" type="condition" x="128" y="256" width="64" height="64"/>
+  <object name="=:1" type="condition" x="128" y="256" width="64" height="64"/>
   <object name="-:3" type="operation" x="64" y="128" width="64" height="64"/>
   <object name="-:6" type="operation" x="192" y="128" width="64" height="64"/>
  </objectgroup>

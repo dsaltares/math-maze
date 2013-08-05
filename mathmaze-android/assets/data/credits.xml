@@ -2,7 +2,7 @@
 <credits>
 	<image name="title" pad="75" />
 	<image name="siondream" pad="40" />
-	<label text="David Saltares Márquez" scale="2.0" pad="30.0" />
+	<label text="David Saltares MÃ¡rquez" scale="2.0" pad="30.0" />
 	<label text="Powered by" scale="2.0" pad="10.0" />
 	<label text="libgdx" scale="1.75" pad="20.0" />
 </credits>

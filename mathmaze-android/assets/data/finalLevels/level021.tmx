@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="11" height="10" tilewidth="64" tileheight="64">
+ <properties>
+  <property name="time" value="10"/>
+ </properties>
+ <tileset firstgid="1" name="tileset" tilewidth="64" tileheight="64" spacing="2" margin="2">
+  <image source="../tiles/tiles.png" width="128" height="256"/>
+  <tile id="1">
+   <properties>
+    <property name="walkable" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="background" width="11" height="10">
+  <data encoding="base64">
+   AQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAIAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAACAAAAAgAAAAEAAAABAAAAAgAAAAEAAAABAAAAAgAAAAEAAAABAAAAAQAAAAIAAAACAAAAAQAAAAEAAAACAAAAAQAAAAEAAAACAAAAAQAAAAEAAAABAAAAAQAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAgAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAIAAAACAAAAAgAAAAEAAAACAAAAAQAAAAIAAAACAAAAAgAAAAEAAAABAAAAAQAAAAIAAAABAAAAAQAAAAIAAAABAAAAAQAAAAIAAAABAAAAAQAAAAEAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAACAAAAAgAAAAIAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAA=
+  </data>
+ </layer>
+ <objectgroup name="objects" width="11" height="10">
+  <object name="player" type="player" x="64" y="512" width="64" height="64"/>
+  <object name="exit" x="320" y="64" width="64" height="64"/>
+  <object name="&gt;:15" type="condition" x="448" y="256" width="64" height="64"/>
+  <object name="+:3" type="operation" x="64" y="192" width="64" height="64"/>
+  <object name="=:6" type="condition" x="320" y="448" width="64" height="64"/>
+  <object name="&gt;:5" type="condition" x="192" y="256" width="64" height="64"/>
+  <object name="=:24" type="condition" x="320" y="192" width="64" height="64"/>
+  <object name="*:5" type="operation" x="192" y="384" width="64" height="64"/>
+  <object name="-:2" type="operation" x="64" y="384" width="64" height="64"/>
+  <object name="+:7" type="operation" x="448" y="384" width="64" height="64"/>
+  <object name="*:-2" type="operation" x="576" y="384" width="64" height="64"/>
+  <object name="*:2" type="operation" x="512" y="128" width="64" height="64"/>
+  <object name="-:6" type="operation" x="576" y="256" width="64" height="64"/>
+  <object name="*:2" type="operation" x="128" y="128" width="64" height="64"/>
+ </objectgroup>
+</map>

@@ -28,6 +28,8 @@
 		twitter: { drawable: twitter },
 		siondream: { drawable: siondream },
 		libgdx: { drawable: libgdx },
+		libgdx-black: { drawable: libgdx-black },
+		evergreen: { drawable: evergreen },
 	},
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {

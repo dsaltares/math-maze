@@ -173,7 +173,7 @@ public class CreditsScreen extends SionScreen {
 			}
 		};
 		
-		Tween.to(tableCredits, ActorTweener.Position, tableCredits.getHeight() / Env.virtualHeight * 10.0f)
+		Tween.to(tableCredits, ActorTweener.Position, tableCredits.getHeight() / Env.virtualHeight * 15.0f)
 			 .target(tableCredits.getX(), Env.virtualHeight)
 			 .ease(TweenEquations.easeNone)
 			 .setCallback(callback)

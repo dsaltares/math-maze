@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <levels>
- <level name="Level 1" file="data/levels/level001.tmx" />
+ <level name="Level 1" file="data/finalLevels/level001.tmx" />
  <level name="Level 2" file="data/levels/level002.tmx" />
  <level name="Level 3" file="data/levels/level003.tmx" />
  <level name="Level 4" file="data/levels/level004.tmx" />
@@ -20,4 +20,19 @@
  <level name="Level 18" file="data/levels/level018.tmx" />
  <level name="Level 19" file="data/levels/level019.tmx" />
  <level name="Level 20" file="data/levels/level020.tmx" />
+ <level name="Level 21" file="data/levels/level021.tmx" />
+ <level name="Level 22" file="data/levels/level022.tmx" />
+ <level name="Level 23" file="data/levels/level023.tmx" />
+ <level name="Level 24" file="data/levels/level024.tmx" />
+ <level name="Level 25" file="data/levels/level025.tmx" />
+ <level name="Level 26" file="data/levels/level026.tmx" />
+ <level name="Level 27" file="data/levels/level027.tmx" />
+ <level name="Level 28" file="data/levels/level028.tmx" />
+ <level name="Level 29" file="data/levels/level029.tmx" />
+ <level name="Level 30" file="data/levels/level030.tmx" />
+ <level name="Level 31" file="data/levels/level031.tmx" />
+ <level name="Level 32" file="data/levels/level032.tmx" />
+ <level name="Level 33" file="data/levels/level033.tmx" />
+ <level name="Level 34" file="data/levels/level034.tmx" />
+ <level name="Level 35" file="data/levels/level035.tmx" />
 </levels>

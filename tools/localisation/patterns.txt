@@ -1,2 +1,3 @@
 lang\.getString\(\"(?P<key>[^\"]+)
 ^.*text=\"(?P<key>[^"]*)
+\<property name\=\"help\" value=\"(?P<key>[^"]*)

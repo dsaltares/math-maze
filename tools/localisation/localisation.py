@@ -24,7 +24,7 @@ def collectStrings(dir, patterns):
 	
 	for (dirPath, dirNames, fileNames) in os.walk(dir):
 		for file in fileNames:
-			if file.endswith('.java') or file.endswith('.xml'):
+			if file.endswith('.java') or file.endswith('.xml') or file.endswith('.tmx'):
 				print '    * Processing %s' % file
 				textFile = open(os.path.join(dirPath, file))
 				lines = textFile.readlines()

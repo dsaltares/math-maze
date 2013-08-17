@@ -1,5 +1,8 @@
 package com.siondream.math;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
@@ -189,8 +192,10 @@ public class CreditsScreen extends SionScreen {
 		tableCredits = new Table();
 		
 		try {
+			InputStream inputStream = Gdx.files.internal(CREDITS_FILE).read();
+			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");
 			XmlReader reader = new XmlReader();
-			Element root = reader.parse(Gdx.files.internal(CREDITS_FILE));
+			Element root = reader.parse(streamReader);
 
 			int numElements = root.getChildCount();
 			for (int i = 0; i < numElements; ++i) {

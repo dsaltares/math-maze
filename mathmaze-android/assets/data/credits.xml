@@ -3,14 +3,14 @@
 	<image name="title" pad="100" />
 	<label text="A game by" scale="2.5" pad="15.0" />
 	<image name="siondream" pad="10" />
-	<label text="David Saltares Márquez" scale="1.75" pad="50.0" />
+	<label text="David Saltares MÃ¡rquez" scale="1.75" pad="50.0" />
 	<label text="Original Soundtrack" scale="2.5" pad="15.0" />
 	<image name="evergreen" pad="10" />
-	<label text="Daniel Pellicer García" scale="1.75" pad="10.0" />
-	<label text="Samuel Föger" scale="1.75" pad="50.0" />
+	<label text="Daniel Pellicer GarcÃ­a" scale="1.75" pad="10.0" />
+	<label text="Samuel FÃ¶ger" scale="1.75" pad="50.0" />
 	<label text="Localisation" scale="2.5" pad="15.0" />
-	<label text="Irene Saltares Márquez" scale="1.75" pad="10.0" />
-	<label text="Sergi Juárez" scale="1.75" pad="10.0" />
+	<label text="Irene Saltares MÃ¡rquez" scale="1.75" pad="10.0" />
+	<label text="Sergi JuÃ¡rez Carceller" scale="1.75" pad="10.0" />
 	<label text="Anda Huzau" scale="1.75" pad="50.0" />
 	<label text="Powered by" scale="2.5" pad="15.0" />
 	<image name="libgdx-black" pad="10" />

@@ -12,7 +12,6 @@ STRING_COLUMN = 1
 def parseArguments():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-d', '--dir', help='directory to scan', required=True)
-	parser.add_argument('-l', '--lang', help='language file to produce', required=True)
 	parser.add_argument('-f', '--file', help='save language strings to file', required=True)
 	parser.add_argument('-p', '--patterns', help='file containing the patterns to match localisable strings', required=True)
 	return parser.parse_args()

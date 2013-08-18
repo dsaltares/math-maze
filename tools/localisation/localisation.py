@@ -5,15 +5,22 @@ import argparse
 import os
 import csv
 import re
+import ConfigParser
+import collections
 
 KEY_COLUMN = 0
 STRING_COLUMN = 1
 
+class MultiOrderedDict(collections.OrderedDict):
+    def __setitem__(self, key, value):
+        if isinstance(value, list) and key in self:
+            self[key].extend(value)
+        else:
+            super(collections.OrderedDict, self).__setitem__(key, value)
+
 def parseArguments():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-d', '--dir', help='directory to scan', required=True)
-	parser.add_argument('-f', '--file', help='save language strings to file', required=True)
-	parser.add_argument('-p', '--patterns', help='file containing the patterns to match localisable strings', required=True)
+	parser.add_argument('-c', '--config', help='config file to use for localisation template generation', required=True)
 	return parser.parse_args()
 
 def collectStrings(dir, patterns):
@@ -43,12 +50,12 @@ def collectStrings(dir, patterns):
 	return strings
 
 def parseLocalisationFile(file):
-	print '* Parsing localisation file %s' % file
+	print '    * Parsing localisation file %s' % file
 	
 	strings = {}
 	
 	if os.path.exists(file):
-		print '* Localisation file found'
+		print '    * Localisation file found'
 		
 		csvFile = open(file, 'rb')
 		csvReader = csv.reader(csvFile)
@@ -64,21 +71,21 @@ def parseLocalisationFile(file):
 			
 		csvFile.close()
 	else:
-		print '* Localisation file not found, creating'
+		print '    * Localisation file not found, creating'
 		
 	return strings
 	
 def updateLocalisationFile(fileName, codeStrings, localisedStrings):
-	print '* Updating localised strings'
+	print '    * Updating localised strings'
 
 	for key in localisedStrings.keys():
 		if key not in codeStrings:
-			print '    * Deleting key %s' % key
+			print '        * Deleting key %s' % key
 			del localisedStrings[key]
 	
 	for key, value in codeStrings.iteritems():
 		if key not in localisedStrings:
-			print '    * Adding new key %s' % key
+			print '        * Adding new key %s' % key
 			localisedStrings[key] = value
 		
 	csvFile = open(fileName, 'wb')
@@ -94,17 +101,11 @@ def updateLocalisationFile(fileName, codeStrings, localisedStrings):
 	
 	csvFile.close()
 
-def getPatterns(fileName):
-	print '* Processing patterns file %s' % fileName
-	
+def getPatterns(lines):
 	patterns = []
-	patternsFile = open(fileName, 'r')
-	lines = patternsFile.read().splitlines()
-	
+
 	for line in lines:
-		if len(line) > 0:
-			print '    * Found pattern %s' % line
-			patterns.append(re.compile(line))
+		patterns.append(re.compile(line))
 		
 	return patterns
 	
@@ -113,10 +114,22 @@ def main():
 	print '=================\n'
 	
 	args = parseArguments()
-	patterns = getPatterns(args.patterns)
-	codeStrings = collectStrings(args.dir, patterns)
-	localisedStrings = parseLocalisationFile(args.file)
-	updateLocalisationFile(args.file, codeStrings, localisedStrings)
+	
+	config = ConfigParser.RawConfigParser(dict_type=MultiOrderedDict)
+	config.read([args.config])
+
+	patterns = getPatterns(config.get('localisation', 'patterns'))
+	langs = config.get('localisation', 'langs')
+	sourceDir = config.get('localisation', 'sourceDir')[0]
+	targetDir = config.get('localisation', 'targetDir')[0]
+	
+	codeStrings = collectStrings(sourceDir, patterns)
+	
+	for lang in langs:
+		print '* Processing locale %s' % lang 
+		langFile = os.path.join(targetDir, lang + '.csv')
+		localisedStrings = parseLocalisationFile(langFile)
+		updateLocalisationFile(langFile, codeStrings, localisedStrings)
 	
 if __name__ == "__main__":
 	main()

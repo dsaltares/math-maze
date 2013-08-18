@@ -527,7 +527,7 @@ public class GameScreen extends SionScreen {
 					String helpText = map.map.getProperties().get("help", "", String.class);
 					
 					if (!helpText.isEmpty() && (level == null || level.stars == 0 || Env.debug)) {
-						lblHelp.setText(helpText);
+						lblHelp.setText(Env.game.getLang().getString(helpText));
 						helpIn();
 					}
 					else {

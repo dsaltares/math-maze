@@ -11,7 +11,8 @@
 	<label text="Localisation" scale="2.5" pad="15.0" />
 	<label text="Irene Saltares Márquez" scale="1.75" pad="10.0" />
 	<label text="Sergi Juárez Carceller" scale="1.75" pad="10.0" />
-	<label text="Anda Huzau" scale="1.75" pad="50.0" />
+	<label text="Anda Huzau" scale="1.75" pad="20.0" />
+	<label text="Arto Österman" scale="1.75" pad="50.0" />
 	<label text="Powered by" scale="2.5" pad="15.0" />
 	<image name="libgdx-black" pad="10" />
 </credits>

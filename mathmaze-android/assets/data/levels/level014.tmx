@@ -20,7 +20,7 @@
  <objectgroup name="objects" width="5" height="8">
   <object name="player" type="player" x="128" y="64" width="64" height="64">
    <properties>
-    <property name="value" value="2"/>
+    <property name="value" value="5"/>
    </properties>
   </object>
   <object name="exit" x="128" y="384" width="64" height="64"/>

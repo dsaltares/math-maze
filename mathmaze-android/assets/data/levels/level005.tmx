@@ -2,7 +2,7 @@
 <map version="1.0" orientation="orthogonal" width="7" height="9" tilewidth="64" tileheight="64">
  <properties>
   <property name="help" value="Conditions can also be greater than or less than"/>
-  <property name="time" value="7"/>
+  <property name="time" value="10"/>
  </properties>
  <tileset firstgid="1" name="tileset" tilewidth="64" tileheight="64" spacing="2" margin="2">
   <image source="../tiles/tiles.png" width="128" height="256"/>

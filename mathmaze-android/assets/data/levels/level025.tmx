@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="8" height="11" tilewidth="64" tileheight="64">
  <properties>
-  <property name="time" value="10"/>
+  <property name="time" value="32"/>
  </properties>
  <tileset firstgid="1" name="tileset" tilewidth="64" tileheight="64" spacing="2" margin="2">
   <image source="../tiles/tiles.png" width="128" height="256"/>
@@ -21,7 +21,7 @@
   <object name="exit" x="128" y="64" width="64" height="64"/>
   <object name="&gt;:0" type="condition" x="128" y="448" width="64" height="64"/>
   <object name="+:10" type="operation" x="64" y="256" width="64" height="64"/>
-  <object name="=:7" type="condition" x="128" y="192" width="64" height="64"/>
+  <object name="=:11" type="condition" x="128" y="192" width="64" height="64"/>
   <object name="&lt;:10" type="condition" x="256" y="256" width="64" height="64"/>
   <object name="&gt;:20" type="condition" x="256" y="384" width="64" height="64"/>
   <object name="/:8" type="operation" x="192" y="320" width="64" height="64"/>

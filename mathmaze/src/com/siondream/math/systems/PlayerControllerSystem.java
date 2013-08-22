@@ -1,6 +1,8 @@
 package com.siondream.math.systems;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -36,12 +38,13 @@ import ashley.core.Entity;
 import ashley.core.EntitySystem;
 import ashley.core.Family;
 import ashley.utils.IntMap;
+import ashley.utils.IntMap.Keys;
 import ashley.utils.IntMap.Values;
 import ashley.utils.MathUtils;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquations;
 
-public class PlayerControllerSystem extends EntitySystem implements GestureListener {
+public class PlayerControllerSystem extends EntitySystem implements GestureListener, InputProcessor {
 	
 	private static final String TAG = "PlayerControllerSystem";
 	
@@ -78,6 +81,7 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 		rightDirection = Vector2.X.cpy();
 		gestureDetector = new GestureDetector(this);
 		Env.game.getInputMultiplexer().addProcessor(gestureDetector);
+		Env.game.getInputMultiplexer().addProcessor(this);
 		
 		Assets assets = Env.game.getAssets();
 		sfxTap = assets.get("data/sfx/tap.mp3", Sound.class);
@@ -107,9 +111,11 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 	public void enable(boolean enable) {
 		if (enable) {
 			Env.game.getInputMultiplexer().addProcessor(gestureDetector);
+			Env.game.getInputMultiplexer().addProcessor(this);
 		}
 		else {
 			Env.game.getInputMultiplexer().removeProcessor(gestureDetector);
+			Env.game.getInputMultiplexer().removeProcessor(this);
 		}
 		
 		enabled = enable;
@@ -438,6 +444,90 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 	@Override
 	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2,
 			Vector2 pointer1, Vector2 pointer2) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		if (!enabled) {
+			return false;
+		}
+		
+		if (keycode != Input.Keys.LEFT && 
+			keycode != Input.Keys.RIGHT &&
+			keycode != Input.Keys.UP &&
+			keycode != Input.Keys.DOWN) {
+			return false;
+		}
+		
+		if (GameEnv.soundEnabled) {
+			sfxTap.play();
+		}
+		
+		TagSystem tagSystem = Env.game.getEngine().getSystem(TagSystem.class);
+		Entity player = tagSystem.getEntity(GameEnv.playerTag);
+		
+		if (player == null) {
+			return false;
+		}
+		
+		GridPositionComponent position = player.getComponent(GridPositionComponent.class);
+		
+		if (keycode == Input.Keys.LEFT) {
+			destination.set(position.x - 1, position.y);
+		}
+		else if (keycode == Input.Keys.RIGHT) {
+			destination.set(position.x + 1, position.y);
+		}
+		else if (keycode == Input.Keys.UP) {
+			destination.set(position.x, position.y - 1);
+		}
+		else if (keycode == Input.Keys.DOWN) {
+			destination.set(position.x, position.y + 1);
+		}
+			
+		return move();
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -21,6 +21,7 @@ import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -62,7 +63,7 @@ public class AnimationLoader extends AsynchronousAssetLoader<AnimationData, Anim
 	 * Aynchronously loads the animation data animations
 	 */
 	@Override
-	public void loadAsync(AssetManager manager, String fileName, AnimationParameter parameter) {
+	public void loadAsync(AssetManager manager, String fileName, FileHandle file, AnimationParameter parameter) {
 		logger.info("loading " + fileName);
 		
 		animationData = new AnimationData();
@@ -72,7 +73,7 @@ public class AnimationLoader extends AsynchronousAssetLoader<AnimationData, Anim
 		
 		try {
 			XmlReader reader = new XmlReader();
-			Element root = reader.parse(Gdx.files.internal(fileName));
+			Element root = reader.parse(file);
 			
 			animationData.rows = Integer.parseInt(root.getAttribute("rows"));
 			animationData.columns = Integer.parseInt(root.getAttribute("columns"));
@@ -106,16 +107,15 @@ public class AnimationLoader extends AsynchronousAssetLoader<AnimationData, Anim
 	 * Retrieves the animation data as it is (without loading anything, this is strictly asynchronous)
 	 */
 	@Override
-	public AnimationData loadSync(AssetManager manager, String fileName, AnimationParameter parameter) {
+	public AnimationData loadSync(AssetManager manager, String fileName, FileHandle file, AnimationParameter parameter) {
 		return animationData;
 	}
-	
+
 	/**
 	 * Gets animation data dependencies, this is, the spreadsheet texture to load 
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
-	public Array<AssetDescriptor> getDependencies(String fileName, AnimationParameter parameter) {
+	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, AnimationParameter parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		dependencies.add(new AssetDescriptor<Texture>(stripExtension(fileName) + ".png", Texture.class));
 		

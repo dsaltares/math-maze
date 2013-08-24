@@ -21,6 +21,7 @@ import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -47,28 +48,28 @@ public class PhysicsLoader extends AsynchronousAssetLoader<PhysicsData, PhysicsL
 	}
 
 	@Override
-	public void loadAsync(AssetManager manager, String fileName, PhysicsParameter parameter) {
+	public void loadAsync(AssetManager manager, String fileName, FileHandle file, PhysicsParameter parameter) {
 		physicsData = new PhysicsData();
-		loadData(fileName);
+		loadData(fileName, file);
 	}
 
 	@Override
-	public PhysicsData loadSync(AssetManager manager, String fileName, PhysicsParameter parameter) {
+	public PhysicsData loadSync(AssetManager manager, String fileName, FileHandle file, PhysicsParameter parameter) {
 		return physicsData;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Array<AssetDescriptor> getDependencies(String fileName, PhysicsParameter parameter) {
+	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, PhysicsParameter parameter) {
 		return new Array<AssetDescriptor>();
 	}
 	
-	private void loadData(String fileName) {
+	private void loadData(String fileName, FileHandle file) {
 		logger.info("loading " + fileName);
 		
 		try {
 			XmlReader reader = new XmlReader();
-			Element root = reader.parse(Gdx.files.internal(fileName));
+			Element root = reader.parse(file);
 			
 			loadBodyDef(root);
 			loadMassData(root);

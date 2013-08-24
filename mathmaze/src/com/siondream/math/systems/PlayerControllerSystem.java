@@ -109,15 +109,6 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 	}
 	
 	public void enable(boolean enable) {
-		if (enable) {
-			Env.game.getInputMultiplexer().addProcessor(gestureDetector);
-			Env.game.getInputMultiplexer().addProcessor(this);
-		}
-		else {
-			Env.game.getInputMultiplexer().removeProcessor(gestureDetector);
-			Env.game.getInputMultiplexer().removeProcessor(this);
-		}
-		
 		enabled = enable;
 	}
 	

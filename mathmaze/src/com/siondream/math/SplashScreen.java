@@ -61,8 +61,8 @@ public class SplashScreen extends SionScreen {
 		stage.addActor(imgSiondream);
 		
 		Assets assets = Env.game.getAssets();
-		sfxSiondream = assets.get("data/sfx/siondream.mp3", Sound.class);
-		sfxLibgdx = assets.get("data/sfx/libgdx.mp3", Sound.class);
+		sfxSiondream = assets.get("data/sfx/siondream.wav", Sound.class);
+		sfxLibgdx = assets.get("data/sfx/libgdx.wav", Sound.class);
 	}
 	
 	private void animateSiondream() {
@@ -88,7 +88,7 @@ public class SplashScreen extends SionScreen {
 					.push(Tween.to(imgSiondream, ActorTweener.Color, 0.4f)
 							   .target(1.0f, 1.0f, 1.0f, 1.0f)
 							   .ease(TweenEquations.easeInQuad))
-					.pushPause(1.0f)
+					.pushPause(1.5f)
 					.push(Tween.to(imgSiondream, ActorTweener.Color, 0.75f)
 							   .target(0.0f, 0.0f, 0.0f, 0.0f)
 							   .ease(TweenEquations.easeInQuad))
@@ -118,7 +118,7 @@ public class SplashScreen extends SionScreen {
 					.push(Tween.to(imgLibgdx, ActorTweener.Color, 0.4f)
 							   .target(1.0f, 1.0f, 1.0f, 1.0f)
 							   .ease(TweenEquations.easeInQuad))
-					.pushPause(1.0f)
+					.pushPause(1.5f)
 					.push(Tween.to(imgLibgdx, ActorTweener.Color, 0.75f)
 							   .target(0.0f, 0.0f, 0.0f, 0.0f)
 							   .ease(TweenEquations.easeInQuad))

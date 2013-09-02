@@ -5,12 +5,12 @@
 		<asset type="com.badlogic.gdx.scenes.scene2d.ui.Skin" path="data/uiNearest.json" />
 		<asset type="com.badlogic.gdx.graphics.g2d.BitmapFont" path="data/ui/default.fnt" />
 		<asset type="com.badlogic.gdx.audio.Music" path="data/music/song.mp3" />
-		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/victory.ogg" />
+		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/victory.wav" />
 		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/swipe.mp3" />
 		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/tap.mp3" />
 		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/shake.mp3" />
 		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/error.wav" />
-		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/siondream.mp3" />
-		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/libgdx.mp3" />
+		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/siondream.wav" />
+		<asset type="com.badlogic.gdx.audio.Sound" path="data/sfx/libgdx.wav" />
 	</group>
 </assets>

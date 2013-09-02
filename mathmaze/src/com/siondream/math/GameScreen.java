@@ -491,7 +491,7 @@ public class GameScreen extends SionScreen {
 		chrono.pause();
 		
 		Assets assets = Env.game.getAssets();
-		sfxVictory = assets.get("data/sfx/victory.ogg", Sound.class);
+		sfxVictory = assets.get("data/sfx/victory.wav", Sound.class);
 		sfxTap = assets.get("data/sfx/tap.mp3", Sound.class);
 	}
 	

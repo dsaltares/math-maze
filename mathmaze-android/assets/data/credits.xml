@@ -8,6 +8,8 @@
 	<image name="evergreen" pad="10" />
 	<label text="Daniel Pellicer García" scale="1.75" pad="10.0" />
 	<label text="Samuel Föger" scale="1.75" pad="50.0" />
+	<label text="SFX" scale="2.5" pad="15.0" />
+	<label text="Ross Tregenza" scale="1.75" pad="50.0" />
 	<label text="Localisation" scale="2.5" pad="15.0" />
 	<label text="Irene Saltares Márquez" scale="1.75" pad="10.0" />
 	<label text="Sergi Juárez Carceller" scale="1.75" pad="10.0" />

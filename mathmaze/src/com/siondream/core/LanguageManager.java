@@ -112,7 +112,6 @@ public class LanguageManager {
 			InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");
 			CsvReader reader = new CsvReader(streamReader, DELIMITER);
 			
-			String[] line;
 			boolean skip = true;
 			ObjectMap<String, String> newStrings = new ObjectMap<String, String>(strings.size);
 			

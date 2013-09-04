@@ -37,9 +37,16 @@ exit
   orig: 64, 64
   offset: 0, 0
   index: -1
+mailDown
+  rotate: false
+  xy: 724, 958
+  size: 102, 102
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
 infoUp
   rotate: false
-  xy: 1290, 913
+  xy: 828, 958
   size: 102, 102
   orig: 102, 102
   offset: 0, 0
@@ -79,6 +86,13 @@ resetUp
   orig: 125, 125
   offset: 0, 0
   index: -1
+starDown
+  rotate: false
+  xy: 1186, 913
+  size: 102, 102
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
 lock
   rotate: false
   xy: 1186, 831
@@ -102,7 +116,7 @@ blueDoor
   index: -1
 musicon
   rotate: false
-  xy: 1082, 831
+  xy: 1290, 913
   size: 102, 102
   orig: 102, 102
   offset: 0, 0
@@ -137,7 +151,7 @@ land
   index: -1
 facebook
   rotate: false
-  xy: 1082, 935
+  xy: 1186, 1017
   size: 102, 102
   orig: 102, 102
   offset: 0, 0
@@ -212,16 +226,16 @@ pauseUp
   orig: 125, 125
   offset: 0, 0
   index: -1
-purpleKey
+greenDoor
   rotate: false
-  xy: 1282, 492
+  xy: 1278, 690
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-greenDoor
+purpleKey
   rotate: false
-  xy: 1278, 690
+  xy: 1282, 492
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -254,6 +268,13 @@ player
   orig: 64, 64
   offset: 0, 0
   index: -1
+starUp
+  rotate: false
+  xy: 1082, 831
+  size: 102, 102
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
 pauseDown
   rotate: false
   xy: 1664, 686
@@ -277,7 +298,7 @@ playUp
   index: -1
 musicoff
   rotate: false
-  xy: 1186, 913
+  xy: 978, 935
   size: 102, 102
   orig: 102, 102
   offset: 0, 0
@@ -345,9 +366,16 @@ yellowDoor
   orig: 64, 64
   offset: 0, 0
   index: -1
+mailUp
+  rotate: false
+  xy: 1082, 935
+  size: 102, 102
+  orig: 102, 102
+  offset: 0, 0
+  index: -1
 infoDown
   rotate: false
-  xy: 978, 935
+  xy: 1394, 940
   size: 102, 102
   orig: 102, 102
   offset: 0, 0

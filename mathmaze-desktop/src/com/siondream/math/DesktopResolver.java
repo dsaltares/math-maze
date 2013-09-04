@@ -26,4 +26,28 @@ public class DesktopResolver implements PlatformResolver {
 			logger.error("error opening URL " + url + " " + e);
 		}
 	}
+
+	@Override
+	public void rateApp() {
+		String url = "https://play.google.com/store/apps/details?id=com.siondream.math";
+		
+		try {
+			URI uri = new URI(url);
+			Desktop.getDesktop().browse(uri);
+		} catch(Exception e) {
+			logger.error("error opening URL " + url + " " + e);
+		}
+	}
+	
+	@Override
+	public void sendFeedback() {
+		String url = "mailto:david@siondream.com";
+		
+		try {
+			URI uri = new URI(url);
+			Desktop.getDesktop().browse(uri);
+		} catch(Exception e) {
+			logger.error("error opening URL " + url + " " + e);
+		}
+	}
 }

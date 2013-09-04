@@ -36,6 +36,8 @@ public class MenuScreen extends SionScreen {
 	private ImageButton btnSound;
 	private ImageButton btnInfo;
 	private ImageButton btnPlay;
+	private ImageButton btnMail;
+	private ImageButton btnStar;
 	
 	private Sound sfxTap;
 	
@@ -90,6 +92,8 @@ public class MenuScreen extends SionScreen {
 		btnPlay = new ImageButton(skin, "play");
 		btnInfo = new ImageButton(skin, "info");
 		btnSound = new ImageButton(skin, "music");
+		btnMail = new ImageButton(skin, "mail");
+		btnStar = new ImageButton(skin, "star");
 		
 		socialTable = new Table();
 		socialTable.row();
@@ -101,11 +105,15 @@ public class MenuScreen extends SionScreen {
 		
 		buttonsTable = new Table();
 		buttonsTable.row();
+		buttonsTable.add(btnStar).padBottom(20.0f);
+		buttonsTable.row();
+		buttonsTable.add(btnMail).padBottom(20.0f);
+		buttonsTable.row();
 		buttonsTable.add(btnInfo).padBottom(20.0f);
 		buttonsTable.row();
 		buttonsTable.add(btnSound);
 		buttonsTable.validate();
-		buttonsTable.setSize(btnInfo.getWidth(), btnInfo.getHeight() + btnSound.getHeight() + 20.0f);
+		buttonsTable.setSize(btnInfo.getWidth(), btnInfo.getHeight() + btnSound.getHeight() +  btnMail.getHeight() +  btnStar.getHeight() + 60.0f);
 		
 		btnPlay.setPosition((Env.virtualWidth - btnPlay.getWidth()) * 0.5f, -btnPlay.getHeight());
 		buttonsTable.setPosition(Env.virtualWidth + buttonsTable.getWidth() * 0.5f,  20.0f + buttonsTable.getHeight() * 0.5f);
@@ -182,6 +190,28 @@ public class MenuScreen extends SionScreen {
 				}
 				
 				animateOut(CreditsScreen.class);
+			}
+		});
+		
+		btnStar.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
+				Env.platform.rateApp();
+			}
+		});
+		
+		btnMail.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (GameEnv.soundEnabled) {
+					sfxTap.play();
+				}
+				
+				Env.platform.sendFeedback();
 			}
 		});
 		

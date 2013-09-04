@@ -43,5 +43,7 @@
 		play: { up: playUp, down: playDown },
 		info: { up: infoUp, down: infoDown },
 		close: { up: closeUp, down: closeDown },
+		star: { up: starUp, down: starDown },
+		mail: { up: mailUp, down: mailDown },
 	},
 }

@@ -112,12 +112,19 @@
         </struct>
         <key>dataFileName</key>
         <filename>../../mathmaze-android/assets/data/ui.atlas</filename>
+        <key>multiPack</key>
+        <false/>
         <key>mainExtension</key>
         <string></string>
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
         <enum type="SettingsBase::OutputFormat">RGBA8888</enum>
+        <key>contentProtection</key>
+        <struct type="ContentProtection">
+            <key>key</key>
+            <string></string>
+        </struct>
         <key>autoAliasEnabled</key>
         <true/>
         <key>trimSpriteNames</key>
@@ -146,6 +153,8 @@
         <key>ignoreFileList</key>
         <array/>
         <key>replaceList</key>
+        <array/>
+        <key>ignoredWarnings</key>
         <array/>
         <key>commonDivisorX</key>
         <uint>1</uint>

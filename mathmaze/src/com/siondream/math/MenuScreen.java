@@ -34,6 +34,7 @@ public class MenuScreen extends SionScreen {
 	private Table socialTable;
 	private Table buttonsTable;
 	private ImageButton btnSound;
+	private ImageButton btnVibration;
 	private ImageButton btnInfo;
 	private ImageButton btnPlay;
 	private ImageButton btnMail;
@@ -92,6 +93,7 @@ public class MenuScreen extends SionScreen {
 		btnPlay = new ImageButton(skin, "play");
 		btnInfo = new ImageButton(skin, "info");
 		btnSound = new ImageButton(skin, "music");
+		btnVibration = new ImageButton(skin, "vibration");
 		btnMail = new ImageButton(skin, "mail");
 		btnStar = new ImageButton(skin, "star");
 		
@@ -111,15 +113,18 @@ public class MenuScreen extends SionScreen {
 		buttonsTable.row();
 		buttonsTable.add(btnInfo).padBottom(20.0f);
 		buttonsTable.row();
+		buttonsTable.add(btnVibration).padBottom(20.0f);
+		buttonsTable.row();
 		buttonsTable.add(btnSound);
 		buttonsTable.validate();
-		buttonsTable.setSize(btnInfo.getWidth(), btnInfo.getHeight() + btnSound.getHeight() +  btnMail.getHeight() +  btnStar.getHeight() + 60.0f);
+		buttonsTable.setSize(btnInfo.getWidth(), btnInfo.getHeight() + btnSound.getHeight() +  btnMail.getHeight() +  + btnVibration.getHeight() + btnStar.getHeight() + 80.0f);
 		
 		btnPlay.setPosition((Env.virtualWidth - btnPlay.getWidth()) * 0.5f, -btnPlay.getHeight());
 		buttonsTable.setPosition(Env.virtualWidth + buttonsTable.getWidth() * 0.5f,  20.0f + buttonsTable.getHeight() * 0.5f);
 		
 		Preferences preferences = GameEnv.game.getPreferences();
 		btnSound.setDisabled(!preferences.getBoolean("soundEnabled", true));
+		btnVibration.setDisabled(!preferences.getBoolean("vibrationEnabled", true));
 		
 		WidgetGroup labelsGroup = new WidgetGroup();
 		
@@ -179,6 +184,24 @@ public class MenuScreen extends SionScreen {
 				preferences.putBoolean("soundEnabled", GameEnv.soundEnabled);
 				preferences.flush();
 				GameEnv.game.getMusic().setVolume(GameEnv.soundEnabled ? GameEnv.musicVolume : 0.0f);
+			}
+		});
+		
+		btnVibration.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				sfxTap.play();
+				
+				boolean wasDisabled = btnVibration.isDisabled();
+				btnVibration.setDisabled(!wasDisabled);
+				Preferences preferences = GameEnv.game.getPreferences();
+				GameEnv.vibrationEnabled = !btnVibration.isDisabled();
+				preferences.putBoolean("vibrationEnabled", GameEnv.vibrationEnabled);
+				preferences.flush();
+				
+				if (GameEnv.vibrationEnabled) {
+					Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+				}
 			}
 		});
 		

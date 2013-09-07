@@ -135,6 +135,7 @@ public class MathMaze extends SionGame {
 		entityFactory.addCreator(GameEnv.keyTag, new KeyCreator());
 		
 		GameEnv.soundEnabled = preferences.getBoolean("soundEnabled", true);
+		GameEnv.vibrationEnabled = preferences.getBoolean("vibrationEnabled", true);
 		
 		song = assets.get("data/music/song.mp3", Music.class);
 	}

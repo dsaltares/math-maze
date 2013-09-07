@@ -264,7 +264,10 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 			if (Math.abs(newValue) < GameEnv.playerMaxValue) {
 				value.value = newValue;
 				Env.game.getEngine().getSystem(CameraControllerSystem.class).startShakeEffect(((int)destination.x - position.x) != 0);
-				Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+				
+				if (GameEnv.vibrationEnabled) {
+					Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+				}
 				
 				if (!operationComponent.persist) {
 					Env.game.getEngine().removeEntity(operation);
@@ -298,7 +301,10 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 			}
 			
 			engine.removeEntity(keyEntity);
-			Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+			
+			if (GameEnv.vibrationEnabled) {
+				Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+			}
 			
 			if (GameEnv.soundEnabled) {
 				sfxShake.play();
@@ -306,7 +312,10 @@ public class PlayerControllerSystem extends EntitySystem implements GestureListe
 		}
 		
 		if (isExitAt(destination)) {
-			Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+			if (GameEnv.vibrationEnabled) {
+				Gdx.input.vibrate(GameEnv.playerVibrateTimeMs);
+			}
+			
 			GameEnv.game.getScreen(GameScreen.class).victory();
 			
 			if (GameEnv.soundEnabled) {

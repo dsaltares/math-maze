@@ -34,6 +34,7 @@
 	
 	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 		music: { up: musicon, disabled: musicoff },
+		vibration: { up: vibrationOn, disabled: vibrationOff },
 		reset: { up: resetUp, down: resetDown },
 		back: { up: backUp, down: backDown },
 		levels: { up: levelsUp, down: levelsDown },

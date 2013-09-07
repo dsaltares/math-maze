@@ -48,10 +48,12 @@ public class GameEnv {
 	public static Color mathLabelsColor;
 	
 	public static Color starsOperationColor;
-	
+
+	public static boolean vibrationEnabled;
 	public static boolean soundEnabled;
 	public static boolean effectsOnly;
 	public static float musicVolume;
+
 	
 
 	public static void init(MathMaze game) {

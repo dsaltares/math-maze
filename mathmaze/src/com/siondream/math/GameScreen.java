@@ -10,6 +10,7 @@ import aurelienribon.tweenengine.TweenEquations;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -484,7 +485,7 @@ public class GameScreen extends SionScreen {
 		controlTable.setPosition(0.0f, -controlTable.getHeight());
 		imgHelp.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + GameEnv.cameraHeight - imgHelp.getHeight() - 35.0f);
 		lblHelp.setVisible(false);
-		lblHelp.setFontScale(1.0f);
+		lblHelp.setFontScale(2.0f);
 		btnClose.setPosition(Env.virtualWidth, GameEnv.cameraScreenPos.y + 35.0f);
 		
 		chrono.reset();
@@ -527,7 +528,7 @@ public class GameScreen extends SionScreen {
 					String helpText = map.map.getProperties().get("help", "", String.class);
 					
 					if (!helpText.isEmpty() && (level == null || level.stars == 0 || Env.debug)) {
-						lblHelp.setText(Env.game.getLang().getString(helpText));
+						lblHelp.setText(prepareHelpText(helpText));
 						helpIn();
 					}
 					else {
@@ -758,13 +759,11 @@ public class GameScreen extends SionScreen {
 		
 		lblHelp.setVisible(true);
 		lblHelp.setColor(0.0f, 0.0f, 0.0f, 0.0f);
-		lblHelp.setWrap(true);
-		lblHelp.setWidth(Env.virtualWidth - 40.0f);
+		lblHelp.setWidth(Env.virtualWidth - 60.0f);
 		lblHelp.setHeight(0.0f);
-		lblHelp.setAlignment(Align.center, Align.left);
 		lblHelp.layout();
 		lblHelp.setPosition((Env.virtualWidth - lblHelp.getWidth()) * 0.5f,
-							 GameEnv.cameraScreenPos.y + GameEnv.cameraHeight - 275.0f);
+							 GameEnv.cameraScreenPos.y + GameEnv.cameraHeight - 300.0f);
 
 		Timeline timeline = Timeline.createSequence();
 		
@@ -831,5 +830,29 @@ public class GameScreen extends SionScreen {
 		else {
 			return 1;
 		}
+	}
+	
+	private String prepareHelpText(String helpText) {
+		String baseText = Env.game.getLang().getString(helpText);
+		BitmapFont font = lblHelp.getStyle().font;
+		String result = "";
+		String[] words = baseText.split(" ");
+		float allowedWidth = Env.virtualWidth - 60.0f;
+		float lineWidth = 0.0f;
+		
+		for (String word : words) {
+			TextBounds bounds = font.getBounds(word);
+			
+			if (lineWidth + bounds.width * lblHelp.getFontScaleX() > allowedWidth) {
+				result += "\n" + word + " ";
+				lineWidth = bounds.width * lblHelp.getFontScaleX() + font.getBounds(" ").width * lblHelp.getFontScaleX();
+			}
+			else {
+				lineWidth += bounds.width * lblHelp.getFontScaleX() + font.getBounds(" ").width * lblHelp.getFontScaleX();
+				result += word + " ";
+			}
+		}
+		
+		return result;
 	}
 }

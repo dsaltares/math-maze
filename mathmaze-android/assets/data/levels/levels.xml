@@ -35,4 +35,7 @@
  <level name="Level 33" file="data/levels/level033.tmx" />
  <level name="Level 34" file="data/levels/level034.tmx" />
  <level name="Level 35" file="data/levels/level035.tmx" />
+ <level name="Level 36" file="data/levels/level036.tmx" />
+ <level name="Level 37" file="data/levels/level037.tmx" />
+ <level name="Level 38" file="data/levels/level038.tmx" />
 </levels>

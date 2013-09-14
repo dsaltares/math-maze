@@ -24,14 +24,13 @@ public class LevelManager {
 		
 		logger.info("initialising");
 		
-		int lastUnlockedLevel = preferences.getInteger("lastUnlockedLevel", 1);
+		int lastUnlockedLevel = preferences.getInteger(LAST_UNLOCKED_LEVEL, 1);
 		this.levels = new Array<Level>();
 		
 		try {
 			FileHandle fileHandle = Gdx.files.internal(file);
 			XmlReader reader = new XmlReader();
 			Element root = reader.parse(fileHandle);
-			boolean first = true;
 			int index = 1;
 			
 			for (Element levelElement : root.getChildrenByName("level")) {
@@ -40,7 +39,6 @@ public class LevelManager {
 				String assetGroup = levelElement.get("assetGroup", "");
 				int stars = preferences.getInteger(name + ".stars", 0);
 				boolean unlocked = index <= lastUnlockedLevel;
-				first = false;
 				
 				Level level = new Level(fileName, assetGroup, name, stars, index, unlocked); 
 				levels.add(level);
@@ -50,6 +48,18 @@ public class LevelManager {
 			
 		} catch (Exception e) {
 			logger.error("error processing file " + file + " " + e.getMessage());
+		}
+		
+		for (int i = lastUnlockedLevel - 1; i < this.levels.size; ++i) {
+			Level level = levels.get(i);
+			
+			if (level.stars > 0) {
+				lastUnlockedLevel = i + 2;
+				
+				if (lastUnlockedLevel - 1 < this.levels.size) {
+					this.levels.get(lastUnlockedLevel - 1).unlocked = true;
+				}
+			}
 		}
 	}
 	
